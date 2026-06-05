@@ -46,20 +46,21 @@ public class AccountBookImpl implements AccountBook{
     public String[] showAccount(String[] dates, int idx) {
         File file = new File(folder, dates[idx - 1] + ".txt");
         final List<String> list = new ArrayList<>();
-        try {
-            if(!file.exists()) {
-                file.createNewFile();
+        int price = 0;
+
+        try (Scanner sc = new Scanner(file)) {
+            for(int i = 1; sc.hasNextLine(); i++) {
+                String str = sc.nextLine();
+                String PRICE = str.split(":")[1];
+                price += PRICE.chars().allMatch(Character::isDigit) ? Integer.parseInt(PRICE) : 0;
+                System.out.println(i + ". " + str + "원");
+                list.add(str);
             }
-            try (Scanner sc = new Scanner(file)) {
-                for(int i = 1; sc.hasNextLine(); i++) {
-                    String str = sc.nextLine();
-                    System.out.println(i + ". " + str);
-                    list.add(str);
-                }
-            }
-        } catch (IOException e) {
+            System.out.println("총액: " + price + "원");
+        } catch(Exception e) {
             return new String[0];
         }
+
         return list.toArray(String[]::new);
     }
 
