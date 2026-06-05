@@ -28,6 +28,7 @@ public class Start {
                     account.addAccount(date, item);
                     break;
                 case 2:
+                    account.showAccount();
                     date = print(sc);
                     account.showAccount(date);
                     break;

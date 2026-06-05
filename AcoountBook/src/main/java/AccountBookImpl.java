@@ -17,20 +17,27 @@ public class AccountBookImpl implements AccountBook{
     }
 
     @Override
+    public void showAccount() {
+        int idx = 0;
+        for(String key : map.keySet()) {
+            System.out.println(++idx + ". " + key);
+        }
+    }
     public void showAccount(String date) {
-        int price = 0;
         List<Item> list = map.getOrDefault(date, Collections.emptyList());
-        if(list.isEmpty()) System.out.println("내용이 없습니다.");
+        int price = 0;
         for(int i = 0; i < list.size(); i++) {
             System.out.printf("%d. %s : %d\n", i + 1, list.get(i).name(), list.get(i).price());
             price += list.get(i).price();
         }
-        System.out.println("합계 : " + price);
+        System.out.println("총액 : " + price);
     }
+
 
     @Override
     public void deleteItem(String date, int idx) {
         map.get(date).remove(idx);
+        if(map.get(date).isEmpty()) map.remove(date);
     }
 
 }
