@@ -1,10 +1,6 @@
 import java.util.*;
 
 public class AccountBookImpl implements AccountBook{
-    private final Map<String, List<Item>> map;
-    AccountBookImpl() {
-        map = new TreeMap<>();
-    }
     @Override
     public void addAccount(String date, Item item) {
         map.computeIfAbsent(date, k -> new ArrayList<>()).add(item);
@@ -24,7 +20,7 @@ public class AccountBookImpl implements AccountBook{
         }
     }
     public void showAccount(String date) {
-        List<Item> list = map.getOrDefault(date, Collections.emptyList());
+        final List<Item> list = map.getOrDefault(date, Collections.emptyList());
         int price = 0;
         for(int i = 0; i < list.size(); i++) {
             System.out.printf("%d. %s : %d\n", i + 1, list.get(i).name(), list.get(i).price());
