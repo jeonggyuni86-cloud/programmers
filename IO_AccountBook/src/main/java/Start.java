@@ -79,6 +79,10 @@ public class Start {
 
     private static void deleteAccount(Scanner sc, AccountBook accountBook) {
         String[] dates = accountBook.showDate();
+        if(dates.length == 0) {
+            System.out.println("삭제할 항목이 없습니다.");
+            return;
+        }
 
         int dateIdx = inputIndex(sc, dates.length);
         if (dateIdx == -1) {
