@@ -110,6 +110,7 @@ public class Start {
         if (accountIdx == -1) {
             System.out.println("입력 오류");
             return;
+
         }
 
         if(accountBook.deleteAccount(dates, dateIdx, accounts, accountIdx))
