@@ -52,6 +52,7 @@ public class Start {
                 default :
                     System.out.println("잘못된 숫자를 입력하셨습니다.\n다시 입력해주세요.");
             }
+
         }
     }
     private static String print(Scanner sc) {
