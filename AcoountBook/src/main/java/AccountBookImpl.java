@@ -20,6 +20,7 @@ public class AccountBookImpl implements AccountBook{
     public void showAccount(String date) {
         int price = 0;
         List<Item> list = map.getOrDefault(date, Collections.emptyList());
+        if(list.isEmpty()) System.out.println("내용이 없습니다.");
         for(int i = 0; i < list.size(); i++) {
             System.out.printf("%d. %s : %d\n", i + 1, list.get(i).name(), list.get(i).price());
             price += list.get(i).price();

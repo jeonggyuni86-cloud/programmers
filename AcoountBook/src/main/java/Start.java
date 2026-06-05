@@ -22,7 +22,8 @@ public class Start {
                     System.out.println("항목 이름 > ");
                     name = sc.nextLine();
                     System.out.println("금액 > ");
-                    price = sc.nextInt();
+                    String str = sc.nextLine();
+                    price = str.chars().allMatch(Character::isDigit) ? Integer.parseInt(str) : 0;
                     item = new Item(name, price);
                     account.addAccount(date, item);
                     break;
@@ -46,6 +47,8 @@ public class Start {
 
                 case 5 :
                     return;
+                default :
+                    System.out.println("잘못된 숫자를 입력하셨습니다.\n다시 입력해주세요.");
             }
         }
     }
