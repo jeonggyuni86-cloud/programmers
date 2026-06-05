@@ -112,6 +112,7 @@ public class Start {
             System.out.println("삭제 성공");
         else
             System.out.println("삭제 실패");
+
     }
 
     private static int inputIndex(Scanner sc, int length) {
