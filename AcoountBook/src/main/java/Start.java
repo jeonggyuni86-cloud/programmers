@@ -45,9 +45,7 @@ public class Start {
                     break;
 
                 case 5 :
-                    sc.nextLine();
-                    break;
-
+                    return;
             }
         }
     }
