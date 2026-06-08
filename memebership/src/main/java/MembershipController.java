@@ -72,10 +72,9 @@ public class MembershipController implements Membership{
     }
 
     @Override
-    public Member[] selectAll() {
-        List<Member> list = new ArrayList<>();
-        for(Map.Entry<Grade, Set<Member>> entry : members.entrySet())
-            list.addAll(entry.getValue());
+    public Member[] selectAll(int idx) {
+        Grade grade = Grade.fromIdx(idx);
+        List<Member> list = new ArrayList<>(members.getOrDefault(grade, Collections.emptySet()));
         return list.toArray(Member[]::new);
     }
 

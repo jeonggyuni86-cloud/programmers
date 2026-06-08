@@ -14,7 +14,7 @@ public class Main {
                 case 1 : addMember(grade, sc); break;
                 case 2 : selectEmail(sc); break;
                 case 3 : selectName(sc); break;
-                case 4 : selectAll(); break;
+                case 4 : selectAll(grade); break;
                 case 5 : updateMember(sc); break;
                 case 6 : deleteMember(sc); break;
                 case 7 : return;
@@ -85,8 +85,8 @@ public class Main {
         print(membership.selectName(name));
     }
 
-    private static void selectAll() {
-        print(membership.selectAll());
+    private static void selectAll(int grade) {
+        print(membership.selectAll(grade));
     }
 
     private static void updateMember(Scanner sc) {
@@ -99,6 +99,7 @@ public class Main {
         }
         System.out.print("변경할 이름을 입력해 주세요: ");
         String name = sc.nextLine();
+
         System.out.print("변경할 휴대폰 번호를 입력해주세요: ");
         String phone = sc.nextLine();
 
