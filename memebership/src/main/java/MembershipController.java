@@ -80,15 +80,7 @@ public class MembershipController implements Membership{
 
     @Override
     public boolean updateMember(Member before, Member update) {
-        for(Map.Entry<Grade, Set<Member>> entry : members.entrySet()) {
-            Set<Member> set = entry.getValue();
-            if(set.contains(before)) {
-                set.remove(before);
-                set.add(update);
-                return true;
-            }
-        }
-        return false;
+        return deleteMember(before) && addMember(before.grade(), update);
     }
 
     @Override
