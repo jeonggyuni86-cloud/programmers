@@ -1,15 +1,4 @@
-public class Member {
-    String name;
-    String email;
-    String phone;
-    Grade grade;
-
-    Member(Grade grade, String name, String email, String phone) {
-        this.grade = grade;
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-    }
+public record Member(Grade grade, String name, String email, String phone) {
 
     @Override
     public boolean equals(Object o) {

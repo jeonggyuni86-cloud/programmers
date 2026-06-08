@@ -19,6 +19,7 @@ public class MembershipController implements Membership{
                     + " / "
                     + grade.LIMIT + "명";
             list.add(str);
+            idx++;
         }
         return list.toArray(String[]::new);
     }
@@ -32,8 +33,8 @@ public class MembershipController implements Membership{
 
     public boolean addMember(Grade grade, Member member) {
         Set<Member> memberSet = members.getOrDefault(grade, Collections.emptySet());
-        if (memberSet.contains(member)) return false;
-        if (!checkEmail(memberSet, member.email)) return false;
+        if (memberSet.contains(member) || memberSet.size() >= grade.LIMIT) return false;
+        if (!checkEmail(memberSet, member.email())) return false;
 
         memberSet.add(member);
         members.put(grade, memberSet);
@@ -42,7 +43,7 @@ public class MembershipController implements Membership{
 
     private boolean checkEmail(Set<Member> set, String email) {
         for(Member member : set)
-            if(email.equals(member.email)) return false;
+            if(email.equals(member.email())) return false;
         return true;
     }
 
@@ -51,7 +52,7 @@ public class MembershipController implements Membership{
         List<Member> list = new ArrayList<>();
         for(Map.Entry<Grade, Set<Member>> entry : members.entrySet()) {
             for(Member member : entry.getValue()) {
-                if(member.email.equals(email))
+                if(member.email().equals(email))
                     list.add(member);
             }
         }
@@ -63,7 +64,7 @@ public class MembershipController implements Membership{
         List<Member> list = new ArrayList<>();
         for(Map.Entry<Grade, Set<Member>> entry : members.entrySet()) {
             for(Member member : entry.getValue()) {
-                if(member.name.equals(name))
+                if(member.name().equals(name))
                     list.add(member);
             }
         }
@@ -101,5 +102,12 @@ public class MembershipController implements Membership{
             }
         }
         return false;
+    }
+
+    @Override
+    public String available(int idx) {
+        Grade grade = Grade.fromIdx(idx);
+        if(grade == null) return null;
+        return members.getOrDefault(grade, Collections.emptySet()).size() + " / " + grade.LIMIT;
     }
 }

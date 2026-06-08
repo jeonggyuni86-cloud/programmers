@@ -6,5 +6,5 @@ public interface Membership {
     Member[] selectAll();
     boolean updateMember(Member before, Member update);
     boolean deleteMember(Member member);
-
+    String available(int idx);
 }
