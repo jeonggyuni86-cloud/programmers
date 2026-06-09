@@ -4,18 +4,29 @@ import java.util.List;
 import java.util.Map;
 
 public class Race {
-    private int rank = 1;
-    private final List<String> ranking = new ArrayList<>();
-    private final Map<String, Integer> positions = new LinkedHashMap<>();
+    private record Result(
+            String name,
+            long time) { }
 
-    public synchronized int finish(String name) {
-        ranking.add(name);
-        return rank++;
+    private final List<Result> ranking;
+    private final Map<String, Integer> positions;
+    private final long startTime;
+
+    public Race() {
+        this.startTime = System.currentTimeMillis();
+        this.ranking = new ArrayList<>();
+        this.positions = new LinkedHashMap<>();
+    }
+
+    public synchronized void finish(String name) {
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        ranking.add(new Result(name, elapsedTime));
     }
 
     public void printRanking() {
         for(int i = 0; i < ranking.size(); i++) {
-            System.out.println(i + 1 + "등 : " + ranking.get(i));
+            Result result = ranking.get(i);
+            System.out.printf("%d등. %S (%.3f s)\n", i + 1, result.name, result.time() / 1000.0);
         }
     }
 
