@@ -10,6 +10,7 @@ public class Main {
             int grade = printPlan(plans, sc);
             int select = printMenu(grade, sc);
 
+
             switch(select) {
                 case 1 : addMember(grade, sc); break;
                 case 2 : selectEmail(sc); break;
