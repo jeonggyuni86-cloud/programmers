@@ -1,0 +1,17 @@
+Index: src/main/java/Race.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import java.util.ArrayList;\nimport java.util.LinkedHashMap;\nimport java.util.List;\nimport java.util.Map;\n\npublic class Race {\n    private int rank = 1;\n    private final List<String> ranking = new ArrayList<>();\n    private final Map<String, Integer> positions = new LinkedHashMap<>();\n\n    public synchronized int finish(String name) {\n        ranking.add(name);\n        return rank++;\n    }\n\n    public void printRanking() {\n        for(int i = 0; i < ranking.size(); i++) {\n            System.out.println(i + 1 + \"등 : \" + ranking.get(i));\n        }\n    }\n\n    public synchronized void printProgress(String name, int position) {\n        positions.put(name, position);\n\n        clearConsole();\n\n        for (String snail : positions.keySet()) {\n            int pos = positions.get(snail);\n            System.out.println(snail + \" : \" + \"=\".repeat(pos) + \"> \" + pos);\n        }\n    }\n\n    private void clearConsole() {\n        System.out.println(\"\\n\".repeat(50));\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/Race.java b/src/main/java/Race.java
+--- a/src/main/java/Race.java	(revision 070f273a13a2d226d3a128c2a6944935d79ebb78)
++++ b/src/main/java/Race.java	(date 1780972237215)
+@@ -32,5 +32,6 @@
+ 
+     private void clearConsole() {
+         System.out.println("\n".repeat(50));
++
+     }
+ }

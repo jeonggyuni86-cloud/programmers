@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="bab49569-d97b-4834-97bf-b58d7cedb73b" name="변경" comment="Snai">
+      <change afterPath="$PROJECT_DIR$/src/main/java/Race.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Snail.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Snail.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;jeonggyuni86-cloud&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/jeonggyuni86-cloud/programmers.git&quot;,
+    &quot;accountId&quot;: &quot;7306e64d-9410-47e4-a4ce-c02b357bedc8&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0000003308966607" />
+      <entry key="S2" value="1.0387180465014834" />
+      <entry key="S5" value="1.4626177747756537" />
+      <entry key="S10" value="2.512619250221776" />
+      <entry key="S30" value="10.710038774138463" />
+      <entry key="S60" value="25.00065324580685" />
+      <entry key="M2" value="49.08075232473441" />
+      <entry key="M5" value="101.4662972454441" />
+      <entry key="M10" value="156.3063116562071" />
+      <entry key="M15" value="196.56964901715838" />
+      <entry key="M30" value="277.36535915175006" />
+      <entry key="H1" value="356.61676103512207" />
+      <entry key="H2" value="416.8610820254457" />
+      <entry key="H4" value="454.9478516408957" />
+      <entry key="D1" value="491.94205000462546" />
+      <entry key="W1" value="498.83445331970205" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.49654624771851796" />
+      <entry key="MS500" value="0.8693445603469347" />
+      <entry key="S2" value="0.9696527709793694" />
+      <entry key="S5" value="1.1148658257444684" />
+      <entry key="S10" value="1.481338618346028" />
+      <entry key="S30" value="2.7237120230909526" />
+      <entry key="S60" value="4.24212104565673" />
+      <entry key="M2" value="7.431932999869619" />
+      <entry key="M5" value="16.922618068473785" />
+      <entry key="M10" value="28.010417616489946" />
+      <entry key="M15" value="36.4623018999823" />
+      <entry key="M30" value="54.34570949927985" />
+      <entry key="H1" value="73.04692017542982" />
+      <entry key="H2" value="87.87686401345344" />
+      <entry key="H4" value="97.4703339881289" />
+      <entry key="D1" value="106.92464750287984" />
+      <entry key="W1" value="108.6994727465049" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.49788027140675467" />
+      <entry key="MS500" value="1.1354373398005797" />
+      <entry key="S2" value="1.7235305610405678" />
+      <entry key="S5" value="2.4325658136209465" />
+      <entry key="S10" value="3.88567085483494" />
+      <entry key="S30" value="13.313951957121184" />
+      <entry key="S60" value="29.118217737608425" />
+      <entry key="M2" value="56.3916405206266" />
+      <entry key="M5" value="118.28084498367599" />
+      <entry key="M10" value="184.22873883432058" />
+      <entry key="M15" value="232.95570086145602" />
+      <entry key="M30" value="331.65423298038615" />
+      <entry key="H1" value="429.6255475484785" />
+      <entry key="H2" value="504.71505515542805" />
+      <entry key="H4" value="552.4055086713257" />
+      <entry key="D1" value="598.8643829724402" />
+      <entry key="W1" value="607.5335900168571" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3EsSfgBbUpXQLLwHBpwgpVCzJ9X" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.snailRace [:Main.main()].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "모듈",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.24374.151" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.24374.151" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="bab49569-d97b-4834-97bf-b58d7cedb73b" name="변경" comment="" />
+      <created>1780965895083</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1780965895083</updated>
+      <workItem from="1780965896166" duration="5030000" />
+      <workItem from="1780972132243" duration="134000" />
+    </task>
+    <task id="LOCAL-00001" summary="SnailRace">
+      <option name="closed" value="true" />
+      <created>1780969642556</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1780969642556</updated>
+    </task>
+    <task id="LOCAL-00002" summary="SnailRace">
+      <option name="closed" value="true" />
+      <created>1780969735662</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1780969735662</updated>
+    </task>
+    <task id="LOCAL-00003" summary="SnailRace">
+      <option name="closed" value="true" />
+      <created>1780969767449</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1780969767449</updated>
+    </task>
+    <task id="LOCAL-00004" summary="SnailRace">
+      <option name="closed" value="true" />
+      <created>1780971949292</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1780971949293</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Ignore DS_Store">
+      <option name="closed" value="true" />
+      <created>1780972155941</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1780972155941</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="UPDOWN" />
+    <MESSAGE value="SnailRace" />
+    <MESSAGE value="Ignore DS_Store" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ignore DS_Store" />
+  </component>
+</project>
