@@ -4,22 +4,24 @@ public class Snail extends Thread {
     private final String name;
     private int position;
 
-    private static final int FINISH = 30;
+    private final int FINISH;
     private final Random random;
     private final Race race;
-    private int rank = 0;
+    private final int speed;
 
-    Snail(String name, Race race) {
+    Snail(String name, Race race, int finish, int speed) {
         this.name = name;
         this.random = new Random();
         this.position = 0;
         this.race = race;
+        this.FINISH = finish;
+        this.speed = speed;
     }
 
     @Override
     public void run() {
         while (position < FINISH) {
-            position += random.nextInt(3) + 1;
+            position += random.nextInt(speed) + 1;
             position = Math.min(position, FINISH);
             printProgress();
             try {
@@ -27,16 +29,11 @@ public class Snail extends Thread {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            if(position == FINISH) {
-                rank = race.finish(name);
-            }
         }
-    }
-    private void printProgress() {
-        StringBuilder sb = new StringBuilder();
-        sb.repeat("=", position);
-        sb.append(">");
-        System.out.println(name + " : " + sb + " " + position);
+        race.finish(name);
     }
 
+    private void printProgress() {
+        race.printProgress(name, position);
+    }
 }

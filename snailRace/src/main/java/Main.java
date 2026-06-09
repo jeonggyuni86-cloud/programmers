@@ -1,22 +1,47 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
 public class Main {
-    static void main(String[] args) {
+    public static void main(String[] args) {
+        List<Snail> snails = new ArrayList<>();
         Race race = new Race();
-        Snail s1 = new Snail("달팽이1", race);
-        Snail s2 = new Snail("달팽이2", race);
-        Snail s3 = new Snail("달팽이3", race);
+        Scanner sc = new Scanner(System.in);
 
-        s1.start();
-        s2.start();
-        s3.start();
+        int num = print("달팽이 마리수 입력 : ", sc);
+        int len = print("트랙 길이 입력 : ", sc);
+        int speed = print("달팽이 속도 입력 : ", sc);
 
-        try {
-            s1.join();
-            s2.join();
-            s3.join();
-        } catch(InterruptedException e) {
-            e.printStackTrace();
+        for(int i = 0; i < num; i++) {
+            Snail snail = new Snail("달팽이 " + (i + 1), race, len, speed);
+            snails.add(snail);
+            snail.start();
         }
+        for(Snail snail : snails) {
+            try {
+                snail.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         race.printRanking();
 
+
+    }
+    private static int getInput(Scanner sc) {
+        String str = sc.nextLine();
+        return str.chars().allMatch(Character::isDigit)
+                ? Integer.parseInt(str)
+                : 0;
+    }
+
+    private static int print(String msg, Scanner sc) {
+        int num;
+        do {
+            System.out.print(msg);
+            num = getInput(sc);
+        } while(num == 0);
+        return num;
     }
 }
