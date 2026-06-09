@@ -9,6 +9,7 @@ public class Race {
         ranking.add(name);
         return rank++;
     }
+
     public void printRanking() {
         for(int i = 0; i < ranking.size(); i++) {
             System.out.println(i + 1 + "등 : " + ranking.get(i));
