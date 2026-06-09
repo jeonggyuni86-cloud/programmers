@@ -27,6 +27,7 @@ public class BingoGame {
         List<Integer> list = new java.util.ArrayList<>(IntStream.rangeClosed(1, size * size).boxed().toList());
         Collections.shuffle(list);
 
+
         for(int r = 0; r < size; r++)
             for(int c = 0; c < size; c++)
                 board[r][c] = list.removeFirst();
