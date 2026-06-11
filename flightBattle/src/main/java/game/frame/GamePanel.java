@@ -13,7 +13,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private final GameManager gameManager;
     private final Timer timer;
 
-    GamePanel(GameManager gameManager) {
+    public GamePanel(GameManager gameManager) {
         this.gameManager = gameManager;
         this.timer = new Timer(16, this);
     }
