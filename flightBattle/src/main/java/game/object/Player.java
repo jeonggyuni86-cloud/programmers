@@ -22,13 +22,12 @@ public class Player extends GameObject{
     }
 
     @Override
-    public void move() {
-
-    }
-
-    public void draw(Graphics g) {
-    }
-
     public void update() {
+
+    }
+
+    @Override
+    public void draw(Graphics g) {
+
     }
 }
