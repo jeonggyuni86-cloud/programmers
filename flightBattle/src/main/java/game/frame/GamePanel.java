@@ -1,5 +1,6 @@
 package game.frame;
 
+import game.config.GameConfig;
 import game.manager.GameManager;
 
 import javax.swing.*;
@@ -16,6 +17,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     public GamePanel(GameManager gameManager) {
         this.gameManager = gameManager;
         this.timer = new Timer(16, this);
+        setPreferredSize(
+                new Dimension(
+                        GameConfig.WIDTH,
+                        GameConfig.HEIGHT
+                )
+        );
     }
 
     @Override

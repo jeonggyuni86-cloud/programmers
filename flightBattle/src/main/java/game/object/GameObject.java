@@ -3,10 +3,9 @@ package game.object;
 import java.awt.*;
 
 public abstract class GameObject {
-    protected int x;
-    protected int y;
-    protected int width;
-    protected int height;
+    protected int x, y;
+    protected int width, height;
+    protected int speed;
     protected boolean alive = true;
 
     public abstract void update();
