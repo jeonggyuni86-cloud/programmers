@@ -7,6 +7,7 @@ public abstract class GameObject {
     protected int width, height;
     protected int speed;
     protected boolean alive = true;
+    protected final static int DEFAULT_SPEED = 5;
 
     public abstract void update();
     public abstract void draw(Graphics g);
@@ -15,5 +16,8 @@ public abstract class GameObject {
     }
     public boolean isAlive() {
         return alive;
+    }
+    public void destroy() {
+        alive = false;
     }
 }

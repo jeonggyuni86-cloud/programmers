@@ -1,6 +1,5 @@
 package game.frame;
 
-import game.config.GameConfig;
 import game.manager.GameManager;
 
 import javax.swing.*;

@@ -16,9 +16,12 @@ public class MenuFrame {
         this.sc = new Scanner(System.in);
     }
     public void init() {
+
+        /*
         introMenu();
         printLoading();
         introStory();
+         */
     }
 
     private void introMenu() {
