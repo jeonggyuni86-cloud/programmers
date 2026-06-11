@@ -2,6 +2,8 @@ package game.object;
 
 import game.enums.JetType;
 
+import java.awt.*;
+
 public class Player extends GameObject{
     private final String name;
     private JetType jetType;
@@ -22,5 +24,11 @@ public class Player extends GameObject{
     @Override
     public void move() {
 
+    }
+
+    public void draw(Graphics g) {
+    }
+
+    public void update() {
     }
 }
