@@ -53,6 +53,21 @@ public class MyArrayList {
         data[index] = o;
     }
 
+    public void insert(int index, Object obj) {
+        if(index < 0 || index > size)
+            throw new IndexOutOfBoundsException();
+
+        if(size == data.length)
+            resize();
+
+        for(int i = size; i > index; i--) {
+            data[i] = data[i - 1];
+        }
+
+        data[index] = obj;
+        size++;
+    }
+
     public Object remove(int index) {
         if (index >= size || index < 0)
             return null;
