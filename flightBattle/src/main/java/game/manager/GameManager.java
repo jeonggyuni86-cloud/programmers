@@ -14,14 +14,15 @@ public class GameManager {
     private final Player player;
     private final List<Enemy> enemies;
     private final List<Bullet> bullets;
-
     private final Queue<Enemy> spawnQueue;
     private final SpawnThread spawnThread;
-
     private final CollisionManager collisionManager;
 
+    private boolean isGameOver = false;
+    private int score = 0;
+
     private long lastFireTime = 0;
-    private static final long FIRE_COOL_TIME = 100;
+    private static final long FIRE_COOL_TIME = 100; // 연타시 0.1초마다 나감
 
     public GameManager(Player player, CollisionManager collisionManager) {
         this.player = player;
@@ -35,14 +36,25 @@ public class GameManager {
     }
 
     public void update() {
+        if(isGameOver) return;
+
         player.update();
         bullets.forEach(Bullet::update);
         enemies.forEach(Enemy::update);
-
         addSpawnedEnemies();
 
         collisionManager.check(player, enemies, bullets);
+
         removeDeadObjects();
+
+        if(!player.isAlive()) {
+            isGameOver = true;
+            shutdown();
+        }
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
     }
 
     private void addSpawnedEnemies() {
@@ -62,6 +74,11 @@ public class GameManager {
         player.draw(g);
         enemies.forEach(e -> e.draw(g));
         bullets.forEach(b -> b.draw(g));
+
+        if (isGameOver) {
+            g.setFont(new Font("Arial", Font.BOLD, 40));
+            g.drawString("GAME OVER", 130, 350);
+        }
     }
 
     public void shutdown() {

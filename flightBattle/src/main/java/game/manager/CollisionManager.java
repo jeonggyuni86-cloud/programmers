@@ -9,11 +9,11 @@ import java.util.List;
 public class CollisionManager {
 
     public void check(Player player, List<Enemy> enemies, List<Bullet> bullets) {
-        checkBulletEnemy(enemies, bullets);
+        checkBulletEnemy(player, enemies, bullets);
         checkPlayerEnemy(player, enemies);
     }
 
-    private void checkBulletEnemy(List<Enemy> enemies, List<Bullet> bullets) {
+    private void checkBulletEnemy(Player player, List<Enemy> enemies, List<Bullet> bullets) {
         for (Bullet bullet : bullets) {
             for (Enemy enemy : enemies) {
                 if (bullet.isAlive()
@@ -22,6 +22,7 @@ public class CollisionManager {
 
                     bullet.destroy();
                     enemy.destroy();
+                    player.addScore(1);
                 }
             }
         }

@@ -32,12 +32,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        handleInput();
+        if (!gameManager.isGameOver()) {
+            handleInput();
+            gameManager.update();
+        }
 
-        gameManager.update();
         repaint();
     }
-
     private void handleInput() {
         if (leftPressed && !rightPressed) {
             gameManager.movePlayerLeft();
