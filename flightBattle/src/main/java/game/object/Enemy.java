@@ -5,7 +5,7 @@ import game.config.GameConfig;
 import java.awt.*;
 
 public class Enemy extends GameObject{
-    private static final int SIZE = 40;
+    private static final int SIZE = 30;
 
     public Enemy(int x, int y) {
         this.x = x;

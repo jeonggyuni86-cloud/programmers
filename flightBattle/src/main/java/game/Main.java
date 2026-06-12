@@ -4,7 +4,6 @@ import game.frame.MainFrame;
 import game.frame.MenuFrame;
 import game.manager.CollisionManager;
 import game.manager.GameManager;
-import game.manager.SpawnManager;
 import game.object.Player;
 
 import java.util.Scanner;
@@ -27,7 +26,6 @@ public class Main {
             new MainFrame(
                     new GameManager(
                             player,
-                            new SpawnManager(),
                             new CollisionManager()
                     )
             );

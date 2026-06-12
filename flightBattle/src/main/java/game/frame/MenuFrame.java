@@ -108,8 +108,4 @@ public class MenuFrame {
         }
         System.out.println("\n".repeat(REPEAT));
     }
-
-    static void main(String[] args) {
-        new MenuFrame(new Player("abc")).init();
-    }
 }
