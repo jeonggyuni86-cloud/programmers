@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class MyArrayList {
     private Object[] data;
     private int size;
