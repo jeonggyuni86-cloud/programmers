@@ -192,4 +192,13 @@ public class MyTree <T extends Comparable<T>> {
         deque.addLast(root);
         visited.add(root);
     }
+
+    public int height() {
+        return this.height(root);
+    }
+
+    private int height(Node<T> node) {
+        if(node == null) return 0;
+        return 1 + Math.max(height(node.left), height(node.right));
+    }
 }
