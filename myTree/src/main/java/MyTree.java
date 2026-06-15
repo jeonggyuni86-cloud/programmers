@@ -201,4 +201,48 @@ public class MyTree <T extends Comparable<T>> {
         if(node == null) return 0;
         return 1 + Math.max(height(node.left), height(node.right));
     }
+
+    public boolean remove(T value) {
+        if(!contains(value)) {return false;}
+        root = remove(root, value);
+        size--;
+        return true;
+    }
+
+    private Node<T> remove(Node<T> node, T value) {
+        if(node == null) return null;
+        int cmp = value.compareTo(node.value);
+
+        if(cmp < 0) {
+            node.left = remove(node.left, value);
+        } else if(cmp > 0) {
+            node.right = remove(node.right, value);
+        } else {
+            if(node.left == null && node.right == null) {
+                return null;
+            }
+
+            if(node.left == null) {
+                return node.right;
+            }
+
+            if(node.right == null) {
+                return node.left;
+            }
+
+            Node<T> next = findMin(node.right);
+            node.value = next.value;
+            node.right = remove(node.right, node.value);
+        }
+        return node;
+    }
+
+    private Node<T> findMin(Node<T> node) {
+        while(node.left != null) node = node.left;
+        return node;
+    }
+
+    public boolean isEmpty() {
+        return this.size == 0;
+    }
 }
