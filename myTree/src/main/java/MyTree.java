@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class MyTree <T extends Comparable<T>> {
     private static class Node<T> {
@@ -128,4 +127,69 @@ public class MyTree <T extends Comparable<T>> {
         return this.size;
     }
 
+    public List<T> bfs() {
+        final ArrayDeque<Node<T>> queue = new ArrayDeque<>();
+        final Set<Node<T>> visited = new HashSet<>();
+        init(queue, visited);
+
+        final List<T> list = new ArrayList<>();
+
+        while (!queue.isEmpty()) {
+            Node<T> cur = queue.removeFirst();
+            list.add(cur.value);
+            if(cur.left != null && !visited.contains(cur.left)) {
+                queue.addLast(cur.left);
+                visited.add(cur.left);
+            }
+            if(cur.right != null && !visited.contains(cur.right)) {
+                queue.addLast(cur.right);
+                visited.add(cur.right);
+            }
+        }
+        return list;
+    }
+
+    public List<T> dfs() {
+        ArrayDeque<Node<T>> stack = new ArrayDeque<>();
+        Set<Node<T>> visited = new HashSet<>();
+        this.init(stack, visited);
+
+        final List<T> list = new ArrayList<>();
+
+        while(!stack.isEmpty()) {
+            Node<T> cur = stack.removeLast();
+            list.add(cur.value);
+            if(cur.left != null && !visited.contains(cur.left)) {
+                stack.addLast(cur.left);
+                visited.add(cur.left);
+            }
+            if(cur.right != null && !visited.contains(cur.right)) {
+                stack.addLast(cur.right);
+                visited.add(cur.right);
+            }
+        }
+
+        return list;
+    }
+
+    public List<T> recursiveDFS() {
+        List<T> list = new ArrayList<>();
+        Set<Node<T>> visited = new HashSet<>();
+        recursiveDFS(root, list, visited);
+        return list;
+    }
+
+    private void recursiveDFS(Node<T> node, List<T> list, Set<Node<T>> visited) {
+        if(node == null || visited.contains(node)) return;
+        visited.add(node);
+        list.add(node.value);
+
+        recursiveDFS(node.right, list, visited);
+        recursiveDFS(node.left, list, visited);
+    }
+    private void init(ArrayDeque<Node<T>> deque, Set<Node<T>> visited) {
+        if(root == null) return;
+        deque.addLast(root);
+        visited.add(root);
+    }
 }

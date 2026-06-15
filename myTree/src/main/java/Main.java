@@ -1,3 +1,4 @@
+
 public class Main {
     static void main(String[] args) {
         final MyTree<Integer> tree = new MyTree<>();
@@ -19,6 +20,20 @@ public class Main {
         for(int num : tree.inorder())
             System.out.printf("%d ", num);
         System.out.println();
-    }
 
+        System.out.println("BFS");
+        for(int num : tree.bfs())
+            System.out.printf("%d ", num);
+        System.out.println();
+
+        System.out.println("DFS");
+        for(int num : tree.dfs())
+            System.out.printf("%d ", num);
+
+        System.out.println();
+        System.out.println("Recursive DFS");
+        for(int num : tree.recursiveDFS())
+            System.out.printf("%d ", num);
+        System.out.println();
+    }
 }
