@@ -3,6 +3,7 @@ public class Main {
         final MyTree<Integer> tree = new MyTree<>();
         final int[] arr = new int[] {10, 70, 40, 20, 30, 60, 80};
 
+        /*
         for(int num : arr)
             tree.insert(num);
         int idx = 0;
@@ -49,15 +50,20 @@ public class Main {
             tree.remove(arr[idx++]);
         }
 
+         */
+
         /* ================================================================================= */
 
         System.out.print("\n".repeat(2));
-        final MyMap<Integer, Integer> map = new MyTreeMap<>();
-        for(int num : arr)
-            map.put(num, num);
+        final MyMap<String, Integer> map = new MyTreeMap<>();
+        final String[] names = new String[] {"ㄴ", "ㄱ", "ㄷ"};
+        final int[] scores = new int[] {10, 30, 40};
 
-        for(MyTreeMap.Entry<Integer, Integer> entry : map.entrySet())
-            System.out.println("key : " + entry.getKey() + " | value : " + entry.getValue());
+        for(int i = 0; i < names.length; i++)
+            map.put(names[i], scores[i]);
+
+        for(MyMap.Entry<String, Integer> entry : map.entrySet())
+            System.out.println(entry);
 
     }
 }

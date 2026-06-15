@@ -1,11 +1,11 @@
 import java.util.*;
 
 public class MyTreeMap<K extends Comparable<K>, V> implements MyMap<K, V> {
-    private static class Node<K, V> {
+    private static class Node<K, V>{
         K key;
         V value;
-        Node<K, V> left;
-        Node<K, V> right;
+        MyTreeMap.Node<K, V> left;
+        MyTreeMap.Node<K, V> right;
         Node(K key, V value) {
             this.key = key;
             this.value = value;
@@ -13,24 +13,13 @@ public class MyTreeMap<K extends Comparable<K>, V> implements MyMap<K, V> {
             this.right = null;
         }
     }
-    public static class Entry<K, V> {
-        private final K key;
-        private final V value;
 
-        public Entry(K key, V value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        public K getKey() {
-            return key;
-        }
-
-        public V getValue() {
-            return value;
+    public record Entry<K, V>(K key, V value) implements MyMap.Entry<K, V> {
+        @Override
+        public String toString() {
+            return key + " : " + value;
         }
     }
-
     private Node<K, V> root;
     private int size;
 

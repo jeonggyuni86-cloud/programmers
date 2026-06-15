@@ -11,4 +11,8 @@ public interface MyMap<K, V>{
     Set<K> keySet();
     Collection<V> values();
     Set<MyTreeMap.Entry<K, V>> entrySet();
+    interface Entry<K, V> {
+        K key();
+        V value();
+    }
 }
