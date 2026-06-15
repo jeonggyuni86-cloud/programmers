@@ -48,5 +48,16 @@ public class Main {
             System.out.println("삭제 : " + arr[idx]);
             tree.remove(arr[idx++]);
         }
+
+        /* ================================================================================= */
+
+        System.out.print("\n".repeat(2));
+        final MyMap<Integer, Integer> map = new MyTreeMap<>();
+        for(int num : arr)
+            map.put(num, num);
+
+        for(MyTreeMap.Entry<Integer, Integer> entry : map.entrySet())
+            System.out.println("key : " + entry.getKey() + " | value : " + entry.getValue());
+
     }
 }
