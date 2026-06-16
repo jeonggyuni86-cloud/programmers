@@ -46,6 +46,7 @@ public class Graph<T> {
         Set<T> visited = new HashSet<>();
         ArrayDeque<T> stack = new ArrayDeque<>();
         List<T> result = new ArrayList<>();
+
         stack.addLast(start);
         visited.add(start);
 
