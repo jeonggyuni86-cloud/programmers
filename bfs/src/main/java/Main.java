@@ -20,6 +20,21 @@ public class Main {
         for(int num : dfs.recursiveDFS())
             System.out.print(num + " ");
 
+
+        Graph<Integer> graph = new Graph<>();
+        for(int[] edge : Edge.edges)
+            graph.addEdge(edge[0], edge[1]);
+
+        System.out.println();
+        System.out.println("\n\n========= GRAPH BFS ========");
+        for(int num : graph.bfs(1))
+            System.out.print(num + " ");
+
+        System.out.println();
+        System.out.println("\n\n========= GRAPH DFS ========");
+        for(int num : graph.dfs(1))
+            System.out.print(num + " ");
+
         System.out.println();
 
     }
