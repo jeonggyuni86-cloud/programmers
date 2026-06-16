@@ -24,7 +24,7 @@ public class BFS {
     public List<String> printGraph() {
         List<String> list = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
-        for(int i = 1; i < VERTEX + 1; i++) {
+        for(int i = 1; i <= VERTEX; i++) {
             if(graph[i].isEmpty()) {continue;}
             sb.append("Vertex  ").append(i).append(" : ");
             for(int v : graph[i])
