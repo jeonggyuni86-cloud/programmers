@@ -20,7 +20,7 @@ public class Main {
             System.out.print(num + " ");
 
 
-        Graph<Integer> graph = new Graph<>();
+        Graph<Integer> graph = new Graph<>(true);
         for(int[] edge : Edge.edges)
             graph.addEdge(edge[0], edge[1]);
 

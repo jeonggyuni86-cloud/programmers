@@ -2,14 +2,21 @@ import java.util.*;
 
 public class Graph<T> {
     private final Map<T, List<T>> graph;
+    private final boolean directed;
 
-    public Graph() {
+    public Graph(boolean directed) {
         this.graph = new HashMap<>();
+        this.directed = directed;
+    }
+    public Graph() {
+        this(false);
     }
 
     public void addEdge(T from, T to) {
         graph.computeIfAbsent(from, k -> new ArrayList<>()).add(to);
-        graph.computeIfAbsent(to, k -> new ArrayList<>()).add(from);
+        addVertex(to);
+        if(!directed)
+            graph.get(to).add(from);
     }
 
     public void addEdge(T[][] edges) {
