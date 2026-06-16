@@ -4,7 +4,7 @@ import java.util.List;
 
 public class BFS {
     private static final int[][] edges = Edge.edges;
-    private static final int VERTEX = Edge.VORTEX;
+    private static final int VERTEX = Edge.VERTEX;
 
     private final List<Integer>[] graph;
     BFS() {

@@ -18,11 +18,9 @@ public class Main {
         for(int num : dfs.stackDFS())
             System.out.print(num + " ");
         System.out.println("\n\nRECURSIVE");
-
-        List<Integer> list = new ArrayList<>();
-        dfs.recursiveDFS(list);
-        for(int num : list)
+        for(int num : dfs.recursiveDFS()) {
             System.out.print(num + " ");
+        }
 
     }
 }

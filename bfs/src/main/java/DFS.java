@@ -5,7 +5,7 @@ import java.util.List;
 
 public class DFS {
     private static final int[][] edges = Edge.edges;
-    private static final int VERTEX = Edge.VORTEX;
+    private static final int VERTEX = Edge.VERTEX;
 
     private List<Integer>[] adjList;
     private boolean[] visited;
@@ -78,7 +78,10 @@ public class DFS {
         }
     }
 
-    public void recursiveDFS(List<Integer> list) {
+    public List<Integer> recursiveDFS() {
+        init();
+        List<Integer> list = new ArrayList<>();
         recursiveDFS(1, list);
+        return list;
     }
 }
