@@ -5,8 +5,8 @@ import java.util.List;
 public class BFS {
     private static final int[][] edges = Edge.edges;
     private static final int VERTEX = Edge.VERTEX;
-
     private final List<Integer>[] graph;
+
     BFS() {
         graph = new List[VERTEX + 1];
         for(int i = 0; i < VERTEX + 1; i++)

@@ -7,8 +7,8 @@ public class DFS {
     private static final int[][] edges = Edge.edges;
     private static final int VERTEX = Edge.VERTEX;
 
-    private List<Integer>[] adjList;
-    private boolean[] visited;
+    private final List<Integer>[] adjList;
+    private final boolean[] visited;
 
     DFS() {
         adjList = new ArrayList[VERTEX + 1];
@@ -43,9 +43,7 @@ public class DFS {
         Arrays.fill(visited, false);
     }
 
-    public List<Integer> stackDFS(int start) {
-        List<Integer> list = new ArrayList<>();
-
+    private void stackDFS(int start, List<Integer> list) {
         ArrayDeque<Integer> stack = new ArrayDeque<>();
         stack.addLast(start);
         visited[start] = true;
@@ -60,8 +58,11 @@ public class DFS {
                 }
             }
         }
-
+    }
+    public List<Integer> stackDFS(int start) {
         init();
+        List<Integer> list = new ArrayList<>();
+        stackDFS(start, list);
         return list;
     }
 

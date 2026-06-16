@@ -2,7 +2,6 @@ public class Main {
     static void main(String[] args) {
         BFS bfs = new BFS();
 
-
         for(String str : bfs.printGraph())
             System.out.println(str);
         System.out.println("\n\n========= BFS ========");
