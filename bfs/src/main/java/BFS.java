@@ -4,12 +4,12 @@ import java.util.List;
 
 public class BFS {
     private static final int[][] edges = Edge.edges;
-    private static final int VORTEX = Edge.VORTEX;
+    private static final int VERTEX = Edge.VORTEX;
 
     private final List<Integer>[] graph;
     BFS() {
-        graph = new List[VORTEX + 1];
-        for(int i = 0; i < VORTEX + 1; i++)
+        graph = new List[VERTEX + 1];
+        for(int i = 0; i < VERTEX + 1; i++)
             graph[i] = new ArrayList<>();
         createGraph();
     }
@@ -24,7 +24,7 @@ public class BFS {
     public List<String> printGraph() {
         List<String> list = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
-        for(int i = 1; i < VORTEX + 1; i++) {
+        for(int i = 1; i < VERTEX + 1; i++) {
             sb.append("Vertex  ").append(i).append(" : ");
             for(int v : graph[i])
                 sb.append(v).append(" ");
@@ -37,7 +37,7 @@ public class BFS {
 
     public List<Integer> bfs(int start) {
         ArrayDeque<Integer> queue = new ArrayDeque<>();
-        boolean[] visited = new boolean[VORTEX + 1];
+        boolean[] visited = new boolean[VERTEX + 1];
         queue.add(start);
         visited[start] = true;
 

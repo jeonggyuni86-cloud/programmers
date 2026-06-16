@@ -5,16 +5,16 @@ import java.util.List;
 
 public class DFS {
     private static final int[][] edges = Edge.edges;
-    private static final int VORTEX = Edge.VORTEX;
+    private static final int VERTEX = Edge.VORTEX;
 
     private List<Integer>[] adjList;
     private boolean[] visited;
 
     DFS() {
-        adjList = new ArrayList[VORTEX + 1];
-        visited = new boolean[VORTEX + 1];
+        adjList = new ArrayList[VERTEX + 1];
+        visited = new boolean[VERTEX + 1];
 
-        for(int i = 0; i <= VORTEX; i++)
+        for(int i = 0; i <= VERTEX; i++)
             adjList[i] = new ArrayList<>();
         createGraph();
     }
@@ -29,7 +29,7 @@ public class DFS {
     public List<String> printGraph() {
         List<String> list = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
-        for(int i = 1; i < VORTEX + 1; i++) {
+        for(int i = 1; i < VERTEX + 1; i++) {
             sb.append("Vertex  ").append(i).append(" : ");
             for(int v : adjList[i])
                 sb.append(v).append(" ");
