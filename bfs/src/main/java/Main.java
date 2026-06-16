@@ -19,7 +19,6 @@ public class Main {
         for(int num : dfs.recursiveDFS())
             System.out.print(num + " ");
 
-
         Graph<Integer> graph = new Graph<>(true);
         for(int[] edge : Edge.edges)
             graph.addEdge(edge[0], edge[1]);
