@@ -64,11 +64,12 @@ public class DFS {
         init();
         return list;
     }
+
     public List<Integer> stackDFS() {
         return stackDFS(1);
     }
 
-    public void recursiveDFS(int cur, List<Integer> list) {
+    private void recursiveDFS(int cur, List<Integer> list) {
         visited[cur] = true;
         list.add(cur);
         for(int next : adjList[cur]) {
@@ -77,11 +78,13 @@ public class DFS {
             }
         }
     }
-
-    public List<Integer> recursiveDFS() {
+    public List<Integer> recursiveDFS(int start) {
         init();
         List<Integer> list = new ArrayList<>();
-        recursiveDFS(1, list);
+        recursiveDFS(start,list);
         return list;
+    }
+    public List<Integer> recursiveDFS() {
+        return recursiveDFS(1);
     }
 }
