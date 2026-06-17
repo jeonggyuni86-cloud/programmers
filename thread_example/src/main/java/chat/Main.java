@@ -1,3 +1,5 @@
+package chat;
+
 public class Main {
     static void main(String[] args) {
         Chat chat = new Chat();

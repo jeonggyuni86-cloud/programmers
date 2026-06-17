@@ -1,3 +1,5 @@
+package chat;
+
 public class QuestionThread extends Thread {
     private final Chat chat;
     private final String[] questions;

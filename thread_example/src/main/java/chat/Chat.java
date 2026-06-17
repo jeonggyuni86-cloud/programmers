@@ -1,3 +1,5 @@
+package chat;
+
 public class Chat {
     Turn turn = Turn.QUESTION;
 
