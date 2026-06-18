@@ -48,10 +48,11 @@ public class Main {
 
         System.out.print("전화번호: ");
         String phoneNumber = sc.nextLine();
+
         manager.add(new Member(grade, name, email, phoneNumber));
         System.out.println("등록 완료");
-
     }
+
     private static boolean printMembers(MemberManager manager) {
         List<Member> members = manager.findAll();
 
@@ -86,7 +87,7 @@ public class Main {
         int idx = Integer.parseInt(sc.nextLine());
 
         System.out.print("등급(VIP/NORMAL): ");
-        String grade = sc.nextLine();
+        String grade = sc.nextLine().toUpperCase();
 
         System.out.print("이름: ");
         String name = sc.nextLine();

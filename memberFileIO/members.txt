@@ -1,1 +1,2 @@
-VIP,asd,go88ad@ads,010101010
+NORMAL,asd,asd,asd
+VIP,asd,saf,asf

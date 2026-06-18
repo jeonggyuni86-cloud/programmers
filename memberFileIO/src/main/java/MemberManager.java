@@ -22,7 +22,6 @@ public class MemberManager {
 
     public boolean update(int idx, Member newMember) {
         if(!isValid(idx)) return false;
-
         members.set(idx, newMember);
         save();
         return true;
