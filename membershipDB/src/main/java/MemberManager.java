@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MemberManager {
+
     private Connection connection() {
         String url = ID.URL;
         String user = ID.ID;
@@ -160,13 +161,28 @@ public class MemberManager {
 
     public void deleteMember(int id) {
         String query = "DELETE FROM MEMBER WHERE id = ?";
+        Member member = selectById(id);
+        if(member == null) {
+            System.out.println("해당 회원이 없습니다.");
+            return;
+        }
+        long cnt = countByGrade(member.grade());
+
         try(    Connection conn = connection();
                 PreparedStatement pStat = conn.prepareStatement(query)) {
+
             pStat.setInt(1, id);
             pStat.executeUpdate();
         }catch(SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public long countVIP() {
+        return countByGrade(Grade.VIP);
+    }
+    public long countNormal() {
+        return countByGrade(Grade.NORMAL);
     }
 
 }
