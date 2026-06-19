@@ -8,6 +8,7 @@ public class MemberManager {
         String url = ID.URL;
         String user = ID.ID;
         String password = ID.PW;
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             return DriverManager.getConnection(url, user, password);
