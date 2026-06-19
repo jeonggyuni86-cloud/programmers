@@ -22,7 +22,7 @@ public class MemberManager {
     public List<Member> selectAll() {
         List<Member> members = new ArrayList<>();
 
-        String query = "SELECT id, grade, name, email, phone FROM MEMBER";
+        String query = "SELECT id, grade, name, email, phone FROM member.member";
         try (   var conn = connection();
                 var pStat = conn.prepareStatement(query);
                 var rs = pStat.executeQuery()) {
@@ -41,22 +41,26 @@ public class MemberManager {
         }
     }
     private long countByGrade(Grade grade) {
-        String query = "SELECT COUNT(*) AS cnt FROM MEMBER WHERE grade = ?";
-        try(    var conn = connection();
-                var pStat = conn.prepareStatement(query)) {
+        String query = "SELECT COUNT(*) AS cnt FROM member.member WHERE TRIM(grade) = ?";
+        try (var conn = connection();
+             var pStat = conn.prepareStatement(query)) {
             pStat.setString(1, grade.name());
+
             var rs = pStat.executeQuery();
             if (rs.next())
                 return rs.getLong("cnt");
+
             return 0;
 
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+
+
     private Member selectById(int id) {
-        String query = "SELECT * FROM MEMBER WHERE id = ?";
+        String query = "SELECT * FROM member.member WHERE id = ?";
         try (   var conn = connection();
                 var pStat = conn.prepareStatement(query)) {
 
@@ -78,7 +82,7 @@ public class MemberManager {
         }
     }
     public Member selectByName(String name) {
-        String query = "SELECT * FROM MEMBER WHERE name = ?";
+        String query = "SELECT * FROM member.member WHERE name = ?";
         try (   var conn = connection();
                 var pStat= conn.prepareStatement(query)) {
             pStat.setString(1, name);
@@ -98,7 +102,7 @@ public class MemberManager {
         }
     }
     public Member selectByEmail(String email) {
-        String query = "SELECT * FROM MEMBER WHERE email = ?";
+        String query = "SELECT * FROM member.member WHERE email = ?";
         try(    var conn = connection();
                 var pStat = conn.prepareStatement(query)) {
             pStat.setString(1, email);
@@ -126,7 +130,7 @@ public class MemberManager {
             System.out.println(grade.name() + " 정원 초과");
             return;
         }
-        String query = "INSERT INTO MEMBER (grade, name, email, phone) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO member.member (grade, name, email, phone) VALUES (?, ?, ?, ?)";
         try(    var conn = connection();
                 var pStat = conn.prepareStatement(query)) {
             pStat.setString(1, grade.name());
@@ -146,7 +150,7 @@ public class MemberManager {
             return;
         }
 
-        String query = "UPDATE MEMBER SET name = ?, email = ?, phone = ? WHERE id = ?";
+        String query = "UPDATE member.member SET name = ?, email = ?, phone = ? WHERE id = ?";
         try(    var conn = connection();
                 var pStat = conn.prepareStatement(query)) {
             pStat.setString(1, name);
@@ -162,7 +166,7 @@ public class MemberManager {
     }
 
     public void deleteMember(int id) {
-        String query = "DELETE FROM MEMBER WHERE id = ?";
+        String query = "DELETE FROM member.member WHERE id = ?";
         Member member = selectById(id);
         if(member == null) {
             System.out.println("해당 회원이 없습니다.");
