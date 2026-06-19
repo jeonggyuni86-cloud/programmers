@@ -12,6 +12,13 @@ public record Member(int id, Grade grade, String name, String email, String phon
 
     @Override
     public String toString() {
-        return id + "/ " + grade + "/ " + name + "/ " + email + "/ " + phone;
+        return String.format(
+                "%-5d %-8s %-10s %-25s %-15s",
+                id,
+                grade,
+                name,
+                email,
+                phone
+        );
     }
 }
