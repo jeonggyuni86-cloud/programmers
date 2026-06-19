@@ -22,9 +22,9 @@ public class MemberManager {
         List<Member> members = new ArrayList<>();
 
         String query = "SELECT id, grade, name, email, phone FROM MEMBER";
-        try (   Connection conn = connection();
-                PreparedStatement pStat = conn.prepareStatement(query);
-                ResultSet rs = pStat.executeQuery()) {
+        try (   var conn = connection();
+                var pStat = conn.prepareStatement(query);
+                var rs = pStat.executeQuery()) {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String grade = rs.getString("grade");
@@ -41,10 +41,10 @@ public class MemberManager {
     }
     private long countByGrade(Grade grade) {
         String query = "SELECT COUNT(*) AS cnt FROM MEMBER WHERE grade = ?";
-        try(    Connection conn = connection();
-                PreparedStatement pStat = conn.prepareStatement(query)) {
+        try(    var conn = connection();
+                var pStat = conn.prepareStatement(query)) {
             pStat.setString(1, grade.name());
-            ResultSet rs = pStat.executeQuery();
+            var rs = pStat.executeQuery();
             if (rs.next())
                 return rs.getLong("cnt");
             return 0;
@@ -56,11 +56,11 @@ public class MemberManager {
 
     private Member selectById(int id) {
         String query = "SELECT * FROM MEMBER WHERE id = ?";
-        try (   Connection conn = connection();
-                PreparedStatement pStat = conn.prepareStatement(query)) {
+        try (   var conn = connection();
+                var pStat = conn.prepareStatement(query)) {
 
             pStat.setInt(1, id);
-            ResultSet rs = pStat.executeQuery();
+            var rs = pStat.executeQuery();
             if(rs.next()) {
                 int id2 =  rs.getInt("id");
                 String grade = rs.getString("grade");
@@ -78,10 +78,10 @@ public class MemberManager {
     }
     public Member selectByName(String name) {
         String query = "SELECT * FROM MEMBER WHERE name = ?";
-        try (   Connection conn = connection();
-                PreparedStatement pStat= conn.prepareStatement(query)) {
+        try (   var conn = connection();
+                var pStat= conn.prepareStatement(query)) {
             pStat.setString(1, name);
-            ResultSet rs = pStat.executeQuery();
+            var rs = pStat.executeQuery();
             if(rs.next()) {
                 int id =  rs.getInt("id");
                 String grade = rs.getString("grade");
@@ -98,10 +98,11 @@ public class MemberManager {
     }
     public Member selectByEmail(String email) {
         String query = "SELECT * FROM MEMBER WHERE email = ?";
-        try(    Connection conn = connection();
-                PreparedStatement pStat = conn.prepareStatement(query)) {
+        try(    var conn = connection();
+                var pStat = conn.prepareStatement(query)) {
             pStat.setString(1, email);
-            ResultSet rs = pStat.executeQuery();
+
+            var rs = pStat.executeQuery();
             if(rs.next()) {
                 int id =  rs.getInt("id");
                 String grade = rs.getString("grade");
@@ -125,8 +126,8 @@ public class MemberManager {
             return;
         }
         String query = "INSERT INTO MEMBER (grade, name, email, phone) VALUES (?, ?, ?, ?)";
-        try(    Connection conn = connection();
-                PreparedStatement pStat = conn.prepareStatement(query)) {
+        try(    var conn = connection();
+                var pStat = conn.prepareStatement(query)) {
             pStat.setString(1, grade.name());
             pStat.setString(2, member.name());
             pStat.setString(3, member.email());
@@ -145,8 +146,8 @@ public class MemberManager {
         }
 
         String query = "UPDATE MEMBER SET name = ?, email = ?, phone = ? WHERE id = ?";
-        try(    Connection conn = connection();
-                PreparedStatement pStat = conn.prepareStatement(query)) {
+        try(    var conn = connection();
+                var pStat = conn.prepareStatement(query)) {
             pStat.setString(1, name);
             pStat.setString(2, email);
             pStat.setString(3, phone);
@@ -166,10 +167,8 @@ public class MemberManager {
             System.out.println("해당 회원이 없습니다.");
             return;
         }
-        long cnt = countByGrade(member.grade());
-
-        try(    Connection conn = connection();
-                PreparedStatement pStat = conn.prepareStatement(query)) {
+        try(    var conn = connection();
+                var pStat = conn.prepareStatement(query)) {
 
             pStat.setInt(1, id);
             pStat.executeUpdate();
