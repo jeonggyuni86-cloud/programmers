@@ -1,4 +1,4 @@
-package com.springtheory.ex_1_2.dao;
+package com.springtheory.ch01.ex_1_3.dao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 // Connection 타입의 오브젝트를 돌려줄 것으로 기대할 수 있다.
 
 
-public interface SimpleConnectionMaker_2 {
+public interface SimpleConnectionMaker {
     Connection makeNewConnection() throws ClassNotFoundException, SQLException;
 
 }

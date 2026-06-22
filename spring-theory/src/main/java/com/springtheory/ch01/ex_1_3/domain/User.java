@@ -1,4 +1,4 @@
-package com.springtheory.ex_1_2.domain;
+package com.springtheory.ch01.ex_1_3.domain;
 
 
 //domain -> 사용자 정보를 저장함

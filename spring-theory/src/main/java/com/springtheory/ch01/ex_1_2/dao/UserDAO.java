@@ -1,6 +1,6 @@
-package com.springtheory.ex_1_2.dao;
+package com.springtheory.ch01.ex_1_2.dao;
 
-import com.springtheory.ex_1_2.domain.User;
+import com.springtheory.ch01.ex_1_2.domain.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;
