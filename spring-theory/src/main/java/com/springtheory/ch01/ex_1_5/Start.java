@@ -1,0 +1,85 @@
+package com.springtheory.ch01.ex_1_5;
+
+
+// * 스프링의 제어의 역전(IoC , Inversion of Control)
+// 이제 DaoFactory를 스프링에서 사용이 가능하도록 변신시켜보자.
+// 스프링에서는 스프링이 제어권을 가지고 있고, 직접 만들고, 관계를 부여하는 오브젝트를 빈(Bean)이라 한다
+// ex) UserDao, MessageDao ...
+// 자바빈은 오브적트 단위의 애플리케이션 컴포넌트를 의미히고,
+// 동시에 스프링 빈은 컨테이너가 생성, 관계설정, 사용 등을 제어해주는 제어의 역전이 적용된 오브젝트이다.
+// 스프링에서는 빈의 생성과 관계설정 같은 제어를 담당하는 IoC 오브잭트를 '빈 팩토리'라 한다
+// 정확히는 '빈 팩토리' 보다는 이를 좀 더 확장한 '애플리케이션 컨텍스트'를 주로 사용한다.
+// '애플리케이션 컨텍스트'는 IoC 방식을 따라 만들어진 일종의 '빈 팩토리' 라 생각하면 된다.
+
+// * 컴포넌트
+// 컴포넌트란 애플리케이션을 구성하는 독립적으로 갈아 끼울 수 있는 부품 같은 오브젝트를 말한다.
+// 우리 예제에서는 실제 일을 하는 UserDAO, DConnectionMaker 같은 오브젝트가 컴포넌트에 해당한다.
+// 컴포넌트의 핵심은 "자신이 할 일(비즈니스 로직)에만 집중하고,
+//  자신이 어떻게 만들어지는지, 누구와 연결되는지는 신경 쓰지 않는다"는 점이다.
+// 즉 UserDAO는 "DB에 사용자를 넣고 빼는 일"만 알면 되고,
+//  어떤 ConnectionMaker 구현체와 연결될지는 외부에 맡긴다.
+// 이렇게 만들어진 컴포넌트는 코드 수정 없이 다른 컴포넌트로 교체하거나 재사용할 수 있다.
+//  (예: DConnectionMaker -> NConnectionMaker 로 교체해도 UserDAO 코드는 그대로다.)
+
+// * 컨테이너
+// 컨테이너란 이 컴포넌트들을 담아두고, 생성하고, 서로 연결
+// 생명 주긱 까지 관리해주는 실행 환경을 말한다.
+// 컴포넌트가 '부품'이라면 컨테이너는 그 부품들을 조립하고, 가동시키는 '공장'이라 생각할 수 있다.
+
+// 우리가 직접 만든 DaoFactory가 바로 컨테이너의 아주 단순한 형태다.
+//  - 오브젝트를 생성하고 (new UserDAO ...)
+//  - 어떤 ConnectionMaker와 연결할지 관계를 맺어준다.
+// 다만 DaoFactory는 우리가 손으로 만든 코드라서, 컴포넌트가 늘어날수록 직접 다 관리해야 한다.
+
+// 스프링은 이 역할을 프레임워크 차원에서 대신해주는 '진짜 컨테이너'를 제공한다.
+//  - 빈 팩토리(BeanFactory) / 애플리케이션 컨텍스트(ApplicationContext)가 그것이다.
+// 이 컨테이너가 빈(컴포넌트)들의 생성과 관계설정, 사용, 소멸까지 모두 제어해준다.
+//  -> 제어권이 개발자 코드가 아니라 컨테이너로 넘어가는 것, 이것이 곧 '제어의 역전(IoC)'이다.
+
+// 정리:
+//  - 컴포넌트(빈)  = 컨테이너가 관리하는, 일에만 집중하는 부품 오브젝트
+//  - 컨테이너      = 그 부품들을 만들고 연결하고 생명주기를 관리하는 IoC 오브젝트
+//  - DaoFactory   = 우리가 직접 만든 미니 컨테이너
+//  - 애플리케이션 컨텍스트 = 스프링이 제공하는 본격적인 IoC 컨테이너
+
+import com.springtheory.ch01.ex_1_3.domain.User;
+import com.springtheory.ch01.ex_1_5.dao.DaoFactory;
+import com.springtheory.ch01.ex_1_5.dao.UserDAO;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.sql.SQLException;
+
+public class Start {
+    static void main(String[] args) throws SQLException, ClassNotFoundException {
+        // * DaoFactory를 오브젝트 팩토리로 직접 사용했을 때와 비교해서 애플리케이션 컨텍스트를 사용했을 때 얻을 수 있는 장점
+        // - 클라이언트는 구체적인 팩토리 클래스를 알 필요가 없다
+        // 클라이언트가 필요한 오브젝트를 가져오려면 어떤 팩토리 클래스를 사용해야 할지 알아야 하고,
+        // 필요할 때마다 팩토리 오브젝트를 생성해야 하는 번거로움이 있다.
+        // 애플리케이션 컨텍스트를 사용하면 오브젝트 팩토리가 아무리 많아져도 이를 알아야 하거나 직접 사용할 필요가 없다.
+        // - 애플리케이션 컨텍스트는 종합 IoC 서비스를 제공해준다.
+        // 오브젝트와의 관계설정 뿐만 아니라, 오브젝트가 만들어지는 방식, 시점과 전략을 다르게 가져갈 수도 있고
+        // 이에 부가적으로 자동생성, 오브젝트에 대한 후처리, 정보의 조합, 설정 방식의 다변화, 인터셉터 등
+        // 오브젝트를 효과적으로 활용할 수 있는 다양한 기능을 제공한다.
+        // 또, 빈이 사용할 수 있는 기반기술 서비스나 외부 시스템과의 연동 등을 컨테이너 차원에서 제공해준다.
+        // - 애플리케이션 컨텍스트는 빈을 검색하는 다양한 방법을 제공한다
+
+        // 1) 스프링 컨테이너(애플리케이션 컨텍스트)를 만든다.
+        //    - AnnotationConfigApplicationContext : @Configuration 자바 클래스를 설정정보로 읽는 컨텍스트 구현체
+        //    - 생성자에 넘긴 DaoFactory.class 가 바로 "어떤 빈을 어떻게 만들지" 알려주는 설정정보다.
+        //    - 이 줄이 실행되는 순간 컨테이너는 DaoFactory의 @Bean 메서드들을 호출해
+        //      UserDAO, ConnectionMaker 오브젝트를 미리 만들어 관계까지 맺어 담아둔다.
+        //      (즉, 객체 생성·연결의 제어권이 우리 코드가 아니라 컨테이너로 넘어갔다 = 제어의 역전)
+        var context = new AnnotationConfigApplicationContext(DaoFactory.class);
+
+        // 2) 컨테이너에서 필요한 빈을 꺼내 쓴다(우리가 직접 new 하지 않는다).
+        //    - getBean("userDao", UserDAO.class)
+        //      · "userDao"     : 가져올 빈의 이름. 기본적으로 @Bean 메서드 이름(userDao)이 빈 이름이 된다.
+        //      · UserDAO.class : 돌려받을 타입. 형변환 없이 바로 UserDAO로 받기 위해 타입을 함께 지정.
+        //    - 이미 connectionMaker가 주입되어 완성된 UserDAO 오브젝트를 컨테이너가 돌려준다.
+        UserDAO userDao = context.getBean("userDAO", UserDAO.class);
+
+        User user = userDao.get("test1");
+        System.out.println(user);
+
+    }
+}
