@@ -1,3 +1,5 @@
+package lambda;
+
 public class Add implements Operation {
     @Override
     public int apply(int a, int b) {

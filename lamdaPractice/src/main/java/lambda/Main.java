@@ -1,3 +1,5 @@
+package lambda;
+
 public class Main {
     static void main(String[] args) {
         Operation add = (a, b) -> a + b;
