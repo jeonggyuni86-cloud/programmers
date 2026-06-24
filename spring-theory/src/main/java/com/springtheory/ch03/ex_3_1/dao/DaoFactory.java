@@ -1,4 +1,4 @@
-package com.springtheory.ch02.ex_2_1.dao;
+package com.springtheory.ch03.ex_3_1.dao;
 
 
 import org.springframework.context.annotation.Bean;

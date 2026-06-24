@@ -1,4 +1,4 @@
-package com.springtheory.ch02.ex_2_1.dao;
+package com.springtheory.ch03.ex_3_2.dao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -9,6 +9,6 @@ import java.sql.SQLException;
 
 
 public interface SimpleConnectionMaker {
-    Connection makeNewConnection() throws ClassNotFoundException, SQLException;
+    Connection makeNewConnection() throws SQLException;
 
 }

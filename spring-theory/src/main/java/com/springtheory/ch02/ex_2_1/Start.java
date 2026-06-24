@@ -1,8 +1,8 @@
 package com.springtheory.ch02.ex_2_1;
 
-import com.springtheory.ch02.ex_2_1.domain.User;
-import com.springtheory.ch02.ex_2_1.dao.DaoFactory;
-import com.springtheory.ch02.ex_2_1.dao.UserDAO;
+import com.springtheory.ch03.ex_3_2.domain.User;
+import com.springtheory.ch03.ex_3_2.dao.DaoFactory;
+import com.springtheory.ch03.ex_3_2.dao.UserDAO;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.SQLException;
@@ -37,6 +37,27 @@ import java.sql.SQLException;
 // JUnit은 자바에서 단위 테스트를 자동으로 작성·실행하게 해주는 표준 테스트 프레임워크다.
 // 위 Start.java처럼 main()으로 직접 실행하고 콘솔을 눈으로 확인하던 방식을 대체한다.
 
+// - 프레임워크의 특징: 제어의 역전(IoC)
+//   main()은 "내가 직접" 테스트 흐름을 호출하지만,
+//   JUnit에서는 우리가 테스트 메서드만 작성해두면 '프레임워크가 알아서' 그 메서드를 찾아 실행해준다.
+//   (개발자가 흐름을 제어하는 게 아니라, 프레임워크가 개발자의 코드를 불러서 제어한다 → IoC)
+
+// - 기본 사용법 (JUnit 5 기준)
+//   · @Test           : 이 메서드가 테스트라는 표시. JUnit이 이 메서드들을 자동으로 찾아 실행한다.
+//   · @BeforeEach     : 각 @Test 실행 '전'마다 매번 실행(공통 준비 작업, 예: 컨텍스트/객체 셋업).
+//   · @AfterEach      : 각 @Test 실행 '후'마다 매번 실행(뒷정리).
+//   · assertEquals(기대값, 실제값) 등 단언(assert) 메서드로 결과를 '코드로' 검증한다.
+//     → 사람이 콘솔을 보고 판단할 필요가 없어진다(수동 확인의 번거로움 해결).
+//     → 기대값과 다르면 테스트 실패로 자동 표시되고, 에러가 나도 실패로 잡힌다(테스트의 두 가지 결과).
+
+// - 위 코드를 JUnit 테스트로 바꾸면 대략 이런 모습이 된다:
+//     @Test
+//     void getUser() throws Exception {
+//         var context = new AnnotationConfigApplicationContext(DaoFactory.class);
+//         UserDAO userDao = context.getBean("userDao", UserDAO.class);
+//         User user = userDao.get("test1");
+//         assertEquals("기대하는이름", user.getName());  // System.out.println 대신 단언으로 검증
+//     }
 
 public class Start {
     static void main(String[] args) throws SQLException, ClassNotFoundException {
