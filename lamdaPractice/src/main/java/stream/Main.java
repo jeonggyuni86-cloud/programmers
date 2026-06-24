@@ -48,13 +48,13 @@ public class Main {
                 .toList();
 
         for(var name: productNames)
-            System.out.printf(name + "\t");
+            System.out.printf("%s\t", name);
 
         System.out.println();
         System.out.println("=".repeat(30));
 
         //Step 6
-        int count = (int)products.stream().filter(p -> p.price() >= 1000).count();
+        long count = products.stream().filter(p -> p.price() >= 1000).count();
         int sum = products.stream().mapToInt(Product::price).sum();
         double average = products.stream().mapToDouble(Product::price).average().orElse(-1);
         List<Product> sorted = products.stream().sorted(Comparator.comparingInt(Product::price)).toList();
