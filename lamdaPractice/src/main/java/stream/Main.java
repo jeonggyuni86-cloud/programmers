@@ -66,16 +66,24 @@ public class Main {
 
         //도전과제
         System.out.println("=".repeat(30));
-        for(var name : products.stream().filter(p -> p.price() <= 500).map(Product::name).toList())
+        var cheapProductNames = products.stream()
+                .filter(product -> product.price() <= 500)
+                .map(Product::name)
+                .toList();
+        for(var name : cheapProductNames)
             System.out.print(name + "\t");
         System.out.println();
         System.out.println("=".repeat(30));
 
-        Product expensive = products.stream().max(Comparator.comparing(Product::price)).orElse(null);
+        Product expensive = products.stream()
+                .max(Comparator.comparingInt(Product::price))
+                .orElse(null);
         System.out.println("expensive : " + expensive);
         System.out.println("=".repeat(30));
 
-        flatMap.stream().distinct().forEach(s -> System.out.print(s + "\t"));
+        flatMap.stream()
+                .distinct()
+                .forEach(s -> System.out.print(s + "\t"));
         System.out.println();
         System.out.println("=".repeat(30));
 
