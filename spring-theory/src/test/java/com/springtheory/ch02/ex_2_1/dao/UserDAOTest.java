@@ -73,20 +73,13 @@ class UserDAOTest {
 
         userDAO.add(user);
 
-        assertThrows(SQLException.class, () -> userDAO.add(user));
+        assertThrows(RuntimeException.class, () -> userDAO.add(user));
 
     }
 
     @Test
     void get_없는_id_조회_하면_오류_발생() throws SQLException, ClassNotFoundException {
         assertThrows(SQLException.class, () -> userDAO.get("dup_id"));
-    }
-
-    @Disabled //일부러 실패하는 코드
-    @Test
-    void 일부러_실패하는_테스트() throws SQLException, ClassNotFoundException {
-        userDAO.add(newUser("fail_demo", "test123", "321"));
-        assertEquals(2, userDAO.getCount());
     }
 
     private User newUser(String id, String name, String password) throws SQLException, ClassNotFoundException {

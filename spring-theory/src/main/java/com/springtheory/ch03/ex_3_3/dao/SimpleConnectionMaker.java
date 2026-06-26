@@ -1,4 +1,4 @@
-package com.springtheory.ch03.ex_3_2.dao;
+package com.springtheory.ch03.ex_3_3.dao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
