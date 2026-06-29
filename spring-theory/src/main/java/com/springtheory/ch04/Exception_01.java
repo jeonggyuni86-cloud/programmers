@@ -1,4 +1,4 @@
-package com.springtheory.ex04;
+package com.springtheory.ch04;
 
 // * 예외
 // 예외가 발생하면 그것을 catch 블록을 싸서 잡아내는 것까지는 좋은데,

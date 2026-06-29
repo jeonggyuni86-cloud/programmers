@@ -1,4 +1,4 @@
-package com.springtheory.ex04;
+package com.springtheory.ch04;
 
 // * 예외종류와 특징
 // 자바에서 throw 할 수 있는 모든 것은 Throwable의 자손이다.
@@ -14,7 +14,6 @@ package com.springtheory.ex04;
 
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 public class Exception_02 {
     // 1) Error

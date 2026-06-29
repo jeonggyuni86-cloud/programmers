@@ -1,4 +1,4 @@
-package com.springtheory.ex04;
+package com.springtheory.ch04;
 
 // * 예외 처리 전략 3가지
 // '모든 예외는 복구되던지, 아니면 분명히 통보되어야 한다'는 원칙을 실제로 지키는 방법은
