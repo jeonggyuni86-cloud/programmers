@@ -13,12 +13,17 @@ public class DaoFactory {
 
     @Bean // 오브젝트 생성을 담당하는 IoC용 메서드
     public UserDAO userDAO() {
-        return new UserDAO(getConnectionMaker());
+        return new UserDAO(jdbcContext());
     }
 
     @Bean
     public SimpleConnectionMaker getConnectionMaker() {
         return new DConnectionMaker();
+    }
+
+    @Bean
+    public JdbcContext jdbcContext() {
+        return new JdbcContext(getConnectionMaker());
     }
 
 
