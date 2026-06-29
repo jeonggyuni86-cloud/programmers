@@ -1,4 +1,4 @@
-package com.springtheory.ch05.ex_5_1;
+package com.springtheory.ch05.ex_5_1.dao;
 
 public enum Level {
     BASIC(1),
@@ -26,7 +26,7 @@ public enum Level {
         return switch (this) {
             case BASIC -> SILVER;
             case SILVER -> GOLD;
-            case GOLD -> null;
+            case GOLD -> GOLD;
         };
     }
 
