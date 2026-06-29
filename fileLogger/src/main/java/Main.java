@@ -4,7 +4,7 @@ public class Main {
         DataService service = new DataService(logger);
 
         try {
-            System.out.println("최종 결과: " + service.fetchWithRetry(new FlakyService(2)));
+            System.out.println("최종 결과: " + service.fetchWithRetry(new FlakyService(1), 10));
         } catch (RuntimeException e) { System.out.println("실패 통보: " + e.getMessage()); }
 
         try {
@@ -14,6 +14,7 @@ public class Main {
         try {
             service.fetchWithRetry(new FlakyService(10)); //기본 값으로 재시도
         } catch (RuntimeException e) { System.out.println("실패 통보: " + e.getMessage()); }
+
 
         try {
             service.registerUser("kim");
