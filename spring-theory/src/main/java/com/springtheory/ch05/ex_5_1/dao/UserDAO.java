@@ -8,6 +8,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+// * 레벨 관리를 위해 확장된 UserDAo
+// - 등록, 수정, 조회를 제공한다
+// - 모든 메서드는 직접 커넥션을 다루지 않고, 변하지 않는 흐름은 jdbcContext에 맡긴다.
+// (실행계 SQL은 statementStrategy, 조회 결과 매핑은 RowMapper에 분리, 위임한다)
 
 public class UserDAO {
     private final JdbcContext jdbcContext;
