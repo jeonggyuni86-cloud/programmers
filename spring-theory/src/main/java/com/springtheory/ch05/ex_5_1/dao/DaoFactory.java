@@ -1,6 +1,7 @@
 package com.springtheory.ch05.ex_5_1.dao;
 
 
+import com.springtheory.ch05.ex_5_1.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,5 +27,7 @@ public class DaoFactory {
         return new JdbcContext(getConnectionMaker());
     }
 
+    @Bean
+    public UserService userService() {return new UserService(userDAO());}
 
 }
