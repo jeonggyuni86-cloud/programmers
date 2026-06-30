@@ -4,6 +4,7 @@ import com.springtheory.ch05.ex_5_2.dao.Level;
 import com.springtheory.ch05.ex_5_2.dao.UserDAO;
 import com.springtheory.ch05.ex_5_2.domain.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -18,9 +19,11 @@ public class UserService {
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_FOR_GOLD = 30;
     private final UserDAO userDAO;
+    private final PlatformTransactionManager transactionManager;
 
-    public UserService(UserDAO userDAO) {
+    public UserService(UserDAO userDAO, PlatformTransactionManager transactionManager) {
         this.userDAO = userDAO;
+        this.transactionManager = transactionManager;
     }
 
     // 신규 가입
