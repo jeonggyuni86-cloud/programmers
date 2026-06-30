@@ -8,7 +8,6 @@ package com.springtheory.ch05.ex_5_2;
 // '트랜젝션'을 통해 해결
 // 여러 update를 '하나의 트랜젝션' 으로 묶고 실패 시 전부 롤백한다.
 
-
 public class Start {
 
     static void main(String[] args) {
