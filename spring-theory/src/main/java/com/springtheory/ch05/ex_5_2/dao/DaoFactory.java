@@ -4,6 +4,10 @@ package com.springtheory.ch05.ex_5_2.dao;
 import com.springtheory.ch05.ex_5_2.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import javax.sql.DataSource;
+import java.sql.DriverManager;
 
 // DaoFactory를 스프링 빈 팩토리가 사용할 수 있는 설정 정보로 리팩토링
 // Configuration 대신 Component 써도 되지만 유지 보수상 Configuration으로 사용
@@ -17,17 +21,23 @@ public class DaoFactory {
         return new UserDAO(jdbcContext());
     }
 
-    @Bean
-    public SimpleConnectionMaker getConnectionMaker() {
-        return new DConnectionMaker();
-    }
 
     @Bean
     public JdbcContext jdbcContext() {
-        return new JdbcContext(getConnectionMaker());
+        return new JdbcContext(dataSource());
     }
 
     @Bean
     public UserService userService() {return new UserService(userDAO());}
+
+    @Bean
+    public DataSource dataSource() {
+        var dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/springtheory");
+        dataSource.setUsername("root");
+        dataSource.setPassword("qwer1234");
+        return dataSource;
+    }
 
 }
