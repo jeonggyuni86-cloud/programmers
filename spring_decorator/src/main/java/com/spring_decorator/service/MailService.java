@@ -9,6 +9,7 @@ public class MailService {
     private final NotificationSender notificationSender;
     public MailService(NotificationSender notificationSender) {
         this.notificationSender = notificationSender;
+
     }
 
 }
