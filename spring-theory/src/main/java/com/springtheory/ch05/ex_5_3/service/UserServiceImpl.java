@@ -1,12 +1,9 @@
-package com.springtheory.ch05.ex_5_2.service;
+package com.springtheory.ch05.ex_5_3.service;
 
-import com.springtheory.ch05.ex_5_2.dao.Level;
-import com.springtheory.ch05.ex_5_2.dao.UserDAO;
-import com.springtheory.ch05.ex_5_2.domain.User;
+import com.springtheory.ch05.ex_5_3.dao.Level;
+import com.springtheory.ch05.ex_5_3.dao.UserDAO;
+import com.springtheory.ch05.ex_5_3.domain.User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -34,18 +31,16 @@ import java.util.List;
 
 
 @Service
-public class UserService {
+public class UserServiceImpl  implements UserService {
     // 업그레이드 기준값을 상수로 둔다.
     //  - 매직 넘버(50, 30)를 코드 곳곳에 흩지 않고 한곳에서 의미를 드러낸다.
     //  - 기준이 바뀌면 여기만 고치면 된다(변경 지점의 집중).
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_FOR_GOLD = 30;
     private final UserDAO userDAO;
-    private final PlatformTransactionManager transactionManager;
 
-    public UserService(UserDAO userDAO, PlatformTransactionManager transactionManager) {
+    public UserServiceImpl(UserDAO userDAO) {
         this.userDAO = userDAO;
-        this.transactionManager = transactionManager;
     }
 
     // 신규 가입
@@ -54,29 +49,19 @@ public class UserService {
         userDAO.add(user);
     }
 
+
     // 업그레이드 담당
     // 여러 사용자의 업그레이드를 '하나의 트랜젝션'으로 묶는다.
     // 트랜젝션 경계 설정
     // 트렌젝션 시작을 선언하고 commit 또는 Rollback으로 트랜젝션을 종료하는 작업
 
-    public void upgradeLevel() throws SQLException, ClassNotFoundException {
-        // 1) 트랜잭션 시작 (어떤 기술인지 모른 채, 추상화된 매니저에게 맡긴다)
-        var status = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        try {
-            // 2) 비즈니스 로직 수행 (이 안의 모든 update가 같은 트랜잭션에 묶인다)
-            List<User> users = userDAO.getAll();
-            for (var user : users) {
-                if (canUpgrade(user)) {
-                    upgradeLevel(user);
-                }
+    @Override
+    public void upgradeLevels() throws SQLException, ClassNotFoundException {
+        List<User> users = userDAO.getAll();
+        for (var user : users) {
+            if (canUpgrade(user)) {
+                upgradeLevel(user);
             }
-            // 3) 전부 성공하면 커밋
-            transactionManager.commit(status);
-        } catch (Exception e) {
-            // 4) 중간에 하나라도 실패하면 전부 취소(롤백) -> 원자성 보장
-            transactionManager.rollback(status);
-            // 복구 불가한 예외이므로 런타임 예외로 전환해 알린다(ch04에서 배운 예외 전환).
-            throw new RuntimeException("레벨 업그레이드 중 오류가 발생해 롤백했습니다.", e);
         }
     }
     // '올릴 수 있는가'

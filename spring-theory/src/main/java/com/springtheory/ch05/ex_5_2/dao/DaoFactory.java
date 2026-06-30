@@ -1,7 +1,7 @@
 package com.springtheory.ch05.ex_5_2.dao;
 
 
-import com.springtheory.ch05.ex_5_2.service.UserService;
+import com.springtheory.ch05.ex_5_2.service.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -29,7 +29,7 @@ public class DaoFactory {
     }
 
     @Bean
-    public UserService userService() {return new UserService(userDAO(), transactionManager());}
+    public UserServiceImpl userService() {return new UserServiceImpl(userDAO(), transactionManager());}
 
 
     // 커넥션을 우리가 직접 만들던 SimpleConnectionMaker 대신, 스프링 표준 DataSource를 쓴다.
