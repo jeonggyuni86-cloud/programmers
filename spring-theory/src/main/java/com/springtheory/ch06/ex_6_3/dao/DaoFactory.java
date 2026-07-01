@@ -58,7 +58,7 @@ public class DaoFactory {
     @Bean
     public NameMatchMethodPointcut transactionPointcut() {
         var nameMatchMethodPointcut = new NameMatchMethodPointcut();
-        nameMatchMethodPointcut.setMappedNames("upgrade");
+        nameMatchMethodPointcut.setMappedNames("upgrade*");
         return nameMatchMethodPointcut;
     }
 
