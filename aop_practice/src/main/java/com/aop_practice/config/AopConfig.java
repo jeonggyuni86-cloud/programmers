@@ -44,10 +44,12 @@ public class AopConfig {
         return new PerformanceMonitorAdviceNanoMills();
     }
 
+    /*
     @Bean
     public Advisor performanceAdvisor(Pointcut pointcut, PerformanceMonitorAdvice performanceMonitorAdvice) {
         return new DefaultPointcutAdvisor(pointcut, performanceMonitorAdvice);
     }
+    */
 
     @Bean
     public Advisor performanceNanoAdvisor(Pointcut pointcut, PerformanceMonitorAdviceNanoMills performanceMonitorAdviceNanoMills) {
