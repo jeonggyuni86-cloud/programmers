@@ -46,6 +46,7 @@ public class TransactionHandler implements InvocationHandler {
             // 트렌젝션 경계설정
             return invokeTransaction(method, args);
         }
+        //패턴에 맞지 않는 메서드는 부가기능 없이 target에게 위임한다
         return method.invoke(target, args);
     }
 
