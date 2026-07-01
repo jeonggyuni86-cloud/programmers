@@ -22,8 +22,18 @@ package com.springtheory.ch06.ex_6_1;
 //   - ex_6_4 @Transactional (선언적 트랜잭션)
 
 // '다이나믹 프록시'
+// 위 한계를 풀려고, 프록시를 런타임에 '자동 생성'한다(java.lang.reflect.Proxy).
+//   - TransactionHandler (InvocationHandler):
+//       프록시로 들어오는 '모든 메서드 호출'을 invoke() 하나로 받아, 패턴(upgrade*)에 맞으면 트랜잭션 적용.
+//       메서드마다 위임 코드를 쓰던 수고가 사라진다. 특정 서비스에 종속되지 않아 재사용 가능.
+//       다이내믹 프록시는 new로 못 만들고 Proxy.newProxyInstance(...)로만 생성되는데,
+//       여기서는 DaoFactory의 userService() @Bean 메서드 안에서 직접 만들어 'userService' 빈으로 제공한다.
+//   * 이 패키지의 활성 빈(userService)은 '다이내믹 프록시' 방식으로 배선돼 있다(DaoFactory 참고).
 
-
+//   호출 흐름:
+//     클라이언트 -> (다이내믹 프록시) -> TransactionHandler.invoke()
+//                     -> upgrade* 면 트랜잭션 경계로 감싸 target 호출 / 아니면 그냥 위임
+//                  target = UserServiceImpl -> UserDAO
 
 public class Start {
     static void main(String[] args) {
