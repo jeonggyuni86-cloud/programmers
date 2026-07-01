@@ -8,7 +8,6 @@ package com.springtheory.ch05.ex_5_3.domain;
 // '익명 클래스'
 
 
-import com.springtheory.ch05.ex_5_2.dao.DConnectionMaker;
 import com.springtheory.ch05.ex_5_3.dao.JdbcContext;
 import com.springtheory.ch05.ex_5_3.dao.UserDAO;
 
@@ -16,10 +15,6 @@ import java.sql.SQLException;
 
 public class Start {
     static void main(String[] args) throws SQLException, ClassNotFoundException {
-        DConnectionMaker connectionMaker = new DConnectionMaker();
-        JdbcContext context = new JdbcContext(connectionMaker);
-        UserDAO dao = new UserDAO(context);
 
-        System.out.println(dao.getCount());
     }
 }

@@ -1,9 +1,8 @@
-package com.springtheory.ch06.ex_6_2.dao;
+package com.springtheory.ch06.ex_6_3.dao;
 
 
-import com.springtheory.ch06.ex_6_2.service.TransactionAdvice;
-import com.springtheory.ch06.ex_6_2.service.UserService;
-import com.springtheory.ch06.ex_6_2.service.UserServiceImpl;
+import com.springtheory.ch06.ex_6_3.service.TransactionAdvice;
+import com.springtheory.ch06.ex_6_3.service.UserServiceImpl;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.NameMatchMethodPointcut;

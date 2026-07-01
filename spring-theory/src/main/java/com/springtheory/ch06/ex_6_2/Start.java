@@ -24,8 +24,25 @@ package com.springtheory.ch06.ex_6_2;
 // - Advisor                   : Advice + pointcut 묶음 (예: DefaultPointcutAdvisor)
 // - ProxyFactoryBean          : target + advisor를 받아 '프록시'를 생산하는 스프링 팩토리 빈
 
-public class Start {
-    static void main(String[] args) {
+//   => 부가기능(Advice)과 적용대상(Pointcut)이 '분리'되어 각각 독립적으로 재사용된다.
+//      - 같은 트랜잭션 Advice를, 다른 Pointcut으로 다른 메서드들에 적용할 수 있고
+//      - 같은 Pointcut에 다른 Advice(로깅 등)를 얹을 수도 있다.
 
+//   호출 흐름:
+//     클라이언트 -> (스프링이 만든 프록시) -> Advisor가 Pointcut으로 매칭 판단
+//                    -> 매칭되면 TransactionAdvice.invoke() -> invocation.proceed()로 target 실행
+//                 target = UserServiceImpl -> UserDAO
+
+import com.springtheory.ch06.ex_6_2.dao.DaoFactory;
+import com.springtheory.ch06.ex_6_2.service.UserService;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.sql.SQLException;
+
+public class Start {
+    static void main(String[] args) throws SQLException, ClassNotFoundException {
+        var context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        UserService userService = context.getBean(UserService.class);
+        userService.upgradeLevels();
     }
 }
