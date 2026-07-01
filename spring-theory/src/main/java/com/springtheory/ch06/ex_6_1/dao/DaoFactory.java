@@ -1,9 +1,9 @@
 package com.springtheory.ch06.ex_6_1.dao;
 
 
+import com.springtheory.ch06.ex_6_1.service.TransactionHandler;
 import com.springtheory.ch06.ex_6_1.service.UserService;
 import com.springtheory.ch06.ex_6_1.service.UserServiceImpl;
-import com.springtheory.ch06.ex_6_1.service.UserServiceTx;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -11,6 +11,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Proxy;
 
 // DaoFactory를 스프링 빈 팩토리가 사용할 수 있는 설정 정보로 리팩토링
 // Configuration 대신 Component 써도 되지만 유지 보수상 Configuration으로 사용
@@ -31,13 +32,28 @@ public class DaoFactory {
     }
 
     @Bean
-    public UserService userService() {return new UserServiceImpl(userDAO());}
+    public UserService userService() {
+        var txHandler = new TransactionHandler(userServiceImpl(), transactionManager(), "upgrade");
+
+        // * 다이나믹 프록시를 런타임에 생성
+        // 모드 메서드 호출이 txHandler.invoke()로 전달된다.
+        // "메모리에 흉내낼 클래스를 임시로 만들어서 메서드에 맞게 처리한다"
+
+        //  - 메모리에 — .java/.class 파일로 디스크에 저장되는 게 아니라, JVM이 런타임에 바이트코드를 즉석 생성해서 메모리에 올린다.
+        //  - 흉내낼 클래스 — UserService 인터페이스를 구현한 $Proxy0을 만든다. 그래서 UserService인 척할 수 있다.
+        //  - 메서드에 맞게 처리 — 호출된 메서드 정보를 invoke()로 넘겨, 우리가 정한 대로 처리한다.
+        // ** 프록시 자신은 "처리"를 안 한다
+        // $Proxy0(프록시)은 처리 로직이 전혀 없다. 어떤 메서드가 불리든 무조건 invoke()로 떠넘기기만 한다.
+
+        return (UserService) Proxy.newProxyInstance(
+                getClass().getClassLoader(),
+                new Class[]{UserService.class},
+                txHandler
+        );
+    }
 
     @Bean
     public UserServiceImpl userServiceImpl() {return new UserServiceImpl(userDAO());}
-
-    @Bean
-    public UserServiceTx userServiceTx() {return new UserServiceTx(transactionManager(), userServiceImpl());}
 
 
     // 커넥션을 우리가 직접 만들던 SimpleConnectionMaker 대신, 스프링 표준 DataSource를 쓴다.
