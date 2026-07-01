@@ -14,8 +14,10 @@ package com.springtheory.ch06.ex_6_1.service;
 //   다이내믹 프록시가 바로 이 리플렉션 위에서 동작한다.
 
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class TransactionHandler implements InvocationHandler {
@@ -42,10 +44,20 @@ public class TransactionHandler implements InvocationHandler {
         // 예) pattern = "upgrade" 이면 upgradeLevels()는 매칭, add는 매칭X
         if (method.getName().startsWith(pattern)) {
             // 트렌젝션 경계설정
-
+            return invokeTransaction(method, args);
         }
-
-
         return method.invoke(target, args);
+    }
+
+    private Object invokeTransaction(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+        var status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        try {
+            Object invoke = method.invoke(target, args);
+            transactionManager.commit(status);
+            return invoke;
+        } catch(Exception e) {
+            transactionManager.rollback(status);
+            throw e;
+        }
     }
 }
