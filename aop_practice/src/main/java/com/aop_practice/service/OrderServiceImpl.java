@@ -6,7 +6,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public String placeOrder(Item item) {
-        sleep(80);
+        sleep(30);
         return "주문 완료: " + item.name();
     }
 

@@ -4,15 +4,15 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.jspecify.annotations.Nullable;
 
-public class PerformanceMonitorAdvice implements MethodInterceptor {
+public class PerformanceMonitorAdviceNanoMills implements MethodInterceptor {
     @Override
     public @Nullable Object invoke(MethodInvocation invocation) throws Throwable {
         var name = invocation.getMethod().getDeclaringClass().getSimpleName() + "." + invocation.getMethod().getName();
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
         try {
             return invocation.proceed();
         } finally {
-            long end =  System.currentTimeMillis();
+            long end =  System.nanoTime();
             System.out.printf("[PREF] %s : %dms\n", name, end - start);
         }
     }
