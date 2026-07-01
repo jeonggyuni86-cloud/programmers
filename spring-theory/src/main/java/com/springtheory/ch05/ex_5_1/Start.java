@@ -1,7 +1,5 @@
 package com.springtheory.ch05.ex_5_1;
 
-import com.springtheory.ch05.ex_5_1.dao.JdbcContext;
-
 public class Start {
     // * 서비스 추상화란 ?
     // 여러개의 구체적인 방법 들에서 '공통된 개념 / 동직민 뽑아내 하나의 일관된
