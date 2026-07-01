@@ -15,6 +15,7 @@ public class AopConfig {
     public PerformanceMonitorAdvice performanceMonitorAdvice() {
         return new PerformanceMonitorAdvice();
     }
+
     @Bean
     public Advisor performanceAdvisor() {
         var pointCut = new AspectJExpressionPointcut();

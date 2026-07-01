@@ -3,7 +3,6 @@ package com.aop_practice;
 import com.aop_practice.config.AopConfig;
 import com.aop_practice.service.Item;
 import com.aop_practice.service.OrderService;
-import com.aop_practice.service.OrderServiceImpl;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class Start {
@@ -15,7 +14,5 @@ public class Start {
 
         System.out.println(orderService.placeOrder(item));
 
-        System.out.println(orderService.getClass());
-        System.out.println(orderService instanceof OrderServiceImpl);
     }
 }

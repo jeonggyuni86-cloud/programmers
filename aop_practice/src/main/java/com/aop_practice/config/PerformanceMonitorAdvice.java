@@ -3,6 +3,7 @@ package com.aop_practice.config;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.jspecify.annotations.Nullable;
+import org.springframework.transaction.annotation.Transactional;
 
 public class PerformanceMonitorAdvice implements MethodInterceptor {
     @Override
