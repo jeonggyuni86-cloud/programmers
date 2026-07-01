@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AopConfig {
     @Bean
-    public Pointcut getPointcut() {
+    public Pointcut pointcut() {
         var pointcut = new AspectJExpressionPointcut();
         pointcut.setExpression("execution(* com.aop_practice.service..*.*(..))");
         // *  : 현재 위치에서 아무거나 하나
@@ -45,13 +45,13 @@ public class AopConfig {
     }
 
     @Bean
-    public Advisor performanceAdvisor(Pointcut pointcut) {
-        return new DefaultPointcutAdvisor(pointcut, new PerformanceMonitorAdvice());
+    public Advisor performanceAdvisor(Pointcut pointcut, PerformanceMonitorAdvice performanceMonitorAdvice) {
+        return new DefaultPointcutAdvisor(pointcut, performanceMonitorAdvice);
     }
 
     @Bean
-    public Advisor performanceNanoAdvisor(Pointcut pointcut) {
-        return new DefaultPointcutAdvisor(pointcut, new PerformanceMonitorAdviceNanoMills());
+    public Advisor performanceNanoAdvisor(Pointcut pointcut, PerformanceMonitorAdviceNanoMills performanceMonitorAdviceNanoMills) {
+        return new DefaultPointcutAdvisor(pointcut, performanceMonitorAdviceNanoMills);
     }
 
     @Bean
