@@ -1,0 +1,137 @@
+package com.essentials;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+
+// * 웹 서버(Web server), WAS, 톰캣(Tomcat) 이란?
+
+// [웹 서버]
+// 먼저 '웹 서버'는 브라우저의 요청을 받아 이미 만들어져있는 정적인 파일을 그대로 전달해주는 서버다
+// - 대표적인 웹 서버 아파치 에서 만든 (Apache HTTP Server), Nginx다
+// - 정적 파일 전달, HTTPS 처리, 요청 분배 (로드 밸런싱) 같은 일은 잘하지만,
+// 자바 코드를 직접 실행해 결과를 만들어 내지는 못한다
+
+// [WAS (Web Application Server)]
+// - 사용자가 브라우저로 요청을 보내면, 그 요청을 받아 우리가 작성한 자바 코드를 실행하고,
+// 그 결과(HTML, JSON 등)를 다시 응답으로 돌려주는 '실행 환경'이 WAS다
+// - 즉, 웹 서버가 못하는 '동적인' 처리를 요청마다 프로그램을 돌려 만들어 낸다
+// - 동적 처리 : 요청 / 응답처리, 스레드 관리, 세션 관리 같은 서버 공통 기능을 대신 맡아준다
+// - 실무에서는 아파치(웹 서버)를 앞단에 두어 정적 요소를 처리하고,
+// 동적 요청만 뒷단의 WAS로 넘기는 구조를 함께 쓰기도 한다.
+
+// [톰캣(Tomcat)]
+// - WAS 중에 가장 널리 쓰이는 오픈소스 구현체이다.
+// - 자바의 서블릿(Servlet) 규격을 따르며, 스프링 MVC도 결국 이 서블릿 위에서 동작한다.
+// - 톰캣은 정적 파일도 어느정도 다를 수 있어, 규모가 작으면 웹 서버 없이 톰캣만으로 서비스가 가능하다.
+// - 원래는 톰캣을 따로 설치하고, 그 안에 우리 애플리케이션을 넣어 실행했으나, SpringBoot에 통합되어있다.
+// - 제작시 war : 톰캣 미포함, jar : 톰캣 포함
+// - 스프링부트는 이 톰캣을 라이브러리 형태로 애플리케이션 '안에' 내장했다.
+// 즉, 별도 설치 없이 main() 실행만으로 서버가 함께 따서 요청을 받을 수 있다.
+
+// * HTTP 프로토콜이란
+// HTTP (HyperText Transfer Protocol)는 브라우저(클라이언트) 와 서버가 서로 주고 받을때 지키는 '약속 내지 규칙'이다
+// - 통신은 항상 '요청(Request) -> 응답(Response)' 한 쌍으로 이루어진다.
+// 클라이언가 요청을 보내면서버가 그에 대한 응답을 돌려주는 식이다.
+// - 요청에는 '무엇을(URL)', '어떻게(메서드)', '부가정보(헤더)', '본문(바디)'가 담긴다.
+// - 응답에는 처리 결과를 나타내는 상태코드(200 : 성공, 404 : 없음, 500 : 서버 오류 등) 실제 데이터(HTML, JSON)이 담긴다.
+// - HTTP는 '무상태(Stateless)' 프로토콜이라,  각 요청은 서로를 기억하지 못한다.
+// 그래서 로그인 상태 유지 등을 위해 세션이나 토큰 같은 보조 장치를 함께 사용한다.
+
+// * HTTP 메서드 - GET, POST, PUT, DELETE
+// 메서드는 '이 요청으로 무엇을 하고 싶은지'를 나타내는 동사이다.
+// 데이터의 생성/조회/수정/삭제 (CRUD) 와 자연스럽게 짝지어진다.
+
+// - GET: 데이터를 '조회'할 때 쓴다.
+// 서버의 상태를 바꾸지 않으며, 값은 주로 'URL뒤 쿼리 스트링'에 담는다.
+
+// - POST: 데이터를 '새로 생성'할 때 쓴다.
+// 보낼 내용을 '요청 본문(바디)'에 담으며, 서버의 상태를 바꾼다.
+
+// - PUT: 기존 데이터를 '수정(전체교체)'할 때 쓴다.
+// 같은 요청을 여러 번 보내도 결과가 같은 '멱등성'을 가진다.
+
+// - DELETE: 데이터를 '삭제'할 때 쓴다.
+// 스프링에서는 @GetMapping, @PostMapping, @PutMapping, @DeleteMapping 으로 각 메서드 요청을 컨트롤러의 특정 메서드에 연결한다.
+
+// - 멱등성
+// 멱등성은 '같은 요청을 한 번 보내든 여러 번 보내든, 서버의 최종 상태가 똑같이 유지되는 성질'
+// '여러번 불러도 결과가 그대로'
+// - GET: 멱등하다. -> 여러번 조회해도 데이터가 바뀌지 않는다.
+// - PUT: 멱등하다. -> 회원 3번의 이름을 '홍길동'으로 바꿔라를 1번 보내든 10번 보내든 결과는 같다.
+// - DELETE: 멱등하다. -> '회원 3번을 삭제하라' 1번 보내든 10번 보내든 결과 (3번이 없어진 상태)는 같다
+// - POST: 멱등하지 않다 -> '회원을 새로 등록하라' 1번 보낸거랑 10번 보낸 것은 결과가 다르다.
+
+// - 왜 중요한가?
+// 네트워크 오류로 응답을 못 받아 요청을 '재시도'하는 상황이 생겼을때,
+// 이때 멱등한 요청은 여러 번 가도 안전하지만,
+// 멱등하지 않은 POST는 중복 처리가 될 수 있다.
+
+// * 스프링부트 애플리케이션의 시작점
+// [@SpringBootApplication]
+// 이 애너테이션 하나는 사실 세 가지 애너테이션을 합쳐 놓은 것이다.
+
+// - @SpringBootConfiguration:
+// 이 클래스 자체가 설정 클래스임을 알리며, 내부의 @Bean 정의를 스프링 컨테이너에 등록하게 된다.
+
+// - @ComponentScan:
+// 이 클래스가 위치한 패키지를
+// 기준으로 '하위' 패키지를 훑으며 @Component, @Service, @Repository,
+// @Controller 등이 붙은 빈(Bean)들을 찾아 등록한다.
+
+// - @EnableAutoConfiguration:
+// '자동 구성'을 켜는 핵심 스위치다.
+
+// * 실행 메커니즘 - main() 호출된 뒤 벌어지는 일
+// 1. SpringApplication.run()이 호출 되면 가장 먼저, ApplicationContext-스프링 컨테이너 를 생성한다.
+// 2. 웹 관련 클래스가 클래스패스에 있는지 확인해 웹 애플리케이션 타입(Servlet, Reactive, None)을 판단한다.
+// 3. @ComponentScan이 우리가 직접 작성한 빈들을 먼저 스캔해 등록한다.
+// 4. @EnableAutoConfiguration이 자동 구성 후보들을 불러온다.
+
+// * 자동 구성의 순서와 원리
+// 1. 스프링부트는 META-INF/spring/....AutoConfiguration.imports
+//  파일에 나열된 수많은 자동 구성 후보 클래스 목록을 읽어 들인다.
+// 2. 각 후보는 @ConditionalOnClass, @ConditionalOnMissingBean,
+//  @ConditionalOnProperty 같은 '조건(Condition)'을 달고 있다.
+//  이 조건이 충족될 때만 해당 구성이 실제로 적용된다.
+//  예를 들어 클래스패스에 톰캣이 있으면 내장 톰캣이 자동으로 구성되는 식이다.
+// 3. 중요한 점은 '사용자 정의 빈이 우선'이라는 것이다.
+//  @ConditionalOnMissingBean 덕분에 개발자가 직접 만든 빈이 있으면
+//  자동 구성은 물러나고, 없을 때만 기본값을 채워 넣는다.
+//  그래서 자동 구성은 항상 사용자 설정보다 나중에, 그리고 조건부로 동작한다.
+// 4. 구성 간 순서가 필요한 경우 @AutoConfiguration(before/after),
+//  @AutoConfigureOrder 등으로 상대적 순서를 조정한다.
+
+// [Spring 과 Spring Boot 의 차이]
+// 스프링(Spring)은 DI(의존성 주입), IoC 컨테이너, AOP 같은 핵심 기능을 제공하는
+// '프레임워크'다. 강력하지만 프로젝트를 시작할 때 개발자가 직접 챙겨야 할 것이 많다.
+//   - 라이브러리 버전을 하나하나 맞춰야 한다.
+//   - XML 이나 JavaConfig 로 DispatcherServlet, ViewResolver 등 설정을 직접 작성해야 한다.
+//   - 톰캣 같은 웹 서버(WAS)를 따로 설치하고 WAR 로 배포해야 한다.
+//
+// 스프링부트(Spring Boot)는 이런 스프링을 '더 쉽게 쓰도록 감싼' 도구다.
+// 스프링을 대체하는 것이 아니라, 스프링 위에 편의 기능을 얹은 것이다.
+//   - starter 의존성으로 호환되는 라이브러리 버전을 한 번에 맞춰 준다.
+//   - 위에서 설명한 자동 구성(Auto Configuration)으로 반복적인 설정을 대신 해 준다.
+//   - 내장 톰캣을 품고 있어 별도 WAS 설치 없이 실행 가능한 JAR 로 바로 띄울 수 있다.
+//   - Actuator 같은 운영/모니터링 기능도 기본 제공한다.
+//
+// 한마디로 스프링이 '엔진'이라면, 스프링부트는 그 엔진을 얹어 바로 달릴 수 있게
+// 조립해 둔 '완성차'에 가깝다. 그래서 설정보다 비즈니스 로직에 집중할 수 있다.
+
+// [정리]
+// 결국 스프링부트는 "컴포넌트 스캔으로 내 빈을 먼저 등록하고,
+// 부족한 부분은 조건에 맞는 자동 구성으로 채운 뒤,
+// 웹 서버를 띄우고 컨테이너를 완성한다"는 흐름으로 동작한다.
+
+@SpringBootApplication
+public class EssentialsApplication {
+
+    // 애플리케이션의 진입 메서드다.
+    static void main(String[] args) {
+        SpringApplication.run(EssentialsApplication.class, args);
+    }
+
+}

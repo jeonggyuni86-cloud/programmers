@@ -9,11 +9,13 @@ public class PerformanceMonitorAdviceNanoMills implements MethodInterceptor, Per
     public @Nullable Object invoke(MethodInvocation invocation) throws Throwable {
         var name = invocation.getMethod().getDeclaringClass().getSimpleName() + "." + invocation.getMethod().getName();
         long start = System.nanoTime();
+        System.out.println("[PerformanceMonitorAdviceNanoMills] : start");
         try {
             return invocation.proceed();
         } finally {
             long end =  System.nanoTime();
             System.out.printf("[PERF] %s : %dns\n", name, end - start);
+            System.out.println("[PerformanceMonitorAdviceNanoMills] : end");
         }
     }
 }

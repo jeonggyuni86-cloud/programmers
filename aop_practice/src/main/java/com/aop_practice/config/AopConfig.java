@@ -46,13 +46,17 @@ public class AopConfig {
 
     @Bean
     public Advisor performanceAdvisor(Pointcut pointcut, PerformanceMonitorAdvice performanceMonitorAdvice) {
-        return new DefaultPointcutAdvisor(pointcut, performanceMonitorAdvice);
+        var advisor = new DefaultPointcutAdvisor(pointcut, performanceMonitorAdvice);
+        advisor.setOrder(2);
+        return advisor;
     }
 
 
     @Bean
     public Advisor performanceNanoAdvisor(Pointcut pointcut, PerformanceMonitorAdviceNanoMills performanceMonitorAdviceNanoMills) {
-        return new DefaultPointcutAdvisor(pointcut, performanceMonitorAdviceNanoMills);
+        var advisor = new DefaultPointcutAdvisor(pointcut, performanceMonitorAdviceNanoMills);
+        advisor.setOrder(1);
+        return advisor;
     }
 
     @Bean

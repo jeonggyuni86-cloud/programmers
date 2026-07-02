@@ -9,11 +9,13 @@ public class PerformanceMonitorAdvice implements MethodInterceptor, Performance 
     public @Nullable Object invoke(MethodInvocation invocation) throws Throwable {
         var name = invocation.getMethod().getDeclaringClass().getSimpleName() + "." + invocation.getMethod().getName();
         long start = System.currentTimeMillis();
+        System.out.println("[PerformanceMonitorAdviceTimeMills] : start");
         try {
             return invocation.proceed();
         } finally {
             long end =  System.currentTimeMillis();
             System.out.printf("[PERF] %s : %dms\n", name, end - start);
+            System.out.println("[PerformanceMonitorAdviceTimeMills] : end");
         }
     }
 }
