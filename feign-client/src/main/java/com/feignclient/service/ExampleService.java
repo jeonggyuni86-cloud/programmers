@@ -1,6 +1,7 @@
 package com.feignclient.service;
 
 import com.feignclient.client.ExampleClient;
+import com.feignclient.dto.DataRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,5 +12,17 @@ public class ExampleService {
 
     public String getDataById(Long id) {
         return exampleClient.getData(id);
+    }
+
+    public String createData(String name, int value) {
+        return exampleClient.createData(DataRequest.builder().name(name).value(value).build());
+    }
+
+    public String updateData(Long id, String name, Integer value) {
+        return exampleClient.updateData(id, DataRequest.builder().name(name).value(value).build());
+    }
+
+    public String deleteData(Long id) {
+        return exampleClient.deleteData(id);
     }
 }
