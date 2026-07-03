@@ -3,9 +3,11 @@ package com.essentials.filter;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Component
 public class LoggingFilter implements Filter {
     //필터 초기화: 필요시
     @Override

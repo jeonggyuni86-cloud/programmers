@@ -1,6 +1,12 @@
 package com.essentials.controller;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 // * 디스패처 서블릿(DispatcherServlet) - 요청 처리의 심장
 // 스프링 MVC로 들어오는 '모든' HTTP 요청은 먼저 DispatcherServlet 하나를 거친다.
@@ -54,6 +60,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class FilterController {
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello World!";
+    }
+
+       @GetMapping("/api/data")
+       public String data() {
+        return "data";
+       }
 
 
 }
