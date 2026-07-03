@@ -2,6 +2,7 @@ package com.feignclient;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 // * Feign Client
 // Feign은 "다른 서버의 API를 호출하는 코드"를 인터페이스 선언만으로 자동 생성해주는 HTTP 클라이언트이다.
@@ -18,6 +19,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // - 메시지 큐(Kafka, RabbitMQ, SQS) : 요청-응답이 아닌 비동기 메시징(이벤트 발행/구독) 방식.
 // 위쪽 4개는 REST(HTTP+JSON) 계열이고, gRPC와 메시지 큐는 통신 방식 자체가 다르다.
 
+// * @EnableFeignClients
+// @FeignClient 인터페이스를 찾아 구햔 객체 (@Bean)로 만들라고 지시하는 "스위치" -> 없으면 Feign이 동작하지 않는다.
+
+@EnableFeignClients
 @SpringBootApplication
 public class FeignClientApplication {
     static void main(String[] args) {
