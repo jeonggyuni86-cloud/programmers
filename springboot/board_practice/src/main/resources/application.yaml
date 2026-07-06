@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: board_practice
+  datasource:
+    url: jdbc:mysql://localhost:3306/java_basic?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: qwer1234
