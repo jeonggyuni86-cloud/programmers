@@ -15,4 +15,8 @@ public class MemberController {
         return "sign-up";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "sign-in";
+    }
 }
