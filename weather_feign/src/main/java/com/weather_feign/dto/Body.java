@@ -1,4 +1,12 @@
 package com.weather_feign.dto;
 
-public record Body() {
+import lombok.Builder;
+
+@Builder
+public record Body(
+        Items items,
+        int pageNo,
+        int numOfRows,
+        int totalCount
+) {
 }

@@ -1,4 +1,9 @@
 package com.weather_feign.dto;
 
-public class WeatherResponse {
+import lombok.Builder;
+
+@Builder
+public record WeatherResponse(
+        Response response
+) {
 }

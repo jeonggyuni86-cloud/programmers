@@ -1,4 +1,10 @@
 package com.weather_feign.dto;
 
-public record Response() {
+import lombok.Builder;
+
+@Builder
+public record Response(
+        Header header,
+        Body body
+) {
 }
