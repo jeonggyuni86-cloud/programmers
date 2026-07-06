@@ -21,7 +21,7 @@ public class DataController {
                     DataResponse.builder()
                             .id(i)
                             .name("item" + i)
-                            .value(100)
+                            .value((int)(100 * i))
                             .build());
         }
     }
