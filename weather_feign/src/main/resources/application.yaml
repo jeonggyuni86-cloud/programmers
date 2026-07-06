@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: weather_feign
+
+weather:
+  api:
+    key: "KIGZj36w/SD3QW1jhOCzXS8+IVW3SvkKNUJjAJV4zO+IcS3vPwhWqAas8VagS/wJlmQy3HPR1kc5uFtUw/xeDA=="
