@@ -17,6 +17,15 @@ public class BoardController {
         return "board-list";
     }
 
+    @GetMapping("/write")
+    public String writeBoard(
+            HttpSession session,
+            Model model
+    ) {
+        setSession(session, model);
+        return "/board-write";
+    }
+
 
     private void setSession(HttpSession session, Model model) {
         String userId = (String)session.getAttribute("userId");
