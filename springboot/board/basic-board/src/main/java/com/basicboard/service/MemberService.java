@@ -51,11 +51,46 @@ public class MemberService {
     // 5. map(함수) : 값이 있으면 다른 값으로 변환, 없으면 empty
     // 6. filter(조건) : 값이 있고 조건을 만족하면 유지, 아니면 empty
 
+    // 세 가지 상태
+    // 1. Optional.of("값") : 값이 확실히 있을 때 (값이 null이면 즉시 예외)
+    // 2. Optional.empty() : 값이 없음
+    // 3. Optional.ofNullable("값") : 값이 null 일 수도 있을 때 (null이면 empty, 아니면 of)
+
+    // 주의 (자주 하는 실수)
+    //   - get() 남발 금지: 비어있으면 예외다. orElse* 계열로 안전하게 꺼낸다
+    //   - if(opt.isPresent()) opt.get() 패턴은 사실상 null 체크와 다를 게 없다 -> map/orElseGet 으로 흘려보내자
+    //   - 보통 "반환 타입"에만 쓴다. 필드나 파라미터 타입으로는 잘 쓰지 않는다 (설계 관례)
+
     public Optional<Member> login(LoginRequestDto dto) {
+        // return 한 줄에 쓰인 람다식과 Optional.filter 이해하기
+        // ---------------------------------------------------------------------------------
+        // # findByUserId 는 Optional<Member> 를 돌려준다 (회원이 있을 수도, 없을 수도)
+        // # .filter( member -> 조건 ) 의 동작:
+        //     - Optional 안에 값이 "있고" + 람다가 true  -> 그 값을 그대로 유지
+        //     - 값이 "없거나"          + 람다가 false -> 빈 Optional(Optional.empty)로 만든다
+        //   => "아이디로 찾은 회원이 있고, 비밀번호까지 일치하면 남기고, 아니면 비운다" = 로그인 성공/실패 판정
+
+        // # member -> member.getPassword().equals(...) 가 바로 람다식(이름 없는 함수)이다
+        //     member                         : 입력 파라미터 (Optional 안에 든 Member)
+        //     ->                             : "이것을 받아서 ~를 반환한다"
+        //     member.getPassword().equals(..): 반환값 (boolean). 비밀번호가 같으면 true
+
+        // # 만약 람다(와 Optional)를 쓰지 않았다면, 아래처럼 풀어 쓴 것과 같다:
+        //
+        //     // 1) 아이디로 회원을 조회한다 (없으면 null 이 나오도록 orElse(null) 사용)
+        //     Member member = memberRepository.findByUserId(request.getUsername()).orElse(null);
+        //
+        //     // 2) 회원이 존재하고(null 아님) + 비밀번호가 일치하면 -> 로그인 성공
+        //     if (member != null && member.getPassword().equals(request.getPassword())) {
+        //         return Optional.of(member);   // 성공: 회원을 담아 반환
+        //     }
+        //
+        //     // 3) 아이디가 없거나 비밀번호가 틀리면 -> 로그인 실패
+        //     return Optional.empty();          // 실패: 빈 Optional 반환
+        //
+        //   => 위 if 분기(널 체크 + 비밀번호 비교)를 .filter(람다) 한 줄로 압축한 것이 아래 코드다
         return memberRepository.findByUserId(dto.getUsername())
-                .filter(
-                        member -> member.getPassword().equals(dto.getPassword())
-                );
+                .filter(member -> member.getPassword().equals(dto.getPassword()));
 
     }
 
