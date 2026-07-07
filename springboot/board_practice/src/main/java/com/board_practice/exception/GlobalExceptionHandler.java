@@ -20,4 +20,17 @@ public class GlobalExceptionHandler {
                                 .build()
                 );
     }
+
+    @ExceptionHandler(BoardNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleBoardNotFoundException(BoardNotFoundException ex) {
+        System.out.println(ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                        ErrorResponseDto.builder()
+                                .status(HttpStatus.NOT_FOUND.value())
+                                .message(ex.getMessage())
+                                .build()
+                );
+    }
 }
