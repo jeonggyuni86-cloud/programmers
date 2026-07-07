@@ -1,6 +1,7 @@
 package com.basicboard.controller;
 
 
+import com.basicboard.constant.SessionConst;
 import com.basicboard.dto.LoginRequestDto;
 import com.basicboard.dto.LoginResponseDto;
 import com.basicboard.dto.MemberJoinRequestDto;
@@ -39,8 +40,8 @@ public class MemberApiController {
         return memberService.login(dto)
                 .map(
                         member -> {
-                            session.setAttribute("userId", member.getUserId());
-                            session.setAttribute("userName", member.getUserName());
+                            session.setAttribute(SessionConst.USER_ID, member.getUserId());
+                            session.setAttribute(SessionConst.USER_NAME, member.getUserName());
                             return LoginResponseDto.success();
                         }
                 ).orElseGet(LoginResponseDto::fail);
