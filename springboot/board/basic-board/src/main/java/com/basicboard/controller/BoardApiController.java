@@ -1,10 +1,7 @@
 package com.basicboard.controller;
 
 import com.basicboard.domain.entity.Board;
-import com.basicboard.dto.BoardDeleteRequestDto;
-import com.basicboard.dto.BoardDetailResponseDto;
-import com.basicboard.dto.BoardListResponseDto;
-import com.basicboard.dto.BoardWriteRequestDto;
+import com.basicboard.dto.*;
 import com.basicboard.service.BoardService;
 import com.basicboard.service.FileService;
 import lombok.RequiredArgsConstructor;
@@ -100,6 +97,16 @@ public class BoardApiController {
                 .body(resource);
     }
 
+    @PutMapping("/{id}")
+    public void updateBoard(
+            @PathVariable("id") long id,
+            @RequestBody BoardUpdateRequestDto dto
+    ) {
+        boardService.updateBoard(id, dto);
+
+    }
+
+
     @DeleteMapping("/{id}")
     public void deleteBoard(
             @PathVariable long id,
@@ -107,6 +114,5 @@ public class BoardApiController {
     ) {
         boardService.deleteBoard(id, dto);
     }
-
 
 }
