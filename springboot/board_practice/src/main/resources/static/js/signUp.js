@@ -16,7 +16,7 @@ $(document).ready(() => {
 
         $.ajax({
             type: 'POST',
-            url: '/api/members/join', // 서버의 엔드포인트 URI
+            url: '/api/members/join', // 서버의 엔드포인트 URL
             data: JSON.stringify(formData), // 데이터를 JSON 형식으로 변환
             contentType: 'application/json; charset=utf-8', // 전송 데이터의 타입
             dataType: 'json', // 서버에서 받을 데이터의 타입

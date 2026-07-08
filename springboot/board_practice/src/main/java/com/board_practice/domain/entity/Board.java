@@ -38,4 +38,9 @@ public class Board {
     @JsonFormat(pattern = DATETIME_PATTERN)
     private LocalDateTime created;
 
+    public void update(String title, String content, String filePath) {
+        this.title = title;
+        this.content = content;
+        this.filePath = filePath;
+    }
 }
