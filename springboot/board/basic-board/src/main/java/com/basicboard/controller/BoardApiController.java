@@ -2,6 +2,7 @@ package com.basicboard.controller;
 
 import com.basicboard.domain.entity.Board;
 import com.basicboard.dto.BoardListResponseDto;
+import com.basicboard.dto.BoardWriteRequestDto;
 import com.basicboard.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,9 @@ public class BoardApiController {
     }
 
     @PostMapping
-    public void saveBoard(@RequestBody Board board) {
+    public void saveBoard(
+            @ModelAttribute BoardWriteRequestDto dto
+    ) {
 
     }
 
