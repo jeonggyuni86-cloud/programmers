@@ -1,6 +1,5 @@
 package com.basicboard.service;
 
-import com.basicboard.exception.BoardNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -9,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.charset.MalformedInputException;
 import java.util.UUID;
 
@@ -57,5 +55,14 @@ public class FileService {
         } catch(IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void deleteFile(String filePath) {
+        if(filePath == null || filePath.isBlank()) {
+            return;
+        }
+        File file = new File(filePath);
+        if(!file.exists()) { return; }
+        file.delete();
     }
 }

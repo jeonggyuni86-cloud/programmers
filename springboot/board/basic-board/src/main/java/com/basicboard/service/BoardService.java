@@ -2,14 +2,13 @@ package com.basicboard.service;
 
 import com.basicboard.domain.entity.Board;
 import com.basicboard.domain.repository.BoardRepository;
+import com.basicboard.dto.BoardDeleteRequestDto;
 import com.basicboard.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -61,6 +60,15 @@ public class BoardService {
     public Board getBoardDetail(long id) {
         return boardRepository.findById(id)
                 .orElseThrow(() -> new BoardNotFoundException("[Board] 게시글을 찾을 수 없습니다. ID = " + id));
+    }
+
+    @Transactional
+    public void deleteBoard(long id, BoardDeleteRequestDto dto) {
+        if( !boardRepository.existsById(id) ) {
+            throw new BoardNotFoundException("[Board] 삭제할 게시글이 없습니다 ID = " + id);
+        }
+        boardRepository.deleteById(id);
+        fileService.deleteFile(dto.getFilePath());
     }
 
 }

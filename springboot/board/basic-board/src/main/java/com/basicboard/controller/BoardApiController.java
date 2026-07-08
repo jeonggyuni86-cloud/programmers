@@ -1,6 +1,7 @@
 package com.basicboard.controller;
 
 import com.basicboard.domain.entity.Board;
+import com.basicboard.dto.BoardDeleteRequestDto;
 import com.basicboard.dto.BoardDetailResponseDto;
 import com.basicboard.dto.BoardListResponseDto;
 import com.basicboard.dto.BoardWriteRequestDto;
@@ -97,6 +98,14 @@ public class BoardApiController {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
                 .body(resource);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteBoard(
+            @PathVariable long id,
+            @RequestBody BoardDeleteRequestDto dto
+    ) {
+        boardService.deleteBoard(id, dto);
     }
 
 
