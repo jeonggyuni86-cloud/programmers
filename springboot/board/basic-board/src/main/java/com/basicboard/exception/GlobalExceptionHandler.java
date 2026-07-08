@@ -1,10 +1,11 @@
 package com.basicboard.exception;
 
 import com.basicboard.dto.ErrorResponseDto;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import static org.springframework.http.HttpStatus.*;
 
 
 // @RestControllerAdvice 란
@@ -40,18 +41,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateUserIdException.class)
     public ResponseEntity<ErrorResponseDto> handleDuplicateUserIdException(DuplicateUserIdException e) {
         return ResponseEntity
-                .status(HttpStatus.CONFLICT)
+                .status(CONFLICT)
                 .body(
-                        new ErrorResponseDto(HttpStatus.CONFLICT.value(), e.getMessage())
+                        new ErrorResponseDto(CONFLICT.value(), e.getMessage())
                 );
     }
 
     @ExceptionHandler(BoardNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleBoardNotFoundException(BoardNotFoundException e) {
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
+                .status(NOT_FOUND)
                 .body(
-                        new ErrorResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage())
+                        new ErrorResponseDto(NOT_FOUND.value(), e.getMessage())
                 );
     }
 }

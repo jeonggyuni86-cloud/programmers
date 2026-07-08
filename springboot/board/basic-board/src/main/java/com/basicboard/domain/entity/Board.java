@@ -1,6 +1,7 @@
 package com.basicboard.domain.entity;
 
 
+import com.basicboard.constant.DateTimeFormatConstant;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,7 +33,7 @@ public class Board {
     @Column
     private String filePath;
 
-    @JsonFormat(pattern= "yyyy-MM-dd HH:mm")
+    @JsonFormat(pattern= DateTimeFormatConstant.DATETIME_PATTERN)
     private LocalDateTime created;
 
 }

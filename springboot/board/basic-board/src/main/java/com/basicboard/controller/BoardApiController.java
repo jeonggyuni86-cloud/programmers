@@ -1,12 +1,12 @@
 package com.basicboard.controller;
 
 import com.basicboard.domain.entity.Board;
+import com.basicboard.dto.BoardDetailResponseDto;
 import com.basicboard.dto.BoardListResponseDto;
 import com.basicboard.dto.BoardWriteRequestDto;
 import com.basicboard.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -35,12 +35,24 @@ public class BoardApiController {
                 .totalPages(totalPages)
                 .boards(boards)
                 .build();
-
     }
 
     @PostMapping
     public void saveBoard(@ModelAttribute BoardWriteRequestDto dto) {
         boardService.saveBoard(dto.getUserId(), dto.getTitle(), dto.getContent(), dto.getFile());
+    }
+
+    @GetMapping("/{id}")
+    public BoardDetailResponseDto getBoardDetail(@PathVariable("id") long id) {
+        Board board = boardService.getBoardDetail(id);
+
+        return BoardDetailResponseDto.builder()
+                .title(board.getTitle())
+                .content(board.getContent())
+                .filePath(board.getFilePath())
+                .userId(board.getUserId())
+                .created(board.getCreated())
+                .build();
     }
 
 

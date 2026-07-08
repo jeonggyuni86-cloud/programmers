@@ -2,6 +2,7 @@ package com.basicboard.service;
 
 import com.basicboard.domain.entity.Board;
 import com.basicboard.domain.repository.BoardRepository;
+import com.basicboard.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -51,8 +53,14 @@ public class BoardService {
                 .title(title)
                 .content(content)
                 .filePath(filePath)
+                .created(LocalDateTime.now())
                 .build();
         boardRepository.save(board);
+    }
+
+    public Board getBoardDetail(long id) {
+        return boardRepository.findById(id)
+                .orElseThrow(() -> new BoardNotFoundException("[Board] 게시글을 찾을 수 없습니다. ID = " + id));
     }
 
 }
