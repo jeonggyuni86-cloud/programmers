@@ -1,15 +1,24 @@
 package com.basicboard.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+// * 컨트롤러로 ModelAttribute로 받음
+// 폼 필드가 같은 이름의 필드에 자동으로 채워진다.
+// - 파일은 JSON에 못 실으므로, MultiPart + @ModelAttribute 조합으로 사용한다.
+// - 그래서 아래 필드 이름은 화면 등의 name 속성과 같아야 한다.
+// @Getter / @NoArgsConstructor
+// - @ModelAttribute 는 "기본 생성자"로 객체를 만든 뒤 Setter로 값을 하나씩 채우는 방식이다.
+// - 즉 Form태그에는 @Setter @NoArgsConstructor 이 두개가 필수이다.
+// - 그래서 응답 DTO들 처럼 @Builder만 있으면 안된다
+
+
 @Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class BoardWriteRequestDto {
     private String title;
     private String content;
