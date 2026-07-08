@@ -39,10 +39,9 @@ public class BoardApiController {
     }
 
     @PostMapping
-    public void saveBoard(
-            @ModelAttribute BoardWriteRequestDto dto
-    ) {
-
+    public void saveBoard(@ModelAttribute BoardWriteRequestDto dto) {
+        boardService.saveBoard(dto.getUserId(), dto.getTitle(), dto.getContent(), dto.getFile());
     }
+
 
 }

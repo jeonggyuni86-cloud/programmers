@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class BoardService {
     private final BoardRepository boardRepository;
+    private final FileService fileService;
 
     public List<Board> getBoards(int page, int size) {
         var pageable = PageRequest.of(page - 1, size, Sort.by("id").descending()); // 인덱스는 0 부터 시작하기 때문에
@@ -36,11 +39,20 @@ public class BoardService {
     }
 
     //DTO 없이 풀어서 받는 예제
+    @Transactional
     public void saveBoard(
             String userId, String title,
             String content, MultipartFile file
     ) {
+        String filePath = fileService.storeFile(file);
 
+        Board board = Board.builder()
+                .userId(userId)
+                .title(title)
+                .content(content)
+                .filePath(filePath)
+                .build();
+        boardRepository.save(board);
     }
 
 }
