@@ -12,6 +12,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+  sql:
+    init:
+      mode: never # data.sql 참조 방지
 
 # 첨부파일 저장 경로 - FileService에서 @Value로 주입받는 값이라 테스트 설정에도 있어야 함
 # 이 파일이 메인 application.yaml을 대체하므로, 여기에 없으면 전체 컨텍스트 로딩 시 주입실패로 뜬다.
