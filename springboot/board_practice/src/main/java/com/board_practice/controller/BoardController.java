@@ -36,7 +36,7 @@ public class BoardController {
             Model model
     ) {
         setSession(session, model);
-        model.addAttribute("boardId", id);
+        model.addAttribute("id", id);
         return "board-detail";
 
     }

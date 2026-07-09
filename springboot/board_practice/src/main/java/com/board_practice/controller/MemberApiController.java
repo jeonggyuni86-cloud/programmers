@@ -1,5 +1,6 @@
 package com.board_practice.controller;
 
+import com.board_practice.constant.SessionConst;
 import com.board_practice.dto.LoginRequestDto;
 import com.board_practice.dto.LoginResponseDto;
 import com.board_practice.dto.MemberJoinRequestDto;
@@ -35,8 +36,8 @@ public class MemberApiController {
         return memberService.login(loginRequestDto)
                 .map(
                         member -> {
-                            session.setAttribute("userId", member.getUserId());
-                            session.setAttribute("userName", member.getUserName());
+                            session.setAttribute(SessionConst.USER_ID, member.getUserId());
+                            session.setAttribute(SessionConst.USER_NAME, member.getUserName());
                             return LoginResponseDto.success("로그인 성공");
                         }
                 ).orElseGet(() -> LoginResponseDto.fail("로그인 실패"));

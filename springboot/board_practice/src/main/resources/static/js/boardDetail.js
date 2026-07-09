@@ -76,6 +76,9 @@ let loadBoardDetail = () => {
         error: function (error) {
             console.error('오류 발생:', error);
             alert('상세 데이터를 불러오는데 오류가 발생했습니다.');
+            console.log("hiddenId =", $('#hiddenId').val());
+            console.log("request =", '/api/boards/' + $('#hiddenId').val());
         }
+
     });
 }

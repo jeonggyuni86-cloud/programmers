@@ -5,13 +5,13 @@ import lombok.Getter;
 
 @Getter
 public class LoginResponseDto {
-    private final boolean loggedIn;
+    private final boolean success;
     private final String url;
     private final String message;
 
     @Builder
     private LoginResponseDto(boolean success, String url, String message) {
-        this.loggedIn = success;
+        this.success = success;
         this.url = url;
         this.message = message;
     }

@@ -1,10 +1,7 @@
 package com.board_practice.controller;
 
 import com.board_practice.domain.entity.Board;
-import com.board_practice.dto.BoardDetailResponseDto;
-import com.board_practice.dto.BoardListResponseDto;
-import com.board_practice.dto.BoardUpdateRequestDto;
-import com.board_practice.dto.BoardWriteRequestDto;
+import com.board_practice.dto.*;
 import com.board_practice.service.BoardService;
 import com.board_practice.service.FileService;
 import lombok.RequiredArgsConstructor;
@@ -47,11 +44,12 @@ public class BoardApiController {
     public void saveBoard(@ModelAttribute BoardWriteRequestDto dto) {
         boardService.saveBoard(dto.getUserId(), dto.getTitle(), dto.getContent(), dto.getFile());
     }
+
     @GetMapping("/{id}")
     public BoardDetailResponseDto getBoardDetail(@PathVariable("id") long id) {
         Board board = boardService.getBoardDetail(id);
 
-        return BoardDetailResponseDto.builder()
+        return  BoardDetailResponseDto.builder()
                 .title(board.getTitle())
                 .content(board.getContent())
                 .filePath(board.getFilePath())
@@ -79,5 +77,13 @@ public class BoardApiController {
     ) {
         boardService.updateBoard(id, dto);
 
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteBoard(
+            @PathVariable long id,
+            @RequestBody BoardDeleteRequestDto dto
+    ) {
+        boardService.deleteBoard(id, dto);
     }
 }

@@ -23,7 +23,7 @@ public class BoardService {
     private final FileService fileService;
 
     public List<Board> getBoards(int page, int size) {
-        var pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        var pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
         return boardRepository.findAll(pageable).getContent();
     }
 

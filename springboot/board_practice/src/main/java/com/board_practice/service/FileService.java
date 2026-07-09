@@ -52,12 +52,19 @@ public class FileService {
         }
     }
 
-    public void deleteFile(String filePath) {
-        if(filePath == null || filePath.isBlank()) {
+    public void deleteFile(String fileName) {
+        if (fileName == null || fileName.isBlank()) {
+            System.out.println("파일 경로가 없습니다.");
             return;
         }
-        File file = new File(filePath);
-        if(!file.exists()) { return; }
-        file.delete();
+        File dir = new File(uploadDir).getAbsoluteFile();
+        File file = new File(dir, fileName);
+        System.out.println("삭제 시도: " + file.getAbsolutePath());
+        if (!file.exists()) {
+            System.out.println("파일이 존재하지 않습니다.");
+            return;
+        }
+        boolean result = file.delete();
+        System.out.println("삭제 결과 = " + result);
     }
 }
