@@ -21,16 +21,16 @@ public class MemberService {
 
     @Transactional
     public void join(MemberJoinRequestDto dto) {
-        if(memberRepository.existsByUserId(dto.userId())) {
+        if(memberRepository.existsByUserId(dto.getUserId())) {
             throw new DuplicateUserIdException("[회원가입] 이미 존재하는 ID 입니다");
         }
         memberRepository.save(memberMapper.toEntity(dto));
     }
 
     public Optional<Member> login(LoginRequestDto dto) {
-        return memberRepository.findByUserId(dto.username())
+        return memberRepository.findByUserId(dto.getUsername())
                 .filter(
-                        member -> member.getPassword().equals(dto.password())
+                        member -> member.getPassword().equals(dto.getPassword())
                 );
     }
 }

@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 public class MemberMapper {
     public Member toEntity(MemberJoinRequestDto dto){
         return Member.builder()
-                .userId(dto.userId())
-                .password(dto.password())
-                .userName(dto.userName())
+                .userId(dto.getUserId())
+                .password(dto.getPassword())
+                .userName(dto.getUserName())
                 .build();
     }
 }

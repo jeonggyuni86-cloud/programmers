@@ -4,7 +4,7 @@ $(document).ready(() => {
     loadBoard(1); // 처음엔 1페이지를 보여준다
 });
 
-const PAGE_SIZE = 10; // 한 페이지에 보여줄 게시글 수
+const PAGE_SIZE = 30; // 한 페이지에 보여줄 게시글 수
 
 // 로그인(세션) 확인 - 로그인 정보가 없으면 로그인 페이지로 보낸다
 let checkSession = () => {
@@ -16,7 +16,7 @@ let checkSession = () => {
 
 // 특정 페이지의 게시글 + 하단 페이지 번호를 로드하는 함수
 let loadBoard = (page) => {
-    $.ajax({
+        $.ajax({
         type: 'GET',
         url: '/api/boards',
         data: {

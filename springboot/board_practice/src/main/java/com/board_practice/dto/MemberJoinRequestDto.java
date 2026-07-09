@@ -1,10 +1,14 @@
 package com.board_practice.dto;
 
-import lombok.Builder;
+import lombok.*;
 
 @Builder
-public record MemberJoinRequestDto(
-    String userId,
-    String password,
-    String userName
-){ }
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class MemberJoinRequestDto{
+    private String userId;
+    private String password;
+    private String userName;
+}

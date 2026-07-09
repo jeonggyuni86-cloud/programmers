@@ -1,6 +1,13 @@
 package com.board_practice.dto;
 
-import lombok.Builder;
+import lombok.*;
 
 @Builder
-public record LoginRequestDto(String username, String password) { }
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class LoginRequestDto {
+    private String username;
+    private String password;
+}
