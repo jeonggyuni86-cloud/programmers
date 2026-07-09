@@ -6,7 +6,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -27,10 +26,10 @@ public class LoggingAspect {
     // execution : 메서드 "실행" 지점을 대상으로 한다는 지시어
     // - * : (맨앞) 반환타입에 대해 설명 (무엇이든 상관 없다)
     // - com.basicboard.controller..: Controller 패키지와 그 하위 패키지 전부
-    // - *.* : 그안의 모든 클래스와 모든 메서드
+    // - * : 그안의 모든 클래스와 모든 메서드
     // - (..) : 메서드 파라미터는 개수/타입 상관없이 모두
 
-    @Pointcut("execution(* com.basicboard.controller..*.*(..))")
+    @Pointcut("execution(* com.basicboard.controller..*(..))")
     public void controllerLog() {
         // 메서드 본문(Body)는 비워둔다.
         // 실제 로직이 아닌 "대상을 가르키는 이름표" 역할만 한다
@@ -45,6 +44,10 @@ public class LoggingAspect {
     // @Around          : 대상 메서드 실행을 "통째로 감싼다". 전/후/예외를 한 메서드에서 제어한다.
     @Around("controllerLog()")
     public Object logRequest(ProceedingJoinPoint joinPoint) throws Throwable {
+        // * ProceedingJoinPoint
+        // - 지금 가로챈 그 지점(메서드 호출)에 대한 정보를 담은 객체이다.
+        // - 어떤 메서드가 호출 됐는지, 넘어온 인자는 무엇인지 등을 꺼낼 수 있다.
+
         String method = joinPoint.getSignature().getDeclaringType() + "." + joinPoint.getSignature().getName();
 
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -59,6 +62,7 @@ public class LoggingAspect {
 
         long start = System.nanoTime();
         try {
+            //이 한줄을 기준으로 요청받은 메서드 실행 전 실행후로 나뉜다.
             Object result = joinPoint.proceed(); // 대상 메서드 실행
             // => 대상 메서드가 정상 종료 된 후 로깅
 
