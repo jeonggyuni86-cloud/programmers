@@ -55,4 +55,13 @@ public class GlobalExceptionHandler {
                         new ErrorResponseDto(NOT_FOUND.value(), e.getMessage())
                 );
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDto> exception(Exception e) {
+        return ResponseEntity
+                .status(INTERNAL_SERVER_ERROR)
+                .body(
+                        new ErrorResponseDto(INTERNAL_SERVER_ERROR.value(), "서버 오류가 발생했습니다")
+                );
+    }
 }
