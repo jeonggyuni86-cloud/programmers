@@ -67,11 +67,11 @@ public class LoggingAspect {
             // => 대상 메서드가 정상 종료 된 후 로깅
 
             long during = System.nanoTime() - start;
-            System.out.println("[요청 완료] " + method + " : " + during / 1_000 + "ms");
+            System.out.println("[요청 완료] " + method + " : " + String.format("%.3f ms", during/ 1_000_000.0));
             return result;
         } catch(Throwable e) {
             long during = System.nanoTime() - start;
-            System.out.println("[요청 실패] " +  method + " : " + during / 1_000 + "ms" + " : 예외 메시지 " + e.getMessage());
+            System.out.println("[요청 실패] " +  method + " : " + String.format("%.3f ms", during/ 1_000_000.0) + " : 예외 메시지 " + e.getMessage());
 
             // - 예외를 삼켜버리면 컨트롤러는 정상 처리된 것처럼 보여 버그가 된다.
             throw e;
