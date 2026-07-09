@@ -4,6 +4,7 @@ import com.basicboard.domain.entity.Member;
 import com.basicboard.domain.repository.MemberRepository;
 import com.basicboard.dto.LoginRequestDto;
 import com.basicboard.dto.MemberJoinRequestDto;
+import com.basicboard.exception.DuplicateUserIdException;
 import com.basicboard.mapper.MemberMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 // * 순수 단위 테스트 - 서비스 로직만 검증한다
@@ -57,6 +61,14 @@ import static org.mockito.Mockito.verify;
 // - eq("hong")     : 정확히 "hong" 인 인자
 // - 주의: 한 메서드의 인자 중 하나라도 매처(any 등)를 쓰면, 나머지 인자도 전부 매처로 써야 한다
 // 예) verify(repo).method(eq("hong"), any());   // "hong" 은 그냥 값이 아니라 eq() 로 감싼다
+
+// # 핵심 아이디어: MemberService 만 진짜 객체로 쓰고, 그것이 의존하는 것들(리포지토리/매퍼)은 "가짜(Mock)"로 바꾼다
+//   - 진짜 DB 리포지토리를 쓰면 DB 가 떠 있어야 하고 느리다. 우리는 "서비스 로직" 만 보고 싶다
+//   - 그래서 리포지토리를 Mock 으로 두고 "이 메서드는 이런 값을 돌려준다고 치자" 라고 우리가 지정한다
+//   - 스프링을 아예 띄우지 않으므로 매우 빠르다 (@SpringBootTest 없음에 주목)
+
+// # 참고: 서비스에 붙은 클래스 레벨 @Transactional 은 여기선 동작하지 않는다
+//         (트랜잭션은 스프링이 프록시로 걸어주는 기능인데, 지금은 스프링을 안 띄우고 new 로 만든 순수 객체라서)
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
@@ -148,5 +160,22 @@ class MemberServiceTest {
         verify(memberRepository).save(member);
     }
 
+    @Test
+    @DisplayName("회원가입 - 아이디가 이미 있으면 DuplicatedUserIdException을 던지고 저장하지 않는다")
+    void join_중복이면_예외() {
+        // given
+        MemberJoinRequestDto dto = new MemberJoinRequestDto();
+        dto.setUserId("test");
+        dto.setPassword("1234");
+        dto.setUserName("홍길동");
+
+        given(memberRepository.existsByUserId("test")).willReturn(true);
+
+        // when & then
+        assertThatThrownBy(() -> memberService.join(dto))
+                .isInstanceOf(DuplicateUserIdException.class)
+                .hasMessageContaining("[회원가입] 이미 존재하는 ID 입니다.");
+        verify(memberRepository, never()).save(any());
+    }
 
 }
