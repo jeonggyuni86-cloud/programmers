@@ -4,6 +4,9 @@ import com.basicboard.domain.entity.Board;
 import com.basicboard.dto.*;
 import com.basicboard.service.BoardService;
 import com.basicboard.service.FileService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +18,15 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+
+// * Swagger 어노테이션들
+// - @Tag               : 컨트롤러(그룹) 단위의 설명 - 화면에서 API를 묶는 큰 제목이 된다
+// - @Operation         : 메서드(API 한 개) 단위의 설명 - 요약 (Summary) / 상세 (Description)
+// - @Parameter         : 파라미터 하나에 대한 설명
+// - @ApiResponse(s)    : 이 API가 낼 수 있는 응답 (상태코드별)을 문서에 명시
+// - @Content / @Schema : 응답 / 요청 본문의 "형태(어떤 DTO인지)"를 지정
+
+@Tag(name = "게시글 API", description = "게시글 목록 / 상세 조회, 작성, 수정, 삭제, 첨부파일 다운로드")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/boards")
@@ -23,10 +35,17 @@ public class BoardApiController {
     private final BoardService boardService;
     private final FileService fileService;
 
+    @Operation(
+            summary = "게시글 목록 조회",
+            description = "페이지 단위로 게시글 목록을 조회한다. 목록(boards)과 마지막 페이지 여부(last), 전체 페이지 수(totalPages)를 함께 돌려준다."
+    )
     @GetMapping
     public BoardListResponseDto getBoardList(
-        @RequestParam(defaultValue = "1") int page,
-        @RequestParam(defaultValue = "10") int size
+            @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1")
+            @RequestParam(defaultValue = "1") int page,
+
+            @Parameter(description = "한 페이지에 담을 게시글 수", example = "10")
+            @RequestParam(defaultValue = "10") int size
     ) {
         List<Board> boards = boardService.getBoards(page, size);
         int totalBoards = boardService.getTotalBoards();
@@ -44,8 +63,21 @@ public class BoardApiController {
                 .build();
     }
 
-    @PostMapping
-    public void saveBoard(@ModelAttribute BoardWriteRequestDto dto) {
+    // * Swagger 에서 "파일 업로드(multipart)" 를 제대로 그리게 하는 핵심
+    // # 문제: @ModelAttribute + MultipartFile 을 그냥 두면, Swagger 가 이걸 JSON 본문으로 오해하거나
+    //         파일 선택 버튼을 안 그려서 UI 에서 테스트가 안 된다
+    // # 해결 2가지 (둘을 같이 써야 완성된다):
+    //   (1) 여기 @PostMapping 에 consumes = MULTIPART_FORM_DATA_VALUE 를 "명시" 한다
+    //       -> springdoc 이 "아, 이 API 는 JSON 이 아니라 multipart 폼이구나" 를 알고 폼 형태로 그린다
+    //       -> 덤으로 이 엔드포인트가 multipart 요청만 받도록 더 엄격/정확해진다 (JS 는 원래 multipart 로 보냄)
+    //   (2) DTO 의 MultipartFile 필드에 @Schema(type="string", format="binary") 를 붙인다
+    //       -> 그래야 그 칸이 "파일 선택" 버튼으로 렌더링된다 (BoardWriteRequestDto 참고)
+    @Operation(summary = "게시글 작성",
+            description = "제목/내용/작성자와 (선택적) 첨부파일을 multipart/form-data 로 받아 새 게시글을 저장한다.")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void saveBoard(
+            @ModelAttribute BoardWriteRequestDto dto
+    ) {
         boardService.saveBoard(dto.getUserId(), dto.getTitle(), dto.getContent(), dto.getFile());
     }
 
