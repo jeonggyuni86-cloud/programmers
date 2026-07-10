@@ -22,7 +22,6 @@ public class LoggingAspect {
     public Object logRequest(ProceedingJoinPoint joint) throws Throwable {
         String className = joint.getSignature().getDeclaringTypeName();
         String methodName = joint.getSignature().getName();
-        String[] args = (String[])joint.getArgs();
 
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
@@ -33,7 +32,6 @@ public class LoggingAspect {
         }
 
         System.out.println("[요청시작] " + httpInfo + "->" + methodName);
-        System.out.println("[파라미터] " + Arrays.toString(args));
 
         long start = System.nanoTime();
         try {
