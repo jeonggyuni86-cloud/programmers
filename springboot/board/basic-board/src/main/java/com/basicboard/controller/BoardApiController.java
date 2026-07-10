@@ -173,10 +173,13 @@ public class BoardApiController {
 
     }
 
-
+    @Operation(summary = "게시글 삭제",
+            description = "경로의 id 게시글을 삭제한다. 첨부파일 경로(filePath)를 JSON 본문으로 함께 받아 파일도 정리한다.")
     @DeleteMapping("/{id}")
     public void deleteBoard(
+            @Parameter(description = "삭제할 게시글 id", example = "1")
             @PathVariable long id,
+
             @RequestBody BoardDeleteRequestDto dto
     ) {
         boardService.deleteBoard(id, dto);
