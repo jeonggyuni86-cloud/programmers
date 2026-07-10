@@ -6,6 +6,10 @@ import com.basicboard.service.BoardService;
 import com.basicboard.service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -80,9 +84,22 @@ public class BoardApiController {
     ) {
         boardService.saveBoard(dto.getUserId(), dto.getTitle(), dto.getContent(), dto.getFile());
     }
+    // @ApiResponses = "이 API 가 낼 수 있는 응답들" 을 상태코드별로 문서에 나열한다
+    //   - 성공(200)만이 아니라 실패(404)도 미리 적어두면, 이 API 를 쓰는 사람이 어떤 상황을 대비해야 하는지 한눈에 안다
+    //   - 404 의 응답 본문 형태(schema)를 ErrorResponseDto 로 지정하면, 실패 시 무엇이 오는지까지 문서에 드러난다
 
+    @Operation(summary = "게시글 상세 조회", description = "id로 게시글 한 건의 상세 내용을 조회한다.")
+    @ApiResponses( {
+            @ApiResponse(responseCode = "200", description = "게시글 상세 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "게시글 상세 조회 실패 - 없음",
+                    content = @Content(schema = @Schema (implementation = ErrorResponseDto.class))
+            )
+    })
     @GetMapping("/{id}")
-    public BoardDetailResponseDto getBoardDetail(@PathVariable("id") long id) {
+    public BoardDetailResponseDto getBoardDetail(
+            @Parameter(description = "조회할 게시글 id", example = "1")
+            @PathVariable long id
+    ) {
         Board board = boardService.getBoardDetail(id);
 
         return BoardDetailResponseDto.builder()
