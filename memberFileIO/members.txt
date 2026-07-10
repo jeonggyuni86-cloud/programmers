@@ -1,2 +1,0 @@
-NORMAL,asd,asd,asd
-VIP,asd,saf,asf
