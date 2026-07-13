@@ -3,10 +3,14 @@ package com.basicboard.service;
 import com.basicboard.domain.entity.Board;
 import com.basicboard.domain.repository.BoardRepository;
 import com.basicboard.dto.BoardDeleteRequestDto;
+import com.basicboard.dto.BoardListItemResponseDto;
+import com.basicboard.dto.BoardSearchRequestDto;
 import com.basicboard.dto.BoardUpdateRequestDto;
 import com.basicboard.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,6 +94,9 @@ public class BoardService {
         fileService.deleteFile(dto.getFilePath());
     }
 
-
+    @Transactional(readOnly = true)
+    public Page<BoardListItemResponseDto> searchBoards(BoardSearchRequestDto dto, Pageable pageable) {
+        return boardRepository.searchBoards(dto, pageable);
+    }
 
 }
