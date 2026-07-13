@@ -189,4 +189,9 @@ public class BoardApiController {
         boardService.deleteBoard(id, dto);
     }
 
+    // =========== {Query DSL} ===========
+    @GetMapping("/search")
+    public void searchBoards() {
+
+    }
 }
