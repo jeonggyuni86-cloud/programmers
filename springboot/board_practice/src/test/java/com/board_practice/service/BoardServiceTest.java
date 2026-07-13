@@ -34,7 +34,6 @@ class MemberServiceTest {
     @Test
     void login_성공() {
         Member member = Member.builder().userId("hong").password("1234").userName("홍길동").build();
-        // (1) member 객체를 만든 것과 (2) 가짜가 그걸 돌려주게 하는 건 별개다!
         given(memberRepository.findByUserId("hong")).willReturn(Optional.of(member));
 
         LoginRequestDto req = new LoginRequestDto();
