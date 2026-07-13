@@ -40,6 +40,10 @@ dependencies {
     //     (WebFlux 를 쓴다면 '-webflux-ui' 를 골랐을 것이다)
     //   - 접미사 '-ui' 는 명세(JSON)뿐 아니라 Swagger UI 화면까지 함께 포함한다는 뜻이다
     //     (화면 없이 JSON 명세만 필요하면 '-webmvc-api' 를 쓴다)
+    implementation 'io.github.openfeign.querydsl:querydsl-jpa:7.4.0'
+    annotationProcessor 'io.github.openfeign.querydsl:querydsl-apt:7.4.0:jpa'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 }
 
 tasks.named('test') {
