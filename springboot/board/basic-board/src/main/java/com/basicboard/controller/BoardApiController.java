@@ -214,4 +214,20 @@ public class BoardApiController {
         Pageable pageable = PageRequest.of(page - 1, size);
         return boardService.searchBoards(dto, pageable);
     }
+
+    @Operation(summary = "게시글 상세 + 댓글",
+            description = "게시글 한 건과 그에 달린 댓글 목록을 fetch join 으로 한 번에 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "해당 id 의 게시글이 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
+    @GetMapping("/{id}/with-comments")
+    public BoardWithCommentsResponseDto getBoardWithComments(
+            @Parameter(description = "조회할 게시글 id", example = "1")
+            @PathVariable long id
+    ) {
+
+        return null;
+    }
 }

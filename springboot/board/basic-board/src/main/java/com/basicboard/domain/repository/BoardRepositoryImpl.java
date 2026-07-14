@@ -1,5 +1,6 @@
 package com.basicboard.domain.repository;
 
+import com.basicboard.domain.entity.Board;
 import com.basicboard.domain.entity.QBoard;
 import com.basicboard.domain.entity.QComment;
 import com.basicboard.domain.entity.QMember;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -79,6 +81,34 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
         //  countQuery::fetchOne == () -> countQuery.fetchOne()
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    // 만약 그냥 board 하나만 조회한 뒤 board.getComments() 를 순회하면?
+    // - comments 는 LAZY라, 순회하는 순간 "댓글을 가져오는 SQL이 추가로" 나간다.
+    // - 게시글이 여러 개면 게시글마다 댓글 쿼리가 또 나가서 총 1 + N 번 (N+1 문제)
+
+    // - N + 1
+    // 1 = 처음 의도하고 날린 쿼리 1번
+    // N = 그 결과 행 수만큼 "추가로"나가는 쿼리 N번(게시글 마다 댓글 조회 1번씩)
+
+    // # 실제 SQL 흐름
+    // List<Board> boards = boardRepository.findAll();
+    // for (Board board : boards) {
+    //      board.getComments(); // 순회하며 LAZY가 꺠어날 때마다..
+    // }
+    // SELECT * FROM comments WHERE board_id = 1;
+    // SELECT * FROM comments WHERE board_id = 2;
+    // .....
+    // SELECT * FROM comments WHERE board_id = 100;
+    // -> DB에는 총 101번의 쿼리가 나간다
+    @Override
+    public Optional<Board> findWithComments(Long id) {
+        Board result = queryFactory
+                .selectFrom(board)
+                .leftJoin(board.comments, comment).fetchJoin()
+                .where(board.id.eq(id))
+                .fetchOne();
+        return Optional.ofNullable(result);
     }
 
     // 제목 부분 일치(Like %title%) : 빈 값이면 조건 없음(null)

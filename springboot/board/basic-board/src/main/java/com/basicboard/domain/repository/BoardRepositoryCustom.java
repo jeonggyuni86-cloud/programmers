@@ -1,9 +1,12 @@
 package com.basicboard.domain.repository;
 
+import com.basicboard.domain.entity.Board;
 import com.basicboard.dto.BoardListItemResponseDto;
 import com.basicboard.dto.BoardSearchRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 
 // * "직접 짠 쿼리(QueryDSL)"를 위한 커스텀 레포지토리 인터페이스
 // - BoardRepository는 Spring Data가 구현체를 자동으로 생성해주는 인터페이스여서, 우리가 직접 코드를 못 넣는다.
@@ -20,4 +23,6 @@ public interface BoardRepositoryCustom {
             BoardSearchRequestDto dto,
             Pageable pageable
     );
+
+    Optional<Board> findWithComments(Long id);
 }
