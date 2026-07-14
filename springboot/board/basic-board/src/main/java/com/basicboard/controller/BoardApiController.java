@@ -2,6 +2,7 @@ package com.basicboard.controller;
 
 import com.basicboard.domain.entity.Board;
 import com.basicboard.dto.*;
+import com.basicboard.mapper.BoardMapper;
 import com.basicboard.service.BoardService;
 import com.basicboard.service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,6 +46,7 @@ public class BoardApiController {
 
     private final BoardService boardService;
     private final FileService fileService;
+    private final BoardMapper boardMapper;
 
     @Operation(
             summary = "게시글 목록 조회",
@@ -227,7 +229,8 @@ public class BoardApiController {
             @Parameter(description = "조회할 게시글 id", example = "1")
             @PathVariable long id
     ) {
-
-        return null;
+        Board board = boardService.getBoardWithComments(id);
+        return boardMapper.toBoardWithCommentsResponseDto(board);
     }
+
 }
