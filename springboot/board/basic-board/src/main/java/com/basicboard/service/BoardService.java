@@ -106,4 +106,8 @@ public class BoardService {
                 );
     }
 
+    public void getAuthorsStats(long minCount) {
+
+    }
+
 }

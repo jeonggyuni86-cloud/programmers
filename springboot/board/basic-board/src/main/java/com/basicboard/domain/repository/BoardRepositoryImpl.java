@@ -4,6 +4,7 @@ import com.basicboard.domain.entity.Board;
 import com.basicboard.domain.entity.QBoard;
 import com.basicboard.domain.entity.QComment;
 import com.basicboard.domain.entity.QMember;
+import com.basicboard.dto.BoardAuthorStatResponseDto;
 import com.basicboard.dto.BoardListItemResponseDto;
 import com.basicboard.dto.BoardSearchRequestDto;
 import com.querydsl.core.types.Expression;
@@ -117,6 +118,11 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .where(board.id.eq(id))
                 .fetchOne();
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public List<BoardAuthorStatResponseDto> countByAuthor(long minCount) {
+        return List.of();
     }
 
     // 제목 부분 일치(Like %title%) : 빈 값이면 조건 없음(null)

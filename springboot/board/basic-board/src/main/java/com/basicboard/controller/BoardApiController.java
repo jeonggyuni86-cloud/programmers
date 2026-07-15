@@ -126,8 +126,8 @@ public class BoardApiController {
     // Content-Disposition : attachment 헤더를 붙일 방법이 없다.
     // -> 그러면 다운로드가 아니라 브라우저가 파일을 그냥 열어버리고, 저장 파일명도 지정할 수 없다
     // 응답이 "파일(바이너리)" 임을 문서에 알려주기
-//   - 이 API 는 JSON 이 아니라 파일 그 자체를 내려준다
-//   - 응답 형태를 octet-stream + Schema(format="binary") 로 지정하면, 문서에 "다운로드되는 바이너리" 로 표시된다
+    //   - 이 API 는 JSON 이 아니라 파일 그 자체를 내려준다
+    //   - 응답 형태를 octet-stream + Schema(format="binary") 로 지정하면, 문서에 "다운로드되는 바이너리" 로 표시된다
 
 
     @Operation(summary = "첨부파일 다운로드",
@@ -231,6 +231,15 @@ public class BoardApiController {
     ) {
         Board board = boardService.getBoardWithComments(id);
         return boardMapper.toBoardWithCommentsResponseDto(board);
+    }
+    @Operation(summary = "작성자 별 게시글 수 통계",
+            description = "작성자별로 게시글 수를 집계하고(group by) minCount 편 이상 쓴 작성자(having)만 많이쓴 순으로 내려준다")
+    @GetMapping("/stats/authors")
+    public void getAuthors(
+            @Parameter(description = "최소 게시글 수 (이 값 이상 쓴 작성자만)", example = "1")
+            @RequestParam(defaultValue = "1") long minCount
+    ) {
+
     }
 
 }

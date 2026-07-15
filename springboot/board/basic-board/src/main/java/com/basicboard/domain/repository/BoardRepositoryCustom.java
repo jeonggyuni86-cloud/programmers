@@ -1,11 +1,13 @@
 package com.basicboard.domain.repository;
 
 import com.basicboard.domain.entity.Board;
+import com.basicboard.dto.BoardAuthorStatResponseDto;
 import com.basicboard.dto.BoardListItemResponseDto;
 import com.basicboard.dto.BoardSearchRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 // * "직접 짠 쿼리(QueryDSL)"를 위한 커스텀 레포지토리 인터페이스
@@ -25,4 +27,6 @@ public interface BoardRepositoryCustom {
     );
 
     Optional<Board> findWithComments(Long id);
+
+    List<BoardAuthorStatResponseDto> countByAuthor(long minCount);
 }
