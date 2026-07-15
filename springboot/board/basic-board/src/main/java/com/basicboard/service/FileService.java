@@ -1,5 +1,6 @@
 package com.basicboard.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.MalformedInputException;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class FileService {
 
@@ -31,6 +33,8 @@ public class FileService {
             String storedFileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
             File dest = new File(dir, storedFileName);
             file.transferTo(dest);
+
+            log.info("파일 저장 : originalStoredFIleName = {}, storedFileName = {}", file.getOriginalFilename(), storedFileName);
             return storedFileName;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -63,6 +67,10 @@ public class FileService {
         }
         File file = new File(filePath);
         if(!file.exists()) { return; }
-        file.delete();
+        boolean deleted = file.delete();
+
+        if( !deleted ) {
+            log.warn("첨부파일 삭제 실패(디스크에 남음) : filePath = {}", filePath);
+        }
     }
 }

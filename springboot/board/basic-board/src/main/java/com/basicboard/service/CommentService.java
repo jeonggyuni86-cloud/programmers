@@ -7,11 +7,13 @@ import com.basicboard.domain.repository.CommentRepository;
 import com.basicboard.dto.CommentWriteRequestDto;
 import com.basicboard.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -32,6 +34,6 @@ public class CommentService {
                 .build();
 
         commentRepository.save(comment);
-
+        log.info("댓글 등록 : contentId = {}, boardId = {}, userId = {}", comment.getId(), boardId, dto.getUserId());
     }
 }
