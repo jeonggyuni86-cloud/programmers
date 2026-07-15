@@ -1,5 +1,8 @@
 package com.basicboard.scheduler;
 
+import com.basicboard.domain.repository.BoardRepository;
+import com.basicboard.domain.repository.CommentRepository;
+import com.basicboard.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,6 +33,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class BoardBatchScheduler {
 
+    private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
+
     // (1) 일일 현황 리포트 - cron 방식
     // cron 표현식 읽는 법 - "0 0 9 * * *" = 매일 09:00:00
     //
@@ -42,10 +49,32 @@ public class BoardBatchScheduler {
     //      └──────────────────── 초   (0~59) → 0초
     // - 스프링 cron 은 "6자리"다. (맨 앞에 '초'가 있다.)
     // ex) 리눅스 crontab은 5자리(분 부터), crontab예제를 그대로 복사하면 한칸씩 밀려 이동한 시간에 돈다
+    //   # 요일은 숫자로도, 영문으로도 쓸 수 있다 - 둘은 완전히 같은 뜻이다
+    //     숫자: 0 또는 7=일, 1=월, 2=화, 3=수, 4=목, 5=금, 6=토   ("0 0 4 * * 1" = 매주 월요일 04:00)
+    //     영문: SUN MON TUE WED THU FRI SAT (대소문자 무관)
+    //     범위/목록: "MON-FRI"(평일), "1-5"(같은 뜻), "MON,WED,FRI" / "1,3,5"
+    //       예) "0 0 9 * * 0-3"   = 일(0)~수(3)요일 09:00  (0 이 일요일임에 주의 - "월~수"가 아니다!)
+    //       예) "0 0 9 * * SUN-WED" = 같은 뜻을 영문으로 - 어느 요일인지 읽는 순간 명확하다
+    //       조합도 가능: "0-3,6" (일~수 + 토)
+
+    // - zone 옵션 - 시작의 기준 시간대를 정한다.
+    // - 지정하지 않으면 "서버(JVM)의 시간대"를 따른다. -> 해외 클라우드 서버(UTC)에 배포하면,
+    // "9시에 돌아라"가 한국 시간 10시에 도는 사고가 난다.
     @Scheduled(cron = "0 0 9 * * *", zone = "Asia/Seoul")
     public void dailyReport() {
+        // 배치는 AOP 로그가 없으므로 시작을 직접 남긴다.
+        // 즉 AOP 대상이 아니다.
         log.info("[일일 리포트 배치 시작]");
 
+        long members = memberRepository.count();
+        long boards = boardRepository.count();
+        long comments = commentRepository.count();
+
+        log.info("[일일 리포트]: 회원 {}명, 게시글 {}건, 댓글 {}건", members, boards, comments);
+    }
+
+    @Scheduled(initialDelay = 10_000, fixedDelay = 3_000_000)
+    public void reportOrphanFiles() {
 
     }
 }
