@@ -57,4 +57,10 @@ public class BoardController {
         model.addAttribute("userId", userId);
         model.addAttribute("userName", userName);
     }
+
+    @GetMapping("/stats")
+    public String stats(HttpSession session, Model model) {
+        setSession(session, model);
+        return "board-stats";
+    }
 }
