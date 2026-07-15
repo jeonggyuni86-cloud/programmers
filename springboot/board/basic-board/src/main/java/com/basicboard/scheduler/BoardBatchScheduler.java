@@ -2,6 +2,7 @@ package com.basicboard.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 // * @Scheduled - 정해진 시각/주기에 메서드를 자동 실행하는 배치 작업
@@ -29,5 +30,22 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class BoardBatchScheduler {
 
+    // (1) 일일 현황 리포트 - cron 방식
+    // cron 표현식 읽는 법 - "0 0 9 * * *" = 매일 09:00:00
+    //
+    //     "0   0   9   *   *   *"
+    //      │   │   │   │   │   └ 요일 (0~7, 0과 7은 일요일. * = 모든 요일)
+    //      │   │   │   │   └──── 월   (1~12)
+    //      │   │   │   └──────── 일   (1~31)
+    //      │   │   └──────────── 시   (0~23) → 9시
+    //      │   └──────────────── 분   (0~59) → 0분
+    //      └──────────────────── 초   (0~59) → 0초
+    // - 스프링 cron 은 "6자리"다. (맨 앞에 '초'가 있다.)
+    // ex) 리눅스 crontab은 5자리(분 부터), crontab예제를 그대로 복사하면 한칸씩 밀려 이동한 시간에 돈다
+    @Scheduled(cron = "0 0 9 * * *", zone = "Asia/Seoul")
+    public void dailyReport() {
+        log.info("[일일 리포트 배치 시작]");
 
+
+    }
 }
