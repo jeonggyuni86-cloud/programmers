@@ -2,6 +2,7 @@ package com.basicboard;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 // * RESTful : (REST, Representational State Transfer)
 // 자원을 URI로 표현하고, HTTP 메서드로 그 자원에 대한 행위를 표현하는 API 설계원칙
@@ -66,6 +67,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // 의존성 방향: controller -> service -> domain.repository(interface) <- JPA 구현
 // 도메인이 기술(JPA)에 의존하지 않도록 인터페이스에만 의존한다
 
+// * @EnableScheduling
+// 이 스위치가 없으면 "아무 일도 일어나지 않는다"
+// - 에러도 경고도 없이 그냥 조용히 실행이 안 된다.
+// - 이 어노테이션이 있어야 스프링이 시작할 때 @Scheduled가 붙은 메서드를 찾아 스케줄러에 등록한다
+@EnableScheduling
 @SpringBootApplication
 public class BasicBoardApplication {
     public static void main(String[] args) {
