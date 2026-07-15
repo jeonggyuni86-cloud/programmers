@@ -55,9 +55,12 @@ public class MemberService {
         // dto -> Member로 변환해줄 매퍼 필요
 
         if(memberRepository.existsByUserId(dto.getUserId())) {
+            //실패이지만 예상 범위 안의 실패이다
+            log.warn("회원가입 실패(아이디 중복): userid: {}", dto.getUserId());
             throw new DuplicateUserIdException("[회원가입] 이미 존재하는 ID 입니다.");
         }
         memberRepository.save(memberMapper.toEntity(dto));
+        log.info("회원가입 완료 : userId: {}", dto.getUserId());
     }
 
     // * Optional<Member> : NPE 예방을 위해 사용
@@ -115,8 +118,16 @@ public class MemberService {
         //     return Optional.empty();          // 실패: 빈 Optional 반환
         //
         //   => 위 if 분기(널 체크 + 비밀번호 비교)를 .filter(람다) 한 줄로 압축한 것이 아래 코드다
-        return memberRepository.findByUserId(dto.getUsername())
+        Optional<Member> results = memberRepository.findByUserId(dto.getUsername())
                 .filter(member -> member.getPassword().equals(dto.getPassword()));
+
+        if ( results.isEmpty() ) {
+            log.warn("로그인 실패 : username: {}", dto.getUsername());
+        } else {
+            log.info("로그인 성공 : username: {}", dto.getUsername());
+        }
+
+        return results;
 
     }
 
