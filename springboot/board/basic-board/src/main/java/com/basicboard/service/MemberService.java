@@ -7,11 +7,37 @@ import com.basicboard.dto.MemberJoinRequestDto;
 import com.basicboard.exception.DuplicateUserIdException;
 import com.basicboard.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+// * @Slf4j 로 서비스 레벨 로깅하기(lombok)
+// lombok을 안쓰면 ...
+// private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MemberService.class);
+
+// 로그 레벨 5단계 - "이 메시지가 얼마나 중요한가"의 등급
+// trace < debug < info < warn < error
+// - trace/debug : 개발 중 흐름 추적용 (운영 기본 설정에선 안 찍힘)
+// - info : 의미 있는 비즈니스 이벤트(가입 완료, 글 등록 등 "정상인데 기록할 가치가 있는 일")
+// - warn : 이상하지만 서비스는 계속되는 상황(로그인 실패, 중복 가입 시도 등)
+// - error : 예상 못한 실패 (500 계열)
+
+// {} 플레이스 홀더 - 문자열 + 값 대신 이걸 쓴다
+// log.debug("가입 요청 : " + dto.getUserId()); // (X) - 렙벨이 꺼져 있어도 문자열 연결 비용은 발생
+// log.debug("가입 요청 : " userId= ()", dto.getUserId()); // (O) - 실제로 찍힐 때만 조립(지연 평가)
+
+// 민감한 정보는 로그에 남기지 않는다.
+// - 객체를 통째로 찍으면 그안의 값들이 그대로 로그에 남는다.
+// - 로그 파일은 오래 보관되고, 여러 사람들이 보므로, 비밀번호 / 토큰 / 주민번호 등은 제외해야 한다.
+
+// AOP와의 역할 분담
+// -
+
+
+
+@Slf4j
 @Service
 // 이 클래스의 "모든 메서드"에 기본 적용한다.
 // - readOnly = true의 효과
