@@ -1,0 +1,68 @@
+package com.example.htttpbasic.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
+// * Spring Security의 동작 메커니즘
+// Spring Security의 모든 것은 필터(filter) 위에서 돌아간다.
+// 웹 요청이 들어오면 실제 컨트롤러에 도달하기 전에 여러 개의 보안 필터를 순서대로 통과한다.
+// 이 진입점이 DelegatingFilterProxy 이다.
+// 서블릿 컨테이너(톰캣)에 등록된 이 필터가 요청을 받아 스프링이 관리하는 FilterChainProxy에게 위임하고,
+// 이 FilterChainProxy가 내부적으로 여러 SecurityFilterChain을 들고있다.
+// 즉 "톰캣 필터 -> 스프링 빈으로 관리하는 보안 필터"로 다리를 놓아주는 구조이다.
+// - 요청 -> DelegatingFilterProxy -> FilterChainProxy -> (보안 필터 체인) -> DispatcherServlet -> Controller
+
+// * DelegatingFilterProxy : "서블릿 컨테이너(톰캣)의 세계와 스프링의 세계를 이어주는 다리 역할을 하는 필터"이다.
+// - Delegating(위임) + Filter + Proxy(대리인) : 실제 일은 다른 녀석에게 위임하는 껍데기 필터
+// 왜 이런 게 필요한가
+// 핵심은 톰캣과 스프링이 서로 다른 세계라는 점이다.
+
+// 서블릿 컨테이너는 Filter를 자기 규칙대로 등록하고 생성/관리한다.
+// 하지만 톰캣은 스프링 Bean을 전혀 모른다. 스프링 컨테이너 안에 뭐가 있는지 전혀 모른다.
+// 그런데 우리가 쓰고 싶은 실제 보안 필터들(FilterChainProxy와 그 안의 인증/인가 필터)은 스프링 Bean이다.
+// DI, 라이프사이클 관리 등 스프링 기능을 다 써야 하기때문이다.
+
+// 필터는 톰캣에 등록돼야 하는데, 정작 실행하고 싶은 로직은 스피링 Bean이다. 톰캣에 직접 스프링 Bean을 필터로 꽂을 수는 없다.
+// 그래서 DelegatingFilterProxy 클래스가 중간에서 다리를 놓는다.
+
+// DelegatingFilterProxy 자신은 평범한 서블릿 필터라서 톰캣에 정상적으로 등록될 수 있다. (톰캣 입장에선 일반 필터중 하나)
+// 하지만 실제로 요청이 들어오면, 스스로 처리하지 않고 스프링 컨테이너(ApplicationContext)에서 특정 이름의 Bean을 찾아 그 Bean에게 일을 넘긴다.
+// Spring Security의 경우, 찾는 Bean 이름은 SpringSecurityFilterChain이고, 이 Bean이 FilterChainProxy이다.
+
+// * HTTP BASIC이란?
+// HTTP 표준(RFC 7617)에 정의된 가장 기본적인 인증 방식이다.
+// 별도의 로그인 페이지나 폼이 없이, HTTP 요청 헤더에 아이디/비밀번호를 실어 보내는 방식
+
+// * HTTP BASIC 인증 (Spring Security)
+// - 프로토콜 관점의 동작 원리
+// 1. 클라이언트가 보호된 자원에 그냥 접근하면, 서버가 401 Unauthorized와 함꼐 헤더를 응답한다. -> WWW-Authenticate: Basic realm="..."
+// 2. 브라우저는 이걸 받으면 아이디/비밀번호를 입력하는 작은 팝업 창을 띄운다.
+// 3. 사용자가 입력하면, 클라이언트는 username:password를 Base64로 인코딩해서 헤더에 담아 다시 요청한 -> Authorization: Basic ZHVzZXI6cGFzc3dvcmQ=
+// 4. 서버는 이 헤더를 디코딩해서 인증을 검증한다.
+
+// - Spring Security에서의 동작 원리 - BasicAuthenticationFilter가 담당
+// 위 프로토콜을 필터 체안에서 실제로 처리하는 흐름
+// 1. 요청이 들어오면 BasicAuthenticationFilter가 "Authorization : Basic ZHVzZXI6cGFzc3dvcmQ=" 헤더가 있는지 확인한다.
+// 2. 헤더가 있으면 Base64로 디코딩해 아이디/비밀번호를 꺼내고, UsernamePasswordAuthenticationToken을 만든다.
+// 3. 이 토큰을 AuthenticationManager에게 넘겨 인증을 검증한다. (내부적으로 UserDetailService로 사용자 조회 -> PasswordEncoder로 비밀번호 대조)
+// 4. 성공하면 SecurityContext에 인증 정보를 저장하고 다음 필터로 넘어간다.
+// 5. 헤더가 없거나 인증에 실패하면 BasicAuthenticationEntryPoint가 401 Unauthorized와 WWW-Authenticate: Basic 헤더를 응답한다. (다시 1번 상황으로)
+
+// * 특징
+// Base64는 암호화가 아니라 단순 인코딩이다. 누구나 즉시 디코딩해서 원래 아이디/비밀번호를 볼 수 있다.
+// - HTTP Basic은 반드시 HTTPS(TLS)와 함께 써야 한다. 평문 HTTP에서 쓰면 비밀번호가 그대로 노출된 것이나 마찬가지이다.
+// - 모든 요청마다 Authorization 헤더를 계속 보내야 한다. 서버가 상태를 기억하지 않는 stateless 방식이기 때문이다
+// 그래서 REST API나 서버간 통신에서 간단하게 쓰기 좋다.
+// - 로그아웃 개념이 애매하다. 브라우저가 자격증명을 캐싱해두기 때문에 명시적인 로그아웃 처리가 어렵다.
+
+// * realm은 HTTP 인증에서 "보호 영역의 이름"을 뜻한다. 쉽게 말해 "지금 어느 구현에 로그인하려는 건지"를 나타내는 라벨이다.
+// 실제로 어떤 역할을 하나
+// 1. 사용자에게 보여주는 안내 문구
+//
+// 2. 보호 영역을 구분하는 식별자
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+}
