@@ -5,6 +5,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 // * Spring Security의 동작 메커니즘
@@ -74,6 +80,14 @@ import org.springframework.security.web.SecurityFilterChain;
 // 그래서 사용자 구역에 로그인한 자격증명을 관리자 구역에 자동으로 재사용하지 않아요.
 // 같은 realm 안에서는 브라우저가 한 번 입력한 자격증명을 캐싱해서 재사용합니다.
 
+// @EnableWebSecurity
+// 부트의 시큐리티 자동 설정 안에 WebSecurityEnablerConfiguration이라는 게 있는데,
+// "클래스패스에 시큐리티가 있고 + 아직 @EnableWebSecurity가 적용 안됐으면" 부트가 대신 붙여준다.
+// 즉, 우리가 안 써도 뒤에서 똑같은 게 켜진다.
+// 그래도 관례적으로 붙이는게 나은 이유
+// "이 클래스가 시큐리티 설정의 진입점"이라는 걸 명시적으로 드러내는 문서화 효과가 있고,
+// 부트 밖으로 코드를 옮기거나 자동 설정 구조가 바뀌어도 안전하며, 비용이 전혀 없기 때문이다.
+// 그래서 공식 문서와 대부분의 예제가 붙이는 쪽을 택한다.
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -89,6 +103,31 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated());
 
         return http.build();
+    }
+
+    // BasicAuthenticationFilter
+    //   → AuthenticationManager (ProviderManager)
+    //        → DaoAuthenticationProvider   ← 지금 이 부분
+    //             ├─ UserDetailsService  (사용자 조회)
+    //             └─ PasswordEncoder     (비밀번호 대조)
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        var manager = new InMemoryUserDetailsManager();
+
+        UserDetails user = User.withUsername("user")
+                .password("1234")
+                .roles("USER")
+                .build();
+
+        manager.createUser(user);
+
+        return manager;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
     }
 
 }
