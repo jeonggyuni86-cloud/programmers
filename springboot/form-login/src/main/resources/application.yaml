@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: form-login
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/java_basic?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    username: root
+    password: qwer1234
