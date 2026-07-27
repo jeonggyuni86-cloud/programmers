@@ -1,7 +1,11 @@
 package com.example.htttpbasic.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 
 // * Spring Security의 동작 메커니즘
 // Spring Security의 모든 것은 필터(filter) 위에서 돌아간다.
@@ -73,5 +77,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+
+        http
+                // BasicAuthenticationFilter가 필터 체인에 등록이된다.
+                // 즉 "이제부터 Authorization: Basic 헤더를 읽어서 인증이을 처리하겠다"는 선언이다.
+                // (Customizer.withDefaults() : 아무것도 커스터마이징 하지 않고 기본값을 쓰겠다.
+                .httpBasic(Customizer.withDefaults())
+                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated());
+
+        return http.build();
+    }
 
 }
