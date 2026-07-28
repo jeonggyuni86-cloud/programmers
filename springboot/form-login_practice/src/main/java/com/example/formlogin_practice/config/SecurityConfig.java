@@ -22,8 +22,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable);
+        configureAuthorization(http);
+        configureLogin(http);
+        configureLogout(http);
+        return http.build();
+    }
+
+    private void configureAuthorization(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/users/join",
@@ -34,16 +41,24 @@ public class SecurityConfig {
                         .permitAll()
                         .anyRequest()
                         .authenticated()
-                )
+                );
+    }
+
+    private void configureLogin(HttpSecurity http) throws Exception {
+        http
                 .formLogin(form -> form
-                        .loginPage("/users/login")
-                        .loginProcessingUrl("/users/login")
-                        .usernameParameter("userId")
-                        .passwordParameter("password")
-                        .successHandler(successHandler)
-                        .failureHandler(failureHandler)
-                        .permitAll()
-                )
+                .loginPage("/users/login")
+                .loginProcessingUrl("/users/login")
+                .usernameParameter("userId")
+                .passwordParameter("password")
+                .successHandler(successHandler)
+                .failureHandler(failureHandler)
+                .permitAll()
+                );
+    }
+
+    private void configureLogout(HttpSecurity http) throws Exception {
+        http
                 .logout(logout -> logout
                         .logoutUrl("/users/logout")
                         .logoutSuccessUrl("/users/login")
@@ -51,8 +66,6 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 );
-        return http.build();
-
     }
 
     @Bean
