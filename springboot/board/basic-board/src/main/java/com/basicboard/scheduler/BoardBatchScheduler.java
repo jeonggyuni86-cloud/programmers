@@ -1,12 +1,19 @@
 package com.basicboard.scheduler;
 
+import com.basicboard.domain.entity.Board;
 import com.basicboard.domain.repository.BoardRepository;
 import com.basicboard.domain.repository.CommentRepository;
 import com.basicboard.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import java.io.File;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 // * @Scheduled - 정해진 시각/주기에 메서드를 자동 실행하는 배치 작업
 // # 전제 조건 2가지
@@ -36,6 +43,9 @@ public class BoardBatchScheduler {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
+
+    @Value("${file.upload-dir}")
+    private String filePath;
 
     // (1) 일일 현황 리포트 - cron 방식
     // cron 표현식 읽는 법 - "0 0 9 * * *" = 매일 09:00:00
@@ -73,8 +83,46 @@ public class BoardBatchScheduler {
         log.info("[일일 리포트]: 회원 {}명, 게시글 {}건, 댓글 {}건", members, boards, comments);
     }
 
-    @Scheduled(initialDelay = 10_000, fixedDelay = 3_000_000)
-    public void reportOrphanFiles() {
+    // * 고아 첨부파일 점검 - fixedDelay 방식
+    // 고아 파일이란? - 디스크에는 있는데 어느 게시글도 참조하지 않는 파일
+    //   - 생기는 경로: FileService.deleteFile 이 실패했을 때(warn 로그 남기던 그 경우),
+    //     또는 파일 저장 후 게시글 저장(트랜잭션)이 실패해 롤백됐을 때 등
+    //   - 파일은 트랜잭션 롤백 대상이 아니라서(DB 가 아니니까) 이런 불일치가 조금씩 쌓일 수 있다
+    //   → 그래서 주기적으로 "DB 와 디스크를 대조"하는 배치를 두는 것이다 (실무의 전형적인 정리 배치 패턴)
+    // 왜 삭제하지 않고 warn 로그만 남기나?
+    //   - "지금 업로드 중"인 파일은 디스크에 먼저 생기고 게시글 저장은 그 다음이다
+    //     → 그 찰나에 배치가 돌면 정상 파일을 고아로 오판해 지워버릴 수 있다 (배치 삭제의 고전적 사고)
 
+    // initialDelay / fixedDelay (단위 : ms)
+    // initialDelay = 10_000 : 10초, 앱이 뜨고 10초 뒤 첫 실행
+    // fixedDelay = 3_600_000 : 1시간 : 그 뒤로는 "이전 실행이 끝난 시점" 부터 1시간 간격으로 반복
+    @Scheduled(initialDelay = 10_000, fixedDelay = 3_600_000)
+    public void reportOrphanFiles() {
+        log.info("[고아 파일 점검 배치 시작]");
+        File dir = new File(filePath).getAbsoluteFile();
+        File[] files = dir.listFiles();
+        if( files == null || files.length == 0) {
+            log.info("[고아 파일 점검] 업로드 디렉토리가 비어 있음");
+            return;
+        }
+        // DB 가 참조 중인 파일 이름 집합을 만든다 (경로 형태가 제각각일 수 있어 "파일 이름"으로 비교)
+        // List 가 아니라 Set 인 이유: contains 검사가 목록 크기와 무관하게 빠르다 (파일 수 × 글 수 반복을 피함)
+
+        Set<String> ref = boardRepository.findAll().stream()
+                .map(Board::getFilePath)
+                .filter(Objects::nonNull)
+                .map(path -> new File(path).getName())
+                .collect(Collectors.toSet());
+        int orphanCount = 0;
+        int checked = 0;
+        for(File file : files) {
+            if(file.isHidden()) continue;
+            checked++;
+            if(!ref.contains(file.getName())) {
+                orphanCount++;
+                log.warn("[고아 파일 발견] 어느 게시글도 참조하지 않음 : {}", file.getName());
+            }
+        }
+        log.info("[고아 파일 점검 완료] 전체 {}개 중 고아 {}개", checked, orphanCount);
     }
 }
