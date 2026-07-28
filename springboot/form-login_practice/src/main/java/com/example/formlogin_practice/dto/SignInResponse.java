@@ -1,0 +1,13 @@
+package com.example.formlogin_practice.dto;
+
+import lombok.Builder;
+
+@Builder
+public record SignInResponse (
+        boolean isLoggedIn,
+        String url,
+        String userName,
+        String userId,
+        String message
+) {
+}
