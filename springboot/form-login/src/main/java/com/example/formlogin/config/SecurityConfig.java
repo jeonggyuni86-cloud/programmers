@@ -1,6 +1,7 @@
 package com.example.formlogin.config;
 
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +10,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import com.example.formlogin.security.CustomAuthenticationFailureHandler;
+import com.example.formlogin.security.CustomAuthenticationSuccessHandler;
 
 // * 폼 로그인이란?
 // 개발자가 직접 만든 HTML 로그인 화면(폼)을 통해 아이디/비밀번호를 받아 인증하는 방식이다.
@@ -60,11 +63,29 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) {
         http
+                // CSRF (Cross-Site Request Forgery, 사이트간 요청 위조
+                // 로그인된 사용자의 브라우저를 속야, 사용자가 의도하지 않은 요청을 우리 서버로 보내게 만드는 공격
+                // 공격이 성립하는 이유 — 브라우저는 요청이 "어느 사이트에서 시작됐든" 대상 서버의 쿠키(JSESSIONID)를 자동으로 붙인다.
+                //   1. 사용자가 우리 사이트에 로그인한 상태 (JSESSIONID 쿠키 보유)
+                //   2. 공격자 페이지(evil.com) 방문 → 숨겨진 form이 우리 서버로 POST 자동 제출 (비밀번호 변경, 송금 등 상태 변경 요청)
+                //   3. 브라우저가 JSESSIONID를 자동으로 실어 보냄 → 서버는 정상 사용자의 요청과 구분 불가
+
+                // Spring Security의 방어 (기본 켜짐): 세션마다 예측 불가능한 CSRF 토큰을 발급하고,
+                // POST/PUT/DELETE 요청은 이 토큰을 함께 보내야만 허용. 공격자 사이트는 Same-Origin Policy 때문에
+                // 우리 페이지에 심어진 토큰을 읽을 수 없어 요청이 403으로 거부된다.
+                // (로그아웃도 POST + 토큰을 요구하는 이유 = 강제 로그아웃 공격 방지)
+
+                // 여기서 끈 이유: 켜면 signUp.js/signIn.js AJAX에 토큰을 실어야 해서(X-CSRF-TOKEN 헤더 등)
+                // 인증 흐름 학습에 집중하기 위해 비활성화. 실서비스(세션 방식)라면 켜고 토큰을 내려주는 방식 권장.
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -76,12 +97,32 @@ public class SecurityConfig {
                 )
                 .formLogin(
                         form -> form
+                                // GET /users/login -> 우리가 만든 로그인 화면(login.html)
+                                // 지정하지 않으면 시큐리티가 기본 제공하는 /login 페이지가 사용된다.
                                 .loginPage("/users/login")
+                                // POST /users/login -> 이 URL로 오는 로그인 제출을 UsernamePasswordAuthenticationFilter가 가로챈다.
+                                // 즉, 컨트롤러를 만들 필요가 없다. - 요청이 DispatcherServlet에 도달하기 전에 필터가 처리한다.
                                 .loginProcessingUrl("/users/login")
+                                // 필터가 요청 본문에서 아이디/비밀번호를 꺼낼 때 사용할 파라미터 이름
+                                // 기본값은 username/password 인데, 우리 폼은 userId라는 이름으로 보내므로 맞춰준다.
                                 .usernameParameter("userId")
                                 .passwordParameter("password")
                                 // 인증 성공
+                                .successHandler(customAuthenticationSuccessHandler)
                                 // 인증 실패
+                                .failureHandler(customAuthenticationFailureHandler)
+                                .permitAll()
+                )
+                // 로그아웃 설정 - logoutFilter가 처리. 역시 컨트롤러가 필요 없다.
+                .logout(
+                        logout -> logout
+                                // 이 URL로 오는 요청을 logoutFilter가 가로챈다.
+                                .logoutUrl("/users/logout")
+                                // 로그아웃 완료된 후 이동될 곳
+                                .logoutSuccessUrl("/users/login")
+                                .invalidateHttpSession(true)
+                                .deleteCookies("JSESSIONID")
+                                // 로그아웃 URL도 인증 여부와 무관하게 접근 허용
                                 .permitAll()
                 );
 

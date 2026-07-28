@@ -1,4 +1,4 @@
-package security;
+package com.example.formlogin.security;
 
 import com.example.formlogin.domain.entity.User;
 import lombok.Builder;
