@@ -43,12 +43,21 @@ import org.springframework.security.web.SecurityFilterChain;
 // 브라우저가 자동으로 JSESSIONID 쿠키를 실어 보내고, 서버는 이 쿠키로 세션을 찾아 저장해 둔, SecurityContext를 복원한다. (이 복원은 SecurityContextHolderFilter 가 담당)
 // 즉 상태 유지(Stateful) 방식이다. HTTP Basic은 매 요청 헤더를 보내는 무상태였던 것과 차이가 있다.
 
-
 // * 인증(Authentication) 흐름
 // 로그인 처럼 "너 누구냐"를 확인하는 과정이다.
 
 // * 인가(Authorization) 흐름
 // "인증된 사용자가 이 자원에 접근할 권한이 있냐"를 판단하는 과정이다.
+
+// * 핵심 컴포넌트
+// - SecurityFilterChain : 어떤 필터들을 어떤 순서로 태울지 정의
+// - AuthenticationManger / AuthenticationProvider : 인증 검증
+// - UserDetailService / UserDetails : 사용자 정보 조회
+// - PasswordEncode : 비밀번호 검증
+// - SecurityContextHolder : 읜증 결과 보관
+// - AuthorizationManager : 인가 접근 권한 판단
+
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
