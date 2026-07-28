@@ -87,13 +87,17 @@ public class SecurityConfig {
                 // 여기서 끈 이유: 켜면 signUp.js/signIn.js AJAX에 토큰을 실어야 해서(X-CSRF-TOKEN 헤더 등)
                 // 인증 흐름 학습에 집중하기 위해 비활성화. 실서비스(세션 방식)라면 켜고 토큰을 내려주는 방식 권장.
                 .csrf(AbstractHttpConfigurer::disable)
+                // 인가 규칙 - URL 별 접근제어 - AuthorizationFilter가 이 규칙대로 판단한다.
+                // 규칙은 "위에서부터" 순서대로 매칭되므로, 구체적인 경로를 먼저 쓰고 anyRequest()는 항상 마지막에 둔다.
                 .authorizeHttpRequests(auth -> auth
+                        // 정적 리소스(css/js)를 막으면 회원가입 페이지가 깨진 채로 렌더링 되므로 함께 열어준다.
                         .requestMatchers(
                                 "/users/join",
                                 "/api/users/join",
                                 "/css/**",
                                 "/js/**"
-                        ).permitAll()
+                        ).permitAll() // 인증 없이 접근 허용
+                        .anyRequest().authenticated()
                 )
                 .formLogin(
                         form -> form
