@@ -1,6 +1,8 @@
 package com.example.token.config.jwt;
 
+import com.example.token.domain.entitiy.Role;
 import com.example.token.domain.entitiy.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
@@ -79,5 +81,21 @@ public class TokenProvider {
             log.warn("Token is Invalid");
             return TokenStatus.INVALID;
         }
+    }
+
+    public User getTokenDetails(String token) {
+        var claims = getClaims(token);
+        return User.builder()
+                .id(claims.get(CLAIM_ID, Long.class))
+                .userId(claims.getSubject())
+                .name(claims.get(CLAIM_NAME, String.class))
+                .role(Role.valueOf(claims.get(CLAIM_ROLE, String.class)))
+                .build();
+    }
+
+    private Claims getClaims(String token) {
+        return jwtParser
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
