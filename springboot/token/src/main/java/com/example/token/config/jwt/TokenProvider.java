@@ -71,6 +71,7 @@ public class TokenProvider {
         try {
             jwtParser.parseSignedClaims(token);
             log.debug("Token is Valid");
+            return TokenStatus.VALID;
         } catch(ExpiredJwtException e) {
             log.warn("Token is Expired");
             return TokenStatus.EXPIRED;
