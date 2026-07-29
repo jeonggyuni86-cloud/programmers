@@ -5,3 +5,16 @@ spring:
     url: jdbc:mysql://localhost:3306/java_basic?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: root
     password: qwer1234
+
+  # HS512 -> HMAC-SHA-512. 비밀 키와 (헤더 + "." + payload)를 함께 해시해서
+  # "키를 아는 쪽만 만들 수 있는 지문"을 서명으로 붙인다.
+  # 검증 시 같은 계산을 다시 해서 서명과 비교하므로, 클레임을 한 글자라도 조작하면 INVALID가 된다.
+  # HS256 vs HS512 : 숫자는 해시 출력의 "비트 수"로, 같은 HMAC 구조에 꽂는 해시 함수가 다르다.
+  # - HS256 : 서명 256비트(32바이트), 최소 키 32바이트
+  # - HS512 : 서명 512비트(64바이트), 최소 키 64바이트
+  # 출력이 길 수록 서명이 길어져 토큰이 커지는 대신 이론적 보안 마진이 크다.
+  # 둘 다 현재 기술로는 깨지지 않는 안전한 선택이며, 여기서는 더 보수적인 HS512를 사용한다.
+
+jwt:
+  issuer: test@naver.com
+  secret_key:
