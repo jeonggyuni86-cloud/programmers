@@ -1,5 +1,7 @@
 package com.example.token.config;
 
+import com.example.token.config.filter.TokenAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 // * JWT(JSON Web Token)
 // JWT는 당사자 간에 정보를 JSON객체로 안전하게 전달하기 위한 토큰 표준
@@ -56,8 +59,11 @@ import org.springframework.security.web.SecurityFilterChain;
 
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final TokenAuthenticationFilter tokenAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -95,6 +101,13 @@ public class SecurityConfig {
                                 "/js/**"
                         ).permitAll()
                         .anyRequest().authenticated()
+                )
+                // JWT 필터를 UsernamePasswordAuthenticationFilter(폼 로그인 필터) 자리 앞에 끼워넣겠다
+                // 인가 판단은 체인 맨 끝에서 일어나므로,
+                // 그 전에 토큰을 검증해 SecurityContext를 채워 둬야 "인증된 요청"으로 치급된다.
+                .addFilterBefore(
+                        tokenAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
                 );
 
         return http.build();
