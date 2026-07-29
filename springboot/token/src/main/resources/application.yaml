@@ -14,7 +14,9 @@ spring:
   # - HS512 : 서명 512비트(64바이트), 최소 키 64바이트
   # 출력이 길 수록 서명이 길어져 토큰이 커지는 대신 이론적 보안 마진이 크다.
   # 둘 다 현재 기술로는 깨지지 않는 안전한 선택이며, 여기서는 더 보수적인 HS512를 사용한다.
-
+  # openssl rand -base64 64 | tr -d '\n'
 jwt:
   issuer: test@naver.com
-  secret_key:
+  secret_key: c9Jc3wGmAwhpFq2jqF1p98plyxR5G3VjAEPQNlZIPCK8mgnaZRr2ezPS87Xqq9kC/ueCg3hM4zUV2EJaToCzLg==
+  access-token-validity: 2h
+  refresh-token-validity: 7d
