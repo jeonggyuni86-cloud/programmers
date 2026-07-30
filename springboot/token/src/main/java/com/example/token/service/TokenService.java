@@ -2,11 +2,14 @@ package com.example.token.service;
 
 import com.example.token.config.jwt.JwtProperties;
 import com.example.token.config.jwt.TokenProvider;
+import com.example.token.config.jwt.TokenStatus;
 import com.example.token.domain.entitiy.User;
+import com.example.token.dto.RefreshTokenResponse;
+import com.example.token.util.CookieUtil;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +18,7 @@ public class TokenService {
     private final TokenProvider tokenProvider;
     private final JwtProperties jwtProperties;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public record TokenPair(
             String accessToken,
             String refreshToken
@@ -31,5 +35,36 @@ public class TokenService {
                 jwtProperties.getRefreshTokenValidity()
         );
         return new TokenPair(accessToken, refreshToken);
+    }
+
+    public RefreshTokenResponse refreshToken(Cookie[] cookies) {
+        String refreshToken = getRefreshToken(cookies);
+
+        if(refreshToken != null && tokenProvider.validateToken(refreshToken) == TokenStatus.VALID) {
+            User user = tokenProvider.getTokenDetails(refreshToken);
+            TokenPair tokenPair = issueToken(user);
+
+            return RefreshTokenResponse.builder()
+                    .validated(true)
+                    .accessToken(tokenPair.accessToken())
+                    .refreshToken(tokenPair.refreshToken())
+                    .build();
+        }
+
+        return RefreshTokenResponse.builder()
+                .validated(false)
+                .build();
+    }
+
+    private String getRefreshToken(Cookie[] cookies) {
+        if(cookies == null) return null;
+
+        for(Cookie cookie : cookies) {
+            if(cookie.getName().equals(CookieUtil.REFRESH_TOKEN_COOKIE)) {
+                return cookie.getValue();
+            }
+        }
+
+        return null;
     }
 }
