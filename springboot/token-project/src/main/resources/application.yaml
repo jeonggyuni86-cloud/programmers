@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: token-project
+  datasource:
+    url: jdbc:mysql://localhost:3306/java_basic?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: qwer1234
+
+jwt:
+  issuer: test@naver.com
+  secret_key: tbc7nduvbZ3RuTvLhVYuPxKLgTg7IPzdBXdo1UFLwvWHQTcgiTuc7DQr0ezTfG+EqbuiaMylcE/bAXxPkQ2maw==
+  access-token-validity: 2h    # "2h" 같은 문자열이 Duration으로 자동 바인딩돼요
+  refresh-token-validity: 7d
