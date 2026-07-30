@@ -116,7 +116,7 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/access-denied",
-                                "/error"
+                                "/error" // 404등 에러 포워딩 경로, 막으면 리다이렉트 루프가 생긴다.
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
