@@ -4,10 +4,7 @@ import com.example.token.dto.SignUpRequest;
 import com.example.token.dto.SignUpResponse;
 import com.example.token.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,5 +19,10 @@ public class UserApiController {
         return SignUpResponse.builder()
                 .url("/users/login")
                 .build();
+    }
+
+    @PostMapping("/login")
+    public void login() {
+
     }
 }
