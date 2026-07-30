@@ -2,6 +2,8 @@ package com.example.token.service;
 
 import com.example.token.domain.entitiy.User;
 import com.example.token.domain.repository.UserRepository;
+import com.example.token.dto.SignInRequest;
+import com.example.token.dto.SignInResponse;
 import com.example.token.dto.SignUpRequest;
 import com.example.token.exception.DuplicateUserIdException;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,12 @@ public class UserService {
             throw new DuplicateUserIdException("[회원가입] 이미 가입된 아이디 입니다.");
         User user = request.toUser(passwordEncoder.encode(request.password()));
         userRepository.save(user);
+    }
+
+    public SignInResponse login(SignInRequest request) {
+
+
+        return null;
     }
 
 }

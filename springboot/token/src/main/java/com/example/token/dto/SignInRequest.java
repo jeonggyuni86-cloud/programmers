@@ -1,4 +1,7 @@
 package com.example.token.dto;
 
-public record SignInRequest() {
+public record SignInRequest(
+        String userId,
+        String password
+) {
 }
