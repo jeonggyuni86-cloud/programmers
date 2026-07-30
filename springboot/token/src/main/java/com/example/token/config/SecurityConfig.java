@@ -112,10 +112,11 @@ public class SecurityConfig {
                                 "/api/users/login",
                                 "/api/users/join",
                                 "/api/tokens/refresh",
-                                "/access-denied",
 
                                 "/css/**",
-                                "/js/**"
+                                "/js/**",
+                                "/access-denied",
+                                "/error"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
