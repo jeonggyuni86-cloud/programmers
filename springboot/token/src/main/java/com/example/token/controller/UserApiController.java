@@ -1,14 +1,14 @@
 package com.example.token.controller;
 
 import com.example.token.config.jwt.JwtProperties;
-import com.example.token.dto.SignInRequest;
-import com.example.token.dto.SignInResponse;
-import com.example.token.dto.SignUpRequest;
-import com.example.token.dto.SignUpResponse;
+import com.example.token.config.security.CustomUserDetails;
+import com.example.token.domain.entitiy.User;
+import com.example.token.dto.*;
 import com.example.token.service.UserService;
 import com.example.token.util.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,5 +41,19 @@ public class UserApiController {
                 (int) jwtProperties.getRefreshTokenValidity().toSeconds()
         );
         return null;
+    }
+
+    @GetMapping("/info")
+    public UserInfoResponse getUserInfo(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        User user = userDetails.getUser();
+        return UserInfoResponse.builder()
+                .id(user.getId())
+                .userId(user.getUserId())
+                .userName(user.getName())
+                .role(user.getRole())
+                .build();
+
     }
 }

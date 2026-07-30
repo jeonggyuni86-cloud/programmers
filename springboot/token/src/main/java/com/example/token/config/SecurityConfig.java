@@ -98,8 +98,10 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/users/join",
                                 "/users/login",
-                                "/api/users/join",
                                 "/", // 페이지(HTML)는 공개, 데이터는 보호 - ㅡ라우저 페이지 이동은 Bearer 헤더를 못 실으므로 페이지 인가는 API가 담당
+                                "/api/users/join",
+                                "/api/users/login",
+                                "/api/tokens/refresh",
 
                                 "/css/**",
                                 "/js/**"
