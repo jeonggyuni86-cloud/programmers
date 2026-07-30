@@ -1,19 +1,27 @@
 package com.example.token.config;
 
 import com.example.token.config.filter.TokenAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.io.IOException;
 
 // * JWT(JSON Web Token)
 // JWT는 당사자 간에 정보를 JSON객체로 안전하게 전달하기 위한 토큰 표준
@@ -63,6 +71,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
@@ -99,9 +108,11 @@ public class SecurityConfig {
                                 "/users/login",
                                 "/users/join",
                                 "/", // 페이지(HTML)는 공개, 데이터는 보호 - 브라우저 페이지 이동은 Bearer 헤더를 못 실으므로 페이지 인가는 API가 담당
+                                "/admin",
                                 "/api/users/login",
                                 "/api/users/join",
                                 "/api/tokens/refresh",
+                                "/access-denied",
 
                                 "/css/**",
                                 "/js/**"
@@ -114,6 +125,13 @@ public class SecurityConfig {
                 .addFilterBefore(
                         tokenAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
+                )
+                // 인가 실패의 두 갈래.
+                // 401 미인증 : 누군지 모름 -> authenticationEntry
+                // 403 권한부족 : 누군지는 알지만 자격 없음 -> accessDenied
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(accessDeniedHandler())
+                        .authenticationEntryPoint(authenticationEntryPoint())
                 );
 
         return http.build();
@@ -137,4 +155,38 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.withDefaultRolePrefix() // 접두사 자동 부착"ROLE_"
+                .role("ADMIN").implies("USER")
+                .build();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return ((request, response, accessDeniedException) -> {
+            if(request.getRequestURI().startsWith("/api")) {
+                sendError(response, HttpServletResponse.SC_FORBIDDEN, "접근 권한이 없습니다");
+            } else {
+                response.sendRedirect("/access-denied");
+            }
+        });
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return ((request, response, authException) -> {
+            if(request.getRequestURI().startsWith("/api")) {
+                sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "인증이 필요합니다");
+            } else {
+                response.sendRedirect("/access-denied");
+            }
+        });
+    }
+
+    private void sendError(HttpServletResponse response, int status, String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write("status code : " + status + ", message : " + message);
+    }
 }

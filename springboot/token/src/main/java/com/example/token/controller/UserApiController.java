@@ -6,6 +6,7 @@ import com.example.token.domain.entitiy.User;
 import com.example.token.dto.*;
 import com.example.token.service.UserService;
 import com.example.token.util.CookieUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,7 +42,19 @@ public class UserApiController {
                 signInResponse.refreshToken(),
                 (int) jwtProperties.getRefreshTokenValidity().toSeconds()
         );
-        return null;
+        return signInResponse;
+    }
+
+    @PostMapping("/logout")
+    public LogoutResponse logout(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        CookieUtil.deleteCookie(request, response, CookieUtil.REFRESH_TOKEN_COOKIE);
+        return LogoutResponse.builder()
+                .message("로그아웃 되었습니다.")
+                .url("/users/login")
+                .build();
     }
 
     @GetMapping("/info")
@@ -57,11 +70,12 @@ public class UserApiController {
                 .build();
 
     }
+    // "hasRole('USER')"는 내부적으로 "ROLE_USER"권한을 찾는다 (접두사 자동 부착)
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/user")
     public AuthorityResponse authority() {
         return AuthorityResponse.builder()
-                .message("일반 사용자만 볼 수 있는 권한입니다")
+                .message("일반 사용자만 볼 수 있는 권합니다.")
                 .build();
     }
 
@@ -69,7 +83,7 @@ public class UserApiController {
     @GetMapping("/admin")
     public AuthorityResponse authorityAdmin() {
         return AuthorityResponse.builder()
-                .message("관리자만 볼 수 있는 권한입니다")
+                .message("관리자만 볼 수 있는 권합니다.")
                 .build();
     }
 }
