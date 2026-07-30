@@ -8,6 +8,7 @@ import com.example.token.service.UserService;
 import com.example.token.util.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,5 +56,20 @@ public class UserApiController {
                 .role(user.getRole())
                 .build();
 
+    }
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/user")
+    public AuthorityResponse authority() {
+        return AuthorityResponse.builder()
+                .message("일반 사용자만 볼 수 있는 권한입니다")
+                .build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin")
+    public AuthorityResponse authorityAdmin() {
+        return AuthorityResponse.builder()
+                .message("관리자만 볼 수 있는 권한입니다")
+                .build();
     }
 }
