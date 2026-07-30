@@ -1,5 +1,6 @@
 package com.example.token.service;
 
+import com.example.token.config.security.CustomUserDetails;
 import com.example.token.domain.entitiy.User;
 import com.example.token.domain.repository.UserRepository;
 import com.example.token.dto.SignInRequest;
@@ -22,6 +23,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
 
     public void signUp(SignUpRequest request) {
         if(userRepository.existsByUserId(request.userId()))
@@ -39,7 +41,17 @@ public class UserService {
                 )
         );
 
-        return null;
+        var user = ((CustomUserDetails) authenticate.getPrincipal()).getUser();;
+        var tokenPair = tokenService.issueToken(user);
+
+        return SignInResponse.builder()
+                .isLoggedIn(true)
+                .message("로그인 성공")
+                .url("/")
+                .accessToken(tokenPair.accessToken())
+                .refreshToken(tokenPair.refreshToken())
+                .userId(user.getUserId())
+                .build();
     }
 
 }
