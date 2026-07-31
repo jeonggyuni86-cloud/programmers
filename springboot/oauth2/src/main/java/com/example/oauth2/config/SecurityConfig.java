@@ -23,7 +23,12 @@ package com.example.oauth2.config;
 // 5) Client가 그 토큰으로 Resource Server에서 사용자 정보 조회
 
 // Spring Security에서의 동작 흐름 - oauth2Login()
-
+// 위 표준 흐름을 필터 두 개가 나눠서 대신 처리한다
+// 1) OAuth2AuthorizationRequestRedirectFilter
+// 2) OAuth2LoginAuthenticationFilter
+// 3) 조회된 사용자 정보를 OAuth2UserService.loadUser()에 넘긴다
+// 4) 반환된 OAuth2User로 Authentication을 만들어 SecurityContext에 저장 -> 로그인 완료
+// 5) 마지막으로 SuccessHandler 호출 -> 로그인 후처리(JWT 발급) -> 개발자의 몫
 
 public class SecurityConfig {
 }
