@@ -2,15 +2,21 @@ $(document).ready(() => {
 
     loadStats();
 
+
     $('#applyBtn').on('click', () => {
+
         loadStats();
+
     });
+
 
 
     $('#minCount').on('keydown', (e) => {
 
         if (e.key === 'Enter') {
+
             loadStats();
+
         }
 
     });
@@ -19,36 +25,80 @@ $(document).ready(() => {
 
 
 
-// 통계 데이터 로드
-let loadStats = () => {
 
 
-    let minCount = parseInt($('#minCount').val());
+const getAuthHeader = () => {
 
 
-    if (isNaN(minCount) || minCount < 1) {
+    const token =
+        localStorage.getItem('accessToken');
 
-        minCount = 1;
 
-        $('#minCount').val(1);
+
+    if (!token) {
+
+        return {};
 
     }
 
 
 
+    return {
+
+        Authorization:
+            'Bearer ' + token
+
+    };
+
+};
+
+
+
+
+
+
+// 통계 데이터 로드
+let loadStats = () => {
+
+
+    let minCount =
+        parseInt(
+            $('#minCount').val()
+        );
+
+
+
+    if (
+        isNaN(minCount) ||
+        minCount < 1
+    ) {
+
+
+        minCount = 1;
+
+
+        $('#minCount')
+            .val(1);
+
+    }
+
+
+
+
     $.ajax({
+
 
         type: 'GET',
 
-        url: '/api/boards/stats/authors',
+
+        url:
+            '/api/boards/stats/authors',
 
 
-        headers: {
 
-            Authorization:
-                'Bearer ' + localStorage.getItem('accessToken')
+        headers:
+            getAuthHeader(),
 
-        },
 
 
         data: {
@@ -58,42 +108,95 @@ let loadStats = () => {
         },
 
 
+
         success: (response) => {
 
+
             renderStats(response);
+
 
         },
 
 
+
         error: (error) => {
 
+
             console.error(
-                '오류 발생:',
+                '통계 조회 실패',
                 error
             );
 
 
+
             if (error.status === 401) {
 
-                alert('로그인이 필요합니다.');
+
+                alert(
+                    '로그인이 만료되었습니다.'
+                );
+
+
+
+                localStorage.removeItem(
+                    'accessToken'
+                );
+
+
+                localStorage.removeItem(
+                    'refreshToken'
+                );
+
+
 
                 window.location.href =
                     '/members/login';
+
+
 
                 return;
 
             }
 
 
+
+
+            if (error.status === 403) {
+
+
+                alert(
+                    '관리자 권한이 필요합니다.'
+                );
+
+
+                window.location.href =
+                    '/';
+
+
+
+                return;
+
+            }
+
+
+
+
             alert(
-                '통계 데이터를 불러오는데 오류가 발생했습니다.'
+                '통계 데이터를 불러오는데 실패했습니다.'
             );
+
 
         }
 
+
     });
 
+
 };
+
+
+
+
 
 
 
@@ -106,20 +209,29 @@ let renderStats = (stats) => {
         $('#statsContent');
 
 
+
     $content.empty();
 
 
 
-    if (!stats || stats.length <= 0) {
+
+
+    if (
+        !stats ||
+        stats.length === 0
+    ) {
+
 
 
         $content.append(
 
             `
             <tr>
+
                 <td colspan="3">
                     조건에 맞는 작성자가 없습니다.
                 </td>
+
             </tr>
             `
 
@@ -133,10 +245,15 @@ let renderStats = (stats) => {
 
 
 
+
+
     stats.forEach((item, index) => {
 
 
-        const rank = index + 1;
+
+        const rank =
+            index + 1;
+
 
 
 
@@ -147,10 +264,14 @@ let renderStats = (stats) => {
 
 
 
+
+
         const rankBadge =
             rank <= 3
                 ? `<span class="rank-badge rank-${rank}">${rank}</span>`
                 : rank;
+
+
 
 
 
@@ -159,9 +280,11 @@ let renderStats = (stats) => {
             `
             <tr>
 
+
                 <td>
                     ${rankBadge}
                 </td>
+
 
 
                 <td>
@@ -169,11 +292,17 @@ let renderStats = (stats) => {
                 </td>
 
 
+
                 <td>
+
                     <span class="board-count">
+
                         ${item.boardCount}
+
                     </span>
+
                 </td>
+
 
             </tr>
             `

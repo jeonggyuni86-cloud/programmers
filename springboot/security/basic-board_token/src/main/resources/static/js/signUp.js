@@ -4,12 +4,15 @@ $(document).ready(() => {
     $('#signup').click(() => {
 
 
+
         let userId =
             $('#user_id').val();
 
 
+
         let password =
             $('#password').val();
+
 
 
         let userName =
@@ -17,33 +20,51 @@ $(document).ready(() => {
 
 
 
+
+
         let formData = {
+
 
             userId: userId,
 
+
             password: password,
 
+
             userName: userName
+
 
         };
 
 
 
+
+
+
         $.ajax({
+
 
             type: 'POST',
 
-            url: '/api/members/join',
 
 
-            data: JSON.stringify(formData),
-
-
-            contentType: 'application/json; charset=utf-8',
+            url:
+                '/api/members/join',
 
 
 
-            success: function() {
+            data:
+                JSON.stringify(formData),
+
+
+
+            contentType:
+                'application/json; charset=utf-8',
+
+
+
+            success: () => {
+
 
 
                 alert(
@@ -51,40 +72,85 @@ $(document).ready(() => {
                 );
 
 
+
                 window.location.href =
                     '/members/login';
+
 
 
             },
 
 
-            error: function(error) {
+
+            error: (error) => {
+
 
 
                 console.error(
-                    '오류 발생:',
+                    '회원가입 실패:',
                     error
                 );
 
 
-                let message =
-                    error.responseJSON &&
-                    error.responseJSON.message
-                        ? error.responseJSON.message
-                        : '회원가입 중 오류가 발생했습니다.';
+
+
+                if (error.status === 409) {
 
 
 
-                alert(message);
+                    alert(
+                        error.responseJSON?.message
+                        ?? '이미 존재하는 회원입니다.'
+                    );
+
+
+
+                    return;
+
+                }
+
+
+
+
+
+                if (error.status === 400) {
+
+
+
+                    alert(
+                        error.responseJSON?.message
+                        ?? '입력값을 확인해주세요.'
+                    );
+
+
+                    return;
+
+                }
+
+
+
+
+
+                alert(
+
+                    error.responseJSON?.message
+                    ??
+                    '회원가입 중 오류가 발생했습니다.'
+
+                );
+
 
 
             }
 
 
+
         });
 
 
+
     });
+
 
 
 });

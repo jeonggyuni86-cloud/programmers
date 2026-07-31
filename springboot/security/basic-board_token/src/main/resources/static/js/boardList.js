@@ -2,78 +2,156 @@ $(document).ready(() => {
 
     loadBoard(1);
 
+
     $('#searchBtn').on('click', () => {
+
         loadBoard(1);
+
     });
+
+
 
     $('#searchResetBtn').on('click', () => {
+
         $('#searchTitle').val('');
+
         $('#searchUserId').val('');
+
         $('#searchFrom').val('');
+
         $('#searchTo').val('');
 
+
         loadBoard(1);
+
     });
 
-    $('#searchTitle, #searchUserId').on('keydown', (e) => {
-        if (e.key === 'Enter') {
-            loadBoard(1);
+
+
+    $('#searchTitle, #searchUserId').on(
+        'keydown',
+        (e) => {
+
+            if (e.key === 'Enter') {
+
+                loadBoard(1);
+
+            }
+
         }
-    });
+    );
 
 });
+
 
 
 const PAGE_SIZE = 10;
 
 
+
+// JWT Header 생성
+const getAuthHeader = () => {
+
+    const token =
+        localStorage.getItem('accessToken');
+
+
+    if (!token) {
+
+        return {};
+
+    }
+
+
+    return {
+
+        Authorization:
+            'Bearer ' + token
+
+    };
+
+};
+
+
+
 // 검색 조건 생성
 const getSearchCondition = () => {
 
+
     const condition = {};
 
-    const title = $('#searchTitle').val();
-    const userId = $('#searchUserId').val();
-    const from = $('#searchFrom').val();
-    const to = $('#searchTo').val();
+
+    const title =
+        $('#searchTitle').val();
+
+
+    const userId =
+        $('#searchUserId').val();
+
+
+    const from =
+        $('#searchFrom').val();
+
+
+    const to =
+        $('#searchTo').val();
+
 
 
     if (title) {
+
         condition.title = title;
+
     }
+
+
 
     if (userId) {
+
         condition.userId = userId;
+
     }
+
+
 
     if (from) {
+
         condition.from = from;
+
     }
 
+
+
     if (to) {
+
         condition.to = to;
+
     }
+
 
 
     return condition;
+
 };
+
 
 
 
 // 게시글 조회
 const loadBoard = (page) => {
 
+
     $.ajax({
 
         type: 'GET',
 
+
         url: '/api/boards/search',
 
 
-        headers: {
-            Authorization:
-                'Bearer ' + localStorage.getItem('accessToken')
-        },
+
+        headers: getAuthHeader(),
+
 
 
         data: {
@@ -87,10 +165,13 @@ const loadBoard = (page) => {
         },
 
 
+
         success: (response) => {
 
 
-            renderBoards(response.content);
+            renderBoards(
+                response.content
+            );
 
 
             renderPagination(
@@ -101,7 +182,9 @@ const loadBoard = (page) => {
         },
 
 
+
         error: (error) => {
+
 
             console.error(
                 '게시글 조회 실패',
@@ -109,24 +192,36 @@ const loadBoard = (page) => {
             );
 
 
+
             if (error.status === 401) {
 
-                alert('로그인이 필요합니다.');
+
+                alert(
+                    '로그인이 필요합니다.'
+                );
+
+
 
                 localStorage.removeItem(
                     'accessToken'
                 );
+
 
                 localStorage.removeItem(
                     'refreshToken'
                 );
 
 
+
                 window.location.href =
                     '/members/login';
 
+
+
                 return;
+
             }
+
 
 
             alert(
@@ -179,6 +274,7 @@ const renderBoards = (boards) => {
     boards.forEach((item) => {
 
 
+
         const author =
             item.userName
                 ? `${item.userName} (${item.userId})`
@@ -198,9 +294,11 @@ const renderBoards = (boards) => {
             `
             <tr>
 
+
                 <td>
                     ${item.id}
                 </td>
+
 
 
                 <td>
@@ -210,14 +308,17 @@ const renderBoards = (boards) => {
                 </td>
 
 
+
                 <td>
                     ${author}
                 </td>
 
 
+
                 <td>
                     ${commentBadge}
                 </td>
+
 
 
                 <td>
@@ -230,11 +331,11 @@ const renderBoards = (boards) => {
 
         );
 
-
     });
 
 
 };
+
 
 
 
@@ -261,29 +362,36 @@ const renderPagination = (
     ) {
 
 
+
         const $button =
             $(
+
                 `
                 <button class="btn page-btn">
                     ${page}
                 </button>
                 `
+
             );
 
 
 
         if (page === currentPage) {
 
+
             $button.addClass(
                 'active'
             );
+
 
             $button.prop(
                 'disabled',
                 true
             );
 
+
         }
+
 
 
 
@@ -291,6 +399,7 @@ const renderPagination = (
             'click',
             () => loadBoard(page)
         );
+
 
 
         $pagination.append(

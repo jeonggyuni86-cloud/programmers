@@ -2,46 +2,75 @@ $(document).ready(() => {
 
     $('#signin').click(() => {
 
-        const userId = $('#user_id').val();
-        const password = $('#password').val();
+        let userId = $('#user_id').val();
+        let password = $('#password').val();
 
-        const formData = {
+
+        let formData = {
             userId: userId,
             password: password
         };
 
 
         $.ajax({
+
             type: 'POST',
+
             url: '/api/members/login',
+
             data: JSON.stringify(formData),
-            contentType: 'application/json; charset=utf-8',
+
+            contentType:
+                'application/json; charset=utf-8',
+
             dataType: 'json',
+
 
             success: (response) => {
 
-                console.log('login response :: ', response);
+                console.log(response);
 
-                localStorage.setItem(
-                    "accessToken",
-                    response.accessToken
-                );
 
-                localStorage.setItem(
-                    "refreshToken",
-                    response.refreshToken
-                );
+                if(response.success){
 
-                alert("로그인 성공");
+                    localStorage.setItem(
+                        'accessToken',
+                        response.accessToken
+                    );
 
-                window.location.href = "/";
+
+                    localStorage.setItem(
+                        'refreshToken',
+                        response.refreshToken
+                    );
+
+
+                    alert('로그인 성공');
+
+                    window.location.href = '/';
+
+                } else {
+
+                    alert(response.message);
+
+                }
+
             },
 
-            error: (error) => {
-                console.error('로그인 오류:', error);
 
-                alert("로그인 실패");
+            error: (error) => {
+
+                console.error(error);
+
+                let message =
+                    error.responseJSON?.message
+                    ?? '로그인 실패';
+
+
+                alert(message);
+
             }
+
         });
 
     });

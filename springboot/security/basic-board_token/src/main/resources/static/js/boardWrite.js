@@ -1,13 +1,40 @@
-let selectedFile = null; // 파일은 1개만 선택 가능
+let selectedFile = null;
 
 
 $(document).ready(() => {
 
     saved();
 
-    fileChaged();
+    fileChanged();
 
 });
+
+
+
+// JWT Header
+const getAuthHeader = () => {
+
+    const token =
+        localStorage.getItem('accessToken');
+
+
+    if (!token) {
+
+        return {};
+
+    }
+
+
+    return {
+
+        Authorization:
+            'Bearer ' + token
+
+    };
+
+};
+
+
 
 
 
@@ -20,37 +47,42 @@ let saved = () => {
         event.preventDefault();
 
 
+
         let formData =
-            new FormData($('#writeForm')[0]);
+            new FormData(
+                $('#writeForm')[0]
+            );
+
 
 
 
         $.ajax({
 
+
             type: 'POST',
+
 
             url: '/api/boards',
 
 
-            headers: {
 
-                Authorization:
-                    'Bearer ' + localStorage.getItem('accessToken')
+            headers: getAuthHeader(),
 
-            },
 
 
             data: formData,
 
 
+
             processData: false,
+
 
 
             contentType: false,
 
 
 
-            success: function(response) {
+            success: () => {
 
 
                 alert(
@@ -64,7 +96,7 @@ let saved = () => {
 
 
 
-            error: function(error) {
+            error: (error) => {
 
 
                 console.error(
@@ -73,25 +105,45 @@ let saved = () => {
                 );
 
 
+
                 if (error.status === 401) {
+
 
                     alert(
                         '로그인이 필요합니다.'
                     );
 
+
+
+                    localStorage.removeItem(
+                        'accessToken'
+                    );
+
+
+                    localStorage.removeItem(
+                        'refreshToken'
+                    );
+
+
+
                     window.location.href =
                         '/members/login';
+
+
 
                     return;
 
                 }
 
 
+
                 alert(
                     '게시글 등록 중 오류가 발생하였습니다.'
                 );
 
+
             }
+
 
         });
 
@@ -105,25 +157,33 @@ let saved = () => {
 
 
 
-let fileChaged = () => {
+
+let fileChanged = () => {
 
 
-    $('#file').on('change', function(e) {
+    $('#file').on(
+        'change',
+        function(e) {
 
 
-        const file =
-            e.target.files[0];
+            const file =
+                e.target.files[0];
 
 
-        selectedFile = file;
+
+            selectedFile = file;
 
 
-        updateFileList();
 
-    });
+            updateFileList();
+
+
+        }
+    );
 
 
 };
+
 
 
 
@@ -136,29 +196,37 @@ let updateFileList = () => {
 
 
 
-    if (selectedFile) {
+    if (!selectedFile) {
 
+        return;
 
-        $('#fileList').append(
-
-            `
-            <li>
-                ${selectedFile.name}
-
-                <button 
-                    type="button"
-                    class="remove-btn">
-                    X
-                </button>
-
-            </li>
-            `
-
-        );
+    }
 
 
 
-        $('.remove-btn').on('click', function () {
+    $('#fileList').append(
+
+        `
+        <li>
+
+            ${selectedFile.name}
+
+            <button
+                type="button"
+                class="remove-btn">
+                X
+            </button>
+
+        </li>
+        `
+
+    );
+
+
+
+    $('.remove-btn').on(
+        'click',
+        function() {
 
 
             selectedFile = null;
@@ -170,10 +238,8 @@ let updateFileList = () => {
             updateFileList();
 
 
-        });
-
-
-    }
+        }
+    );
 
 
 };
