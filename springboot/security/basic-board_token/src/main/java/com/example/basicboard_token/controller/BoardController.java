@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+// FIXME : React 전환 후 삭제
+@Deprecated(forRemoval = true)
 @Controller
 public class BoardController {
 
