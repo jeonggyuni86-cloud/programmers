@@ -1,0 +1,53 @@
+package com.example.basicboard_token.service.component;
+
+import com.example.basicboard_token.domain.entity.Board;
+import com.example.basicboard_token.domain.repository.BoardRepository;
+import com.example.basicboard_token.dto.request.BoardSearchRequest;
+import com.example.basicboard_token.dto.response.BoardAuthorStatResponse;
+import com.example.basicboard_token.dto.response.BoardListItemResponse;
+import com.example.basicboard_token.exception.BoardNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+@RequiredArgsConstructor
+public class BoardHandler {
+    private final BoardRepository boardRepository;
+
+    public Board getBoard(Long id) {
+        return boardRepository.findDetailById(id)
+                .orElseThrow(() -> new BoardNotFoundException("[Board] 게시글을 찾을 수 없습니다. ID = " + id));
+    }
+
+    public Page<Board> getBoards(Pageable pageable) {
+        return boardRepository.findAll(pageable);
+    }
+
+    public long getTotalBoards() {
+        return boardRepository.count();
+    }
+
+    public List<BoardAuthorStatResponse> countByAuthor(long minCount) {
+        return boardRepository.countByAuthor(minCount);
+    }
+
+    public Page<BoardListItemResponse> searchBoards(
+            BoardSearchRequest boardSearchRequest,
+            Pageable pageable
+    ) {
+        return boardRepository.searchBoard(boardSearchRequest, pageable);
+    }
+
+    public void save(Board board) {
+        boardRepository.save(board);
+    }
+
+    public void delete(Board board) {
+        boardRepository.delete(board);
+    }
+
+}

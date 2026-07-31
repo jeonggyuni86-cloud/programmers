@@ -1,0 +1,55 @@
+package com.example.basicboard_token.exception;
+
+import com.example.basicboard_token.dto.ErrorResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import static org.springframework.http.HttpStatus.*;
+
+
+@Slf4j
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(DuplicateUserIdException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateUserIdException(DuplicateUserIdException e) {
+        log.warn("409 응답 : {}", e.getMessage());
+        return ResponseEntity
+                .status(CONFLICT)
+                .body(
+                        new ErrorResponse(CONFLICT.value(), e.getMessage())
+                );
+    }
+
+    @ExceptionHandler(BoardNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleBoardNotFoundException(BoardNotFoundException e) {
+        log.warn("404 응답 : {}", e.getMessage());
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .body(
+                        new ErrorResponse(NOT_FOUND.value(), e.getMessage())
+                );
+    }
+
+    @ExceptionHandler(BoardAccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleBoardAccessDeniedException(
+            BoardAccessDeniedException e
+    ) {
+        return ResponseEntity
+                .status(FORBIDDEN)
+                .body(
+                        new ErrorResponse(
+                                FORBIDDEN.value(), e.getMessage())
+                );
+    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> exception(Exception e) {
+        log.error("500 응답 : (예상치 못한 예외 발생)", e);
+        return ResponseEntity
+                .status(INTERNAL_SERVER_ERROR)
+                .body(
+                        new ErrorResponse(INTERNAL_SERVER_ERROR.value(), "서버 오류가 발생했습니다")
+                );
+    }
+}
