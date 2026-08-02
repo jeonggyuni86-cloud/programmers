@@ -3,6 +3,7 @@ package com.example.basicboard_token.config.filter;
 import com.example.basicboard_token.config.jwt.TokenProvider;
 import com.example.basicboard_token.config.jwt.TokenStatus;
 import com.example.basicboard_token.domain.entity.Member;
+import com.example.basicboard_token.domain.repository.MemberRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +22,14 @@ import java.io.IOException;
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
+    private final MemberRepository memberRepository;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.equals("/api/members/login")
+                || path.equals("/api/members/join");
+    }
 
     @Override
     protected void doFilterInternal(
@@ -34,11 +43,17 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         if(token != null) {
             TokenStatus status = tokenProvider.validateToken(token);
             if(status == TokenStatus.VALID) {
-                Member member = tokenProvider.getTokenDetails(token);
-                Authentication authentication = tokenProvider.getAuthentication(member, token);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                Member tokenMember = tokenProvider.getTokenDetails(token);
+                memberRepository.findById(tokenMember.getId()).ifPresent(member -> {
+                    Authentication authentication = tokenProvider.getAuthentication(member, token);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                });
             } else if(status == TokenStatus.EXPIRED) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write(
+                        "{\"status\":401,\"message\":\"로그인이 만료되었습니다. 다시 로그인해 주세요.\"}"
+                );
                 return;
             }
         }

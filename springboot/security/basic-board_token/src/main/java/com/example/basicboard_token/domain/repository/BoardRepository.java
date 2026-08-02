@@ -10,7 +10,7 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
     @Query("""
         select b
         from Board b
-        join fetch b.comments
+        left join fetch b.comments
         where b.id = :id
     """)
     Optional<Board> findDetailById(Long id);

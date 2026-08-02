@@ -3,6 +3,10 @@ package com.example.basicboard_token.exception;
 import com.example.basicboard_token.dto.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -12,6 +16,33 @@ import static org.springframework.http.HttpStatus.*;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler({BadCredentialsException.class, AuthenticationException.class})
+    public ResponseEntity<ErrorResponse> handleAuthenticationException(Exception e) {
+        log.warn("401 응답 : 로그인 실패");
+        return ResponseEntity
+                .status(UNAUTHORIZED)
+                .body(new ErrorResponse(
+                        UNAUTHORIZED.value(),
+                        "아이디 또는 비밀번호가 올바르지 않습니다."
+                ));
+    }
+
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class,
+            HttpMessageNotReadableException.class,
+            IllegalArgumentException.class,
+            IllegalStateException.class
+    })
+    public ResponseEntity<ErrorResponse> handleBadRequest(Exception e) {
+        log.warn("400 응답 : {}", e.getMessage());
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(new ErrorResponse(
+                        BAD_REQUEST.value(),
+                        "요청 내용을 확인해 주세요."
+                ));
+    }
+
     @ExceptionHandler(DuplicateUserIdException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateUserIdException(DuplicateUserIdException e) {
         log.warn("409 응답 : {}", e.getMessage());

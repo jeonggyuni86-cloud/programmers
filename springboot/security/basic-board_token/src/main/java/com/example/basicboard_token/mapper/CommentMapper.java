@@ -10,11 +10,12 @@ public class CommentMapper {
 
     public Comment toEntity(
             CommentWriteRequest request,
+            String userId,
             Board board
     ) {
         return Comment.from(
                 request.content(),
-                request.userId(),
+                userId,
                 board
         );
     }

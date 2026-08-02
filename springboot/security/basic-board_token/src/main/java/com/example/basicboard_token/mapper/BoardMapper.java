@@ -12,10 +12,12 @@ public class BoardMapper {
 
     public BoardDetailResponse toBoardDetailResponse(Board board) {
         return BoardDetailResponse.builder()
+                .id(board.getId())
                 .title(board.getTitle())
                 .content(board.getContent())
                 .userId(board.getUserId())
                 .createdAt(board.getCreatedAt())
+                .filePath(board.getFilePath())
                 .comments(
                         board.getComments().stream()
                                 .map(this::toCommentResponse)
@@ -33,11 +35,11 @@ public class BoardMapper {
                 .build();
     }
 
-    public Board toEntity(BoardWriteRequest request, String filePath) {
+    public Board toEntity(BoardWriteRequest request, String userId, String filePath) {
         return Board.from(
                 request.title(),
                 request.content(),
-                request.userId(),
+                userId,
                 filePath
         );
     }

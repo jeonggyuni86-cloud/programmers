@@ -41,7 +41,7 @@ public class BoardService {
     @Transactional
     public void saveBoard(BoardWriteRequest request) {
         String filePath = fileStorage.store(request.file());
-        Board board = boardMapper.toEntity(request, filePath);
+        Board board = boardMapper.toEntity(request, getLoginMember().getUserId(), filePath);
         boardHandler.save(board);
     }
 
@@ -102,6 +102,7 @@ public class BoardService {
             BoardUpdateRequest request
     ) {
         Board board = boardHandler.getBoard(id);
+        requireOwnerOrAdmin(board);
 
         String filePath = board.getFilePath();
         if(request.fileFlag()) {
@@ -123,19 +124,7 @@ public class BoardService {
     ) {
         Board board = boardHandler.getBoard(id);
 
-        Member member = getLoginMember();
-
-        boolean isAdmin =
-                member.getRole() == Role.ROLE_ADMIN;
-
-        boolean isOwner =
-                board.getUserId().equals(member.getUserId());
-
-        if(!isAdmin && !isOwner) {
-            throw new BoardAccessDeniedException(
-                    "게시글 삭제 권한이 없습니다."
-            );
-        }
+        requireOwnerOrAdmin(board);
 
         boardHandler.delete(board);
         fileStorage.delete(board.getFilePath());
@@ -150,6 +139,15 @@ public class BoardService {
                 (CustomUserDetails) authentication.getPrincipal();
 
         return principal.getUser();
+    }
+
+    private void requireOwnerOrAdmin(Board board) {
+        Member member = getLoginMember();
+        boolean isAdmin = member.getRole() == Role.ROLE_ADMIN;
+        boolean isOwner = board.getUserId().equals(member.getUserId());
+        if (!isAdmin && !isOwner) {
+            throw new BoardAccessDeniedException("게시글 수정/삭제 권한이 없습니다.");
+        }
     }
 
 }

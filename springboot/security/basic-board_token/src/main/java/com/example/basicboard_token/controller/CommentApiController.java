@@ -20,4 +20,13 @@ public class CommentApiController {
         commentService.addComment(boardId, request);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(
+            @PathVariable long boardId,
+            @PathVariable long commentId
+    ) {
+        commentService.deleteComment(boardId, commentId);
+        return ResponseEntity.noContent().build();
+    }
 }

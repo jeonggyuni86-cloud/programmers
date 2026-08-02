@@ -9,6 +9,7 @@ import java.util.List;
 
 @Builder
 public record BoardDetailResponse(
+        long id,
         String title,
         String content,
         List<CommentResponse> comments,
