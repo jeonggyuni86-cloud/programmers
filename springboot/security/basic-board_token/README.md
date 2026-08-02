@@ -579,14 +579,3 @@ com.example.basicboard_token
 │   └── component           # 토큰, 파일, 게시글 처리 컴포넌트
 └── util
 ```
-
----
-
-## 운영 전 확인사항
-
-- JWT Secret과 DB 비밀번호를 설정 파일에서 환경변수 또는 Secret Manager로 분리해야 합니다.
-- CORS 허용 Origin을 실제 클라이언트 도메인으로 제한해야 합니다.
-- `data.sql`의 DROP TABLE 구문은 운영 환경에서 비활성화해야 합니다.
-- Refresh Token 생성 로직은 존재하지만 갱신 API 공개 여부와 저장·폐기 정책을 별도로 확정해야 합니다.
-- Member와 Board·Comment의 작성자 관계에 DB 외래 키가 필요할지 검토할 수 있습니다.
-- 마지막 관리자 강등 방지 정책이 필요하다면 회원 권한 변경 서비스에 추가해야 합니다.
