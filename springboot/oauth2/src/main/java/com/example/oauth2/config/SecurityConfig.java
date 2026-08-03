@@ -30,5 +30,149 @@ package com.example.oauth2.config;
 // 4) 반환된 OAuth2User로 Authentication을 만들어 SecurityContext에 저장 -> 로그인 완료
 // 5) 마지막으로 SuccessHandler 호출 -> 로그인 후처리(JWT 발급) -> 개발자의 몫
 
+import com.example.oauth2.config.filter.TokenAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.io.IOException;
+
+@Configuration
+@RequiredArgsConstructor
+@EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
+
 public class SecurityConfig {
+    private final TokenAuthenticationFilter tokenAuthenticationFilter;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http
+                // [CSRF vs XSS — 토큰 방식에서 위협이 어떻게 바뀌는가]
+                //
+                // CSRF(Cross-Site Request Forgery):
+                //   "브라우저가 쿠키(세션)를 자동으로 실어 보내는" 성질을 악용해,
+                //   로그인된 사용자의 브라우저로 의도하지 않은 요청을 보내게 하는 공격.
+                //   → 우리는 인증을 Authorization 헤더(자동 전송 안 됨)로 하므로 성립하지 않아 끈다
+                //
+                // XSS(Cross-Site Scripting):
+                //   공격자가 페이지에 악성 스크립트를 주입해 "사용자의 브라우저에서" 실행시키는 공격.
+                //   (예: 게시글에 <script> 태그를 심었는데 이스케이프 없이 그대로 렌더링되는 경우)
+                //   토큰 방식에서는 이게 더 큰 위협이 된다:
+                //   - localStorage는 같은 페이지의 JS라면 누구나 읽을 수 있다
+                //     → 주입된 스크립트가 localStorage.getItem('accessToken')으로 토큰을 훔칠 수 있다
+                //   - 그래서 이 프로젝트의 방어 설계:
+                //     ① access token은 수명을 짧게(2h) → 탈취돼도 피해 시간 제한
+                //     ② refresh token(7d)은 HttpOnly 쿠키에 → JS 접근 자체가 불가능해 XSS로 못 훔친다
+                //   - 근본 방어는 설정이 아니라 코딩 습관: 사용자 입력을 이스케이프 없이 렌더링하지 않기
+                //     (Thymeleaf의 th:text는 자동 이스케이프, th:utext는 위험) + CSP 헤더 적용 등
+                .csrf(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                "/users/login",
+                                "/users/join",
+                                "/", // 페이지(HTML)는 공개, 데이터는 보호 - 브라우저 페이지 이동은 Bearer 헤더를 못 실으므로 페이지 인가는 API가 담당
+                                "/admin",
+                                "/api/users/login",
+                                "/api/users/join",
+                                "/api/tokens/refresh",
+
+                                "/css/**",
+                                "/js/**",
+                                "/access-denied",
+                                "/error" // 404등 에러 포워딩 경로, 막으면 리다이렉트 루프가 생긴다.
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+                // JWT 필터를 UsernamePasswordAuthenticationFilter(폼 로그인 필터) 자리 앞에 끼워넣겠다
+                // 인가 판단은 체인 맨 끝에서 일어나므로,
+                // 그 전에 토큰을 검증해 SecurityContext를 채워 둬야 "인증된 요청"으로 치급된다.
+                .addFilterBefore(
+                        tokenAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                // 인가 실패의 두 갈래.
+                // 401 미인증 : 누군지 모름 -> authenticationEntry
+                // 403 권한부족 : 누군지는 알지만 자격 없음 -> accessDenied
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(accessDeniedHandler())
+                        .authenticationEntryPoint(authenticationEntryPoint())
+                );
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+
+    // 아이디 비밀번호 검증의 진입점
+    // form-login에서는 필터가 내부적으로 호출했지만,
+    // 토큰 방식에서는 UserService.login()이 직접 호출한다.
+    // authentication() -> DaoAuthenticationProvider -> UserDetailsService.loadUserByUsername() -> 비밀번호 대조
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration
+    ) {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.withDefaultRolePrefix() // 접두사 자동 부착"ROLE_"
+                .role("ADMIN").implies("USER")
+                .build();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return ((request, response, accessDeniedException) -> {
+            if(request.getRequestURI().startsWith("/api")) {
+                sendError(response, HttpServletResponse.SC_FORBIDDEN, "접근 권한이 없습니다");
+            } else {
+                response.sendRedirect("/access-denied");
+            }
+        });
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return ((request, response, authException) -> {
+            if(request.getRequestURI().startsWith("/api")) {
+                sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "인증이 필요합니다");
+            } else {
+                response.sendRedirect("/access-denied");
+            }
+        });
+    }
+
+    private void sendError(HttpServletResponse response, int status, String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write("status code : " + status + ", message : " + message);
+    }
 }
