@@ -2,6 +2,7 @@ package com.example.oauth2.service;
 
 import com.example.oauth2.config.jwt.jwt.JwtProperties;
 import com.example.oauth2.config.jwt.jwt.TokenProvider;
+import com.example.oauth2.config.jwt.jwt.TokenStatus;
 import com.example.oauth2.domain.entity.entitiy.User;
 import com.example.oauth2.dto.RefreshTokenResponse;
 import com.example.oauth2.util.CookieUtil;
