@@ -1,4 +1,4 @@
-package com.example.basicboard_token.constant;
+package com.basicboard.constant;
 
 import lombok.NoArgsConstructor;
 
