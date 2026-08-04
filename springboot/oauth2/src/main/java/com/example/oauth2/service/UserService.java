@@ -30,6 +30,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public SignInResponse login(SignInRequest request) {
 
         // form-login에서는 필터가 하던 아이디/비밀번호를 검증을 직접 호출한다.
@@ -54,6 +55,7 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
     public SignInResponse oAuthSignUp(OAuthSignUpRequest signUpRequest) {
 
         SignupPayload payload = tokenService.getSignupPayload(signUpRequest.signupToken());
