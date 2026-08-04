@@ -28,6 +28,15 @@ public class UserApiController {
                 .url("/users/login")
                 .build();
     }
+
+    @PostMapping("/oauth2-join")
+    public SignInResponse oauth2Join(
+            @RequestBody OAuthSignUpRequest signUpRequest,
+            HttpServletResponse response
+    ) {
+        SignInResponse signInResponse = userService.oAuthSignUp(signUpRequest);
+    }
+
     @PostMapping("/login")
     public SignInResponse login(
             @RequestBody SignInRequest signInRequest,

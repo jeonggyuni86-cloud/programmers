@@ -3,6 +3,7 @@ package com.example.oauth2.service;
 import com.example.oauth2.config.security.CustomUserDetails;
 import com.example.oauth2.domain.entity.entitiy.User;
 import com.example.oauth2.domain.repository.UserRepository;
+import com.example.oauth2.dto.OAuthSignUpRequest;
 import com.example.oauth2.dto.SignInRequest;
 import com.example.oauth2.dto.SignInResponse;
 import com.example.oauth2.dto.SignUpRequest;
@@ -55,4 +56,10 @@ public class UserService {
                 .build();
     }
 
+    public SignInResponse oAuthSignUp(OAuthSignUpRequest signUpRequest) {
+
+
+
+        return null;
+    }
 }
