@@ -119,7 +119,7 @@ public class TokenProvider {
         return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());
     }
 
-    public String createSignupToken(AuthProvider provider, OAuth2UserInfo userInfo) {
+    public String createSignUpToken(AuthProvider provider, OAuth2UserInfo userInfo) {
         Date now = new Date();
         return Jwts.builder()
                 .header().type("JWT").and()
