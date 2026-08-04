@@ -4,6 +4,9 @@ package com.example.oauth2.config;
 
 
 import com.example.oauth2.config.filter.TokenAuthenticationFilter;
+import com.example.oauth2.config.oauth2.OAuth2FailureHandler;
+import com.example.oauth2.config.oauth2.OAuth2SuccessHandler;
+import com.example.oauth2.service.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -80,6 +83,11 @@ import java.io.IOException;
 public class SecurityConfig {
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
 
+    // OAuth2 로그인 파이프라인에서 "개발자가 구현하는 훅"들
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final OAuth2FailureHandler oAuth2FailureHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -123,6 +131,15 @@ public class SecurityConfig {
                                 "/error" // 404등 에러 포워딩 경로, 막으면 리다이렉트 루프가 생긴다.
                         ).permitAll()
                         .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        // user-info 조회 "직후" 호출될 서비스 교체
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService))
+                        // 인증 성공
+                        .successHandler(oAuth2SuccessHandler)
+                        // 인증 실패
+                        .failureHandler(oAuth2FailureHandler)
                 )
                 // JWT 필터를 UsernamePasswordAuthenticationFilter(폼 로그인 필터) 자리 앞에 끼워넣겠다
                 // 인가 판단은 체인 맨 끝에서 일어나므로,
