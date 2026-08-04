@@ -57,6 +57,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         // 이메일은 회원의 기본 식별/연락 정보이자 우리 User의 필수 정보
         // -> 동의항목 미설정 등으로 이메일을 못 받으면 가입 자체가 불가능하므로 로그인을 거부한다.
+
+        // 반드시 OAuth2AuthenticationException 으로 던져야 하는 이유
+        // loadUser()는 시큐리티 필터 (OAuth2LoginAuthenticationFilter) 안에서 호출된다.
+        // 이 예외 타입이어야 필터가 "인증 실패"로 인식해 OAuth2FailerHandler로 보내준다.
+        // 다른 RuntimeException 등을 던지면 처리되지 않은 서버 오류로 새어 나간다.
         if ( userInfo.email() == null ) {
             throw new OAuth2AuthenticationException(
                     new OAuth2Error("Email is required"),
