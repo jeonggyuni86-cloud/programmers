@@ -1,6 +1,8 @@
 package com.example.oauth2.config.jwt.jwt;
 
 
+import com.example.oauth2.config.oauth2.AuthProvider;
+import com.example.oauth2.config.oauth2.OAuth2UserInfo;
 import com.example.oauth2.config.security.CustomUserDetails;
 import com.example.oauth2.domain.entity.entitiy.Role;
 import com.example.oauth2.domain.entity.entitiy.User;
@@ -39,7 +41,12 @@ public class TokenProvider {
     private static final String CLAIM_ID = "id";
     private static final String CLAIM_NAME = "name";
     private static final String CLAIM_ROLE = "role";
-
+    // == 가입 토큰용 ==
+    private static final String CLAIM_PROVIDER = "provider";
+    private static final String CLAIM_EMAIL = "email";
+    private static final String CLAIM_TYPE = "type";
+    private static final String TOKEN_TYPE_SIGNUP = "signup";
+    private static final Duration SIGNUP_TOKEN_VALIDITY = Duration.ofMinutes(10);
     private final JwtProperties jwtProperties;
 
     private SecretKey secretKey;
@@ -110,5 +117,21 @@ public class TokenProvider {
                 .build();
 
         return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());
+    }
+
+    public String createSignupToken(AuthProvider provider, OAuth2UserInfo userInfo) {
+        Date now = new Date();
+        return Jwts.builder()
+                .header().type("JWT").and()
+                .issuer(jwtProperties.getIssuer())
+                .issuedAt(now)
+                .expiration(new Date(now.getTime() + SIGNUP_TOKEN_VALIDITY.toMillis()))
+                .subject(userInfo.id())
+                .claim(CLAIM_NAME, userInfo.name())
+                .claim(CLAIM_TYPE, TOKEN_TYPE_SIGNUP)
+                .claim(CLAIM_PROVIDER, provider.name())
+                .claim(CLAIM_EMAIL, userInfo.email())
+                .signWith(secretKey, Jwts.SIG.HS512)
+                .compact();
     }
 }
