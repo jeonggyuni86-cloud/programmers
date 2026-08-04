@@ -1,6 +1,7 @@
 package com.example.oauth2_basic_board.dto.response;
 
-import com.example.basicboard_token.domain.entity.Role;
+
+import com.example.oauth2_basic_board.domain.entity.Role;
 
 public record LoginResponse(
         boolean isLoggedIn,

@@ -1,7 +1,7 @@
 package com.example.oauth2_basic_board.mapper;
 
-import com.example.basicboard_token.domain.entity.Member;
-import com.example.basicboard_token.dto.request.MemberJoinRequest;
+import com.example.oauth2_basic_board.domain.entity.Member;
+import com.example.oauth2_basic_board.dto.request.MemberJoinRequest;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,11 +1,12 @@
 package com.example.oauth2_basic_board.controller;
 
-import com.example.basicboard_token.dto.request.LoginRequest;
-import com.example.basicboard_token.dto.request.MemberJoinRequest;
-import com.example.basicboard_token.dto.request.MemberRoleUpdateRequest;
-import com.example.basicboard_token.dto.response.LoginResponse;
-import com.example.basicboard_token.dto.response.MemberResponse;
-import com.example.basicboard_token.service.MemberService;
+
+import com.example.oauth2_basic_board.dto.request.LoginRequest;
+import com.example.oauth2_basic_board.dto.request.MemberJoinRequest;
+import com.example.oauth2_basic_board.dto.request.MemberRoleUpdateRequest;
+import com.example.oauth2_basic_board.dto.response.LoginResponse;
+import com.example.oauth2_basic_board.dto.response.MemberResponse;
+import com.example.oauth2_basic_board.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

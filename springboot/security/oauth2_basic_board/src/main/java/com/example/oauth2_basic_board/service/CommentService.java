@@ -1,15 +1,15 @@
 package com.example.oauth2_basic_board.service;
 
-import com.example.basicboard_token.config.security.CustomUserDetails;
-import com.example.basicboard_token.domain.entity.Board;
-import com.example.basicboard_token.domain.entity.Comment;
-import com.example.basicboard_token.domain.entity.Member;
-import com.example.basicboard_token.domain.entity.Role;
-import com.example.basicboard_token.domain.repository.CommentRepository;
-import com.example.basicboard_token.dto.request.CommentWriteRequest;
-import com.example.basicboard_token.exception.BoardAccessDeniedException;
-import com.example.basicboard_token.mapper.CommentMapper;
-import com.example.basicboard_token.service.component.BoardHandler;
+import com.example.oauth2_basic_board.config.security.CustomUserDetails;
+import com.example.oauth2_basic_board.domain.entity.Board;
+import com.example.oauth2_basic_board.domain.entity.Comment;
+import com.example.oauth2_basic_board.domain.entity.Member;
+import com.example.oauth2_basic_board.domain.entity.Role;
+import com.example.oauth2_basic_board.domain.repository.CommentRepository;
+import com.example.oauth2_basic_board.dto.request.CommentWriteRequest;
+import com.example.oauth2_basic_board.exception.BoardAccessDeniedException;
+import com.example.oauth2_basic_board.mapper.CommentMapper;
+import com.example.oauth2_basic_board.service.component.BoardHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

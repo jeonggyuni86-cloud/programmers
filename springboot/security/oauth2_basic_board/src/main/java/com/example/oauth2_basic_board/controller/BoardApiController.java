@@ -1,13 +1,13 @@
 package com.example.oauth2_basic_board.controller;
 
-import com.example.basicboard_token.dto.request.BoardSearchRequest;
-import com.example.basicboard_token.dto.request.BoardUpdateRequest;
-import com.example.basicboard_token.dto.request.BoardWriteRequest;
-import com.example.basicboard_token.dto.response.BoardAuthorStatResponse;
-import com.example.basicboard_token.dto.response.BoardDetailResponse;
-import com.example.basicboard_token.dto.response.BoardListItemResponse;
-import com.example.basicboard_token.dto.response.BoardListResponse;
-import com.example.basicboard_token.service.BoardService;
+import com.example.oauth2_basic_board.dto.request.BoardSearchRequest;
+import com.example.oauth2_basic_board.dto.request.BoardUpdateRequest;
+import com.example.oauth2_basic_board.dto.request.BoardWriteRequest;
+import com.example.oauth2_basic_board.dto.response.BoardAuthorStatResponse;
+import com.example.oauth2_basic_board.dto.response.BoardDetailResponse;
+import com.example.oauth2_basic_board.dto.response.BoardListItemResponse;
+import com.example.oauth2_basic_board.dto.response.BoardListResponse;
+import com.example.oauth2_basic_board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;

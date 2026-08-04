@@ -1,10 +1,10 @@
 package com.example.oauth2_basic_board.mapper;
 
-import com.example.basicboard_token.domain.entity.Board;
-import com.example.basicboard_token.domain.entity.Comment;
-import com.example.basicboard_token.dto.request.BoardWriteRequest;
-import com.example.basicboard_token.dto.response.BoardDetailResponse;
-import com.example.basicboard_token.dto.response.CommentResponse;
+import com.example.oauth2_basic_board.domain.entity.Board;
+import com.example.oauth2_basic_board.domain.entity.Comment;
+import com.example.oauth2_basic_board.dto.request.BoardWriteRequest;
+import com.example.oauth2_basic_board.dto.response.BoardDetailResponse;
+import com.example.oauth2_basic_board.dto.response.CommentResponse;
 import org.springframework.stereotype.Component;
 
 @Component

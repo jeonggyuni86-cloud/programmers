@@ -1,8 +1,9 @@
 package com.example.oauth2_basic_board.service;
 
-import com.example.basicboard_token.config.security.CustomUserDetails;
-import com.example.basicboard_token.domain.entity.Member;
-import com.example.basicboard_token.domain.repository.MemberRepository;
+
+import com.example.oauth2_basic_board.config.security.CustomUserDetails;
+import com.example.oauth2_basic_board.domain.entity.Member;
+import com.example.oauth2_basic_board.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

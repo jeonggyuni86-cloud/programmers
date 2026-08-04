@@ -1,9 +1,9 @@
 package com.example.oauth2_basic_board.config.filter;
 
-import com.example.basicboard_token.config.jwt.TokenProvider;
-import com.example.basicboard_token.config.jwt.TokenStatus;
-import com.example.basicboard_token.domain.entity.Member;
-import com.example.basicboard_token.domain.repository.MemberRepository;
+import com.example.oauth2_basic_board.config.jwt.TokenProvider;
+import com.example.oauth2_basic_board.config.jwt.TokenStatus;
+import com.example.oauth2_basic_board.domain.entity.Member;
+import com.example.oauth2_basic_board.domain.repository.MemberRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

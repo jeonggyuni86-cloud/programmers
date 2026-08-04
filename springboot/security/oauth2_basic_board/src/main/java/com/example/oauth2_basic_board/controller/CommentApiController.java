@@ -1,7 +1,7 @@
 package com.example.oauth2_basic_board.controller;
 
-import com.example.basicboard_token.dto.request.CommentWriteRequest;
-import com.example.basicboard_token.service.CommentService;
+import com.example.oauth2_basic_board.dto.request.CommentWriteRequest;
+import com.example.oauth2_basic_board.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

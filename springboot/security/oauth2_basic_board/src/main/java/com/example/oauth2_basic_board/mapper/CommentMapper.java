@@ -1,8 +1,9 @@
 package com.example.oauth2_basic_board.mapper;
 
-import com.example.basicboard_token.domain.entity.Board;
-import com.example.basicboard_token.domain.entity.Comment;
-import com.example.basicboard_token.dto.request.CommentWriteRequest;
+
+import com.example.oauth2_basic_board.domain.entity.Board;
+import com.example.oauth2_basic_board.domain.entity.Comment;
+import com.example.oauth2_basic_board.dto.request.CommentWriteRequest;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,6 +1,6 @@
 package com.example.oauth2_basic_board.config.security;
 
-import com.example.basicboard_token.config.filter.TokenAuthenticationFilter;
+import com.example.oauth2_basic_board.config.filter.TokenAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

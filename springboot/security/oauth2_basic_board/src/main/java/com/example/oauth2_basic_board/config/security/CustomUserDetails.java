@@ -1,6 +1,6 @@
 package com.example.oauth2_basic_board.config.security;
 
-import com.example.basicboard_token.domain.entity.Member;
+import com.example.oauth2_basic_board.domain.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

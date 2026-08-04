@@ -1,6 +1,6 @@
 package com.example.oauth2_basic_board.exception;
 
-import com.example.basicboard_token.dto.ErrorResponse;
+import com.example.oauth2_basic_board.dto.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

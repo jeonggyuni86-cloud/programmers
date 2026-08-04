@@ -1,11 +1,11 @@
 package com.example.oauth2_basic_board.service.component;
 
-import com.example.basicboard_token.domain.entity.Board;
-import com.example.basicboard_token.domain.repository.BoardRepository;
-import com.example.basicboard_token.dto.request.BoardSearchRequest;
-import com.example.basicboard_token.dto.response.BoardAuthorStatResponse;
-import com.example.basicboard_token.dto.response.BoardListItemResponse;
-import com.example.basicboard_token.exception.BoardNotFoundException;
+import com.example.oauth2_basic_board.domain.entity.Board;
+import com.example.oauth2_basic_board.domain.repository.BoardRepository;
+import com.example.oauth2_basic_board.dto.request.BoardSearchRequest;
+import com.example.oauth2_basic_board.dto.response.BoardAuthorStatResponse;
+import com.example.oauth2_basic_board.dto.response.BoardListItemResponse;
+import com.example.oauth2_basic_board.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

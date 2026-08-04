@@ -1,7 +1,8 @@
 package com.example.oauth2_basic_board.dto.response;
 
-import com.example.basicboard_token.domain.entity.Member;
-import com.example.basicboard_token.domain.entity.Role;
+
+import com.example.oauth2_basic_board.domain.entity.Member;
+import com.example.oauth2_basic_board.domain.entity.Role;
 
 public record MemberResponse(long id, String userId, String userName, Role role) {
     public static MemberResponse from(Member member) {

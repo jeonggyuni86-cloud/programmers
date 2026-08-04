@@ -1,11 +1,11 @@
 package com.example.oauth2_basic_board.service.component;
 
-import com.example.basicboard_token.config.jwt.JwtProperties;
-import com.example.basicboard_token.config.jwt.TokenProvider;
-import com.example.basicboard_token.config.jwt.TokenStatus;
-import com.example.basicboard_token.domain.entity.Member;
-import com.example.basicboard_token.dto.response.RefreshTokenResponse;
-import com.example.basicboard_token.util.CookieUtil;
+import com.example.oauth2_basic_board.config.jwt.JwtProperties;
+import com.example.oauth2_basic_board.config.jwt.TokenProvider;
+import com.example.oauth2_basic_board.config.jwt.TokenStatus;
+import com.example.oauth2_basic_board.domain.entity.Member;
+import com.example.oauth2_basic_board.dto.response.RefreshTokenResponse;
+import com.example.oauth2_basic_board.util.CookieUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
