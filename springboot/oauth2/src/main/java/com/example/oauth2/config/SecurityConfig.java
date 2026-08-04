@@ -1,8 +1,5 @@
 package com.example.oauth2.config;
 
-// ** 프로젝트 에서의 OAuth2 로그인 흐름"
-
-
 import com.example.oauth2.config.filter.TokenAuthenticationFilter;
 import com.example.oauth2.config.oauth2.OAuth2FailureHandler;
 import com.example.oauth2.config.oauth2.OAuth2SuccessHandler;
