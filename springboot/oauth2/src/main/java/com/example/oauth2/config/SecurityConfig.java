@@ -73,7 +73,49 @@ import java.io.IOException;
 // 제공자별 차이(엔드포인트 URL, scope 등)는 코드가 아닌 설정 파일의 registration, provider 항목으로 흡수된다
 // 그래서 네이버 같은 새 공급자를 추가해도 java 코드는 거의 안바뀐다
 
+// ** 프로젝트에서의 OAuth2 로그인 흐름 **
+// 1. 진입 - 카카오 로그인 버튼 클릭
+//    login.html 의 <a href="/oauth2/authorization/kakao">
+//    → 이 URL을 받는 컨트롤러는 없다. OAuth2AuthorizationRequestRedirectFilter가 가로채는 규약 경로.
+//    → 필터가 state를 생성해 세션에 잠시 보관하고, application.yaml 의 registration/provider 설정으로
+//      카카오 인가 페이지 URL(client_id, redirect_uri, scope, state)을 조립해 리다이렉트 (표준 흐름 1)
 
+// 2. 카카오 화면에서의 로그인 *동의(우리 서버는 관여하지 않는 구간)
+//    → 카카오가 GET /login/oauth2/code/kakao?code=...&state=... 로 브라우저를 돌려보낸다
+
+// 3. 콜백 처리 - 역시 컨트롤러 없음 OAuth2LoginAuthenticationFilter가 가로챈다
+//    ├─ [프레임워크] state 검증 (1에서 세션에 보관한 값과 대조)
+//    ├─ [프레임워크] code + client_secret → 카카오 토큰 엔드포인트에서 access token 교환
+//    └─ [프레임워크] 그 토큰으로 user-info(kapi.kakao.com/v2/user/me) 조회
+
+// 4. CustomOAuth2UserService.loadUser() : 우리 코드가 처음 실행되는 지점
+//    ├─ super.loadUser() 결과를 OAuth2UserInfoFactory → KakaoUserInfo 로 파싱 (제공자별 차이 흡수)
+//    ├─ 이메일 없으면 OAuth2AuthenticationException → 곧장 실패 경로(7)로
+//    └─ UserRepository.findByProviderAndProviderId() 로 우리 회원과 연결
+//         ├─ 기존 회원: 프로필 갱신 후 CustomOAuth2User(registered) 반환
+//         └─ 미가입: DB에 저장하지 ★않고★ CustomOAuth2User.unregistered 반환 (명시적 가입 정책)
+
+// 5. 인증성공 -> OAuth2SuccessHandler 가 principal.isRegistered()로 분기
+//    ├─ 기존 회원: TokenService.issueTokens() 로 우리 JWT 쌍 발급
+//    │   → refresh token만 HttpOnly 쿠키에 심고 "/" 리다이렉트
+//    │   → 도착한 hello.js가 refresh 쿠키로 POST /api/tokens/refresh → access token 획득 (기존 인프라 재사용)
+//    └─ 미가입: SNS 프로필을 담은 10분짜리 "가입 토큰"을 발급해
+//        /users/oauth-join?signupToken=... 으로 리다이렉트 (동의 전에는 DB에 아무 행도 없다)
+
+// 6. 소셜 가입 확정
+//    oauthJoin.js가 동의 버튼 클릭 시 POST /api/users/oauth-join (signupToken + 선택한 role)
+//    → UserApiController → UserService.oauthSignUp()
+//       ├─ TokenProvider.getSignupPayload() 로 서명·만료·용도 검증 후 SNS 프로필 복원
+//       ├─ 이미 있으면 그대로, 없으면 User 저장 (멱등 — 새로고침해도 중복 가입 없음)
+//       └─ TokenService.issueTokens() → 가입 즉시 로그인 상태 (자체 로그인과 여기서 완전히 합류)
+// 7. 인증실패 -> OAuth2FailureHandler
+//    실패 사유를 ?error= 에 실어 /users/login 으로 리다이렉트 → login.html 이 메시지 표시
+//    (ajax가 아니라 브라우저 리다이렉트 흐름이라 JSON 대신 리다이렉트로 응답)
+
+// 8. 이후 요청 -> 소셜/자체 로그인 구분 없이 동일(stateless)
+//    브라우저가 Authorization: Bearer {access token} 헤더 전송
+//    → TokenAuthenticationFilter가 검증 후 SecurityContext 복원
+//    → 카카오 토큰은 4~5에서 사용자 정보를 읽는 데 한 번 쓰고 버렸다. 이후 인증은 전부 우리 JWT.
 
 @Configuration
 @RequiredArgsConstructor
@@ -119,6 +161,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/users/login",
                                 "/users/join",
+                                "/users/oauth-join",
+                                "/api/users/oauth-join",
                                 "/", // 페이지(HTML)는 공개, 데이터는 보호 - 브라우저 페이지 이동은 Bearer 헤더를 못 실으므로 페이지 인가는 API가 담당
                                 "/admin",
                                 "/api/users/login",

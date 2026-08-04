@@ -18,6 +18,9 @@ public class UserController {
         return "login";
     }
 
-
+    @GetMapping("/oauth-join")
+    public String oauthJoin() {
+        return "oauth-join";
+    }
 
 }
