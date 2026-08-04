@@ -38,6 +38,8 @@ public class CustomOAuth2User implements OAuth2User {
     // applcation.yaml provider의 user-name-attribute 값이 여기까지 흘러 들어온다.
     private final String nameAttributeKey;
 
+
+
     // 우리 DB에 이미 가입된 회원인지, SuccessHandler가 "로그인 완료 vs 가입안내" 분기에 사용된다.
     public boolean isRegistered() {
         return user != null;
@@ -65,5 +67,21 @@ public class CustomOAuth2User implements OAuth2User {
     @Override
     public String getName() {
         return String.valueOf(attributes.get(nameAttributeKey));
+    }
+
+
+    public static CustomOAuth2User unregistered(
+            AuthProvider provider,
+            OAuth2UserInfo userInfo,
+            Map<String, Object> attributes,
+            String nameAttributeKey
+    ) {
+        return new CustomOAuth2User(
+                null,
+                provider,
+                userInfo,
+                attributes,
+                nameAttributeKey
+        );
     }
 }

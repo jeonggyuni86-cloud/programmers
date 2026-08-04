@@ -1,10 +1,16 @@
 package com.example.oauth2.service;
 
+import com.example.oauth2.config.oauth2.AuthProvider;
+import com.example.oauth2.config.oauth2.CustomOAuth2User;
+import com.example.oauth2.config.oauth2.OAuth2UserInfo;
+import com.example.oauth2.config.oauth2.OAuth2UserInfoFactory;
+import com.example.oauth2.domain.entity.entitiy.User;
 import com.example.oauth2.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +36,60 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        return super.loadUser(userRequest);
+
+        // access token으로 제공자의 user-info를 호출해 원시 속성 맵을 받아온다.
+        OAuth2User oAuth2User = super.loadUser(userRequest);
+
+        // 어떤 제공자로 로그인했는 : application.yaml의 registration 키
+        String registrationId = userRequest.getClientRegistration()
+                .getRegistrationId();
+
+        // 제공자 응답에서 "사용자 식별자"가 들어있는 속성 키 이름
+        // CustomOAuth2User.getName() 이 이키로 식별자를 꺼낼 때 사용된다.
+        String nameAttributeKey = userRequest.getClientRegistration()
+                .getProviderDetails()
+                .getUserInfoEndpoint()
+                .getUserNameAttributeName();
+
+        // 문자열 registrationId -> 우리 enum으로 원시 속성 맵 -> 제공자별 파서로 감싼다.
+        AuthProvider provider = AuthProvider.from(registrationId);
+        OAuth2UserInfo userInfo = OAuth2UserInfoFactory.of(provider, oAuth2User.getAttributes());
+
+        // 이메일은 회원의 기본 식별/연락 정보이자 우리 User의 필수 정보
+        // -> 동의항목 미설정 등으로 이메일을 못 받으면 가입 자체가 불가능하므로 로그인을 거부한다.
+        if ( userInfo.email() == null ) {
+            throw new OAuth2AuthenticationException(
+                    new OAuth2Error("Email is required"),
+                    "SNS 계정에서 이메일을 기져오지 못했습니다. 이메일 제공 동의가 필요합니다."
+            );
+        }
+
+        return userRepository.findByProviderIdAndProvider(userInfo.id(), provider)
+                .map(
+                        existing -> {
+
+                            // 탈퇴 기능이 있다면(soft delete) -> 이 분기에서
+                            // 탈퇴 계정 여부를 검사해 로그인을 거부하는 코드가 추가된다.
+
+                            // save 불필요(더티체킹)
+                            User ignored = existing.updateProfile(userInfo.name());
+
+                            return new CustomOAuth2User(
+                                    existing,
+                                    provider,
+                                    userInfo,
+                                    oAuth2User.getAttributes(),
+                                    nameAttributeKey
+                            );
+                        }
+                ).orElseGet(
+                        () -> CustomOAuth2User.unregistered(
+                                provider,
+                                userInfo,
+                                oAuth2User.getAttributes(),
+                                nameAttributeKey
+                        )
+                );
     }
 
 
