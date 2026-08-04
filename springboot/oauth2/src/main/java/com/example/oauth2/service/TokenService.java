@@ -5,6 +5,7 @@ import com.example.oauth2.config.jwt.jwt.TokenProvider;
 import com.example.oauth2.config.jwt.jwt.TokenStatus;
 import com.example.oauth2.domain.entity.entitiy.User;
 import com.example.oauth2.dto.RefreshTokenResponse;
+import com.example.oauth2.dto.SignupPayload;
 import com.example.oauth2.util.CookieUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.servlet.http.Cookie;
@@ -54,6 +55,10 @@ public class TokenService {
         return RefreshTokenResponse.builder()
                 .validated(false)
                 .build();
+    }
+
+    public SignupPayload getSignupPayload(String token) {
+        return tokenProvider.getSignupPayload(token);
     }
 
     private String getRefreshToken(Cookie[] cookies) {
