@@ -1,8 +1,10 @@
 package com.example.oauth2_basic_board.domain.entity;
 
 
+import com.example.oauth2_basic_board.config.oauth.AuthProvider;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +14,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Table(name="member")
 @Getter
+@Builder
 @AllArgsConstructor(access = PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
 public class Member {
@@ -32,33 +35,43 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    @Builder.Default
+    private AuthProvider provider = AuthProvider.LOCAL;
+
+    @Column(name = "provider_id", length = 100)
+    private String providerId;
+
     public static Member createUser(
             String userId,
             String password,
-            String userName
+            String userName,
+            AuthProvider provider
     ) {
-        return new Member(
-                null,
-                userId,
-                password,
-                userName,
-                Role.ROLE_USER
-        );
+        return Member.builder()
+                .userId(userId)
+                .password(password)
+                .userName(userName)
+                .provider(provider)
+                .build();
     }
 
     public static Member createUser(
             Long id,
             String userId,
             String userName,
-            Role role
+            Role role,
+            AuthProvider provider
     ) {
-        return new Member(
-                id,
-                userId,
-                null,
-                userName,
-                role
-        );
+        return Member.builder()
+                .id(id)
+                .userId(userId)
+                .password(userName)
+                .userName(userName)
+                .role(role)
+                .provider(provider)
+                .build();
     }
 
     public void promoteToAdmin() {
@@ -74,5 +87,10 @@ public class Member {
             throw new IllegalStateException("Cannot change role as it is the same as the role");
         }
         this.role = role;
+    }
+
+    public Member updateProfile(String name) {
+        this.userName = name;
+        return this;
     }
 }
