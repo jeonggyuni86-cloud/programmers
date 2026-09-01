@@ -7,7 +7,7 @@ class VendingMachine {
         var soldCount: Int = 0,
     )
 
-    private val drinks = mutableListOf(
+    private val drinks = listOf(
         Drink("콜라", 500, 10),
         Drink("사이다", 500, 10),
         Drink("환타", 300, 10),
