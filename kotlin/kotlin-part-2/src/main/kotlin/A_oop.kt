@@ -1,0 +1,66 @@
+
+// 1. 클래스 객체
+// 2. 프로퍼티 - 클래스 안에 선언한 변수
+// 3. 메서드
+
+// 자바와의 차이점
+// - new 키워드가 없다.
+// - getter / setter를 직접 쓰지 않는다.
+// - 계산해서 돌려주는 값도 프로퍼티로 만든다.
+// - 접근 제어자를 생략하면 public이다.
+// - 한 파일에 클래스를 여러개 둘 수 있고, 파일 이름과 클래스 이름이 달라도 된다.
+
+// 1. 프로퍼티와 메서드를 가진 클래스
+// getter / setter를 직접 만들지 않는다. 프로퍼티를 생성하면 자동으로 생긴다.
+// 프로퍼티는 선언할 때 초기값이 있어야한다.
+// 나중에 넣어야 하면 late init 또는 null 허용 자료형(?)을 쓴다.
+
+class Person {
+    var name: String = "홍길동"
+    var age: Int = 0
+
+    fun introduce() {
+        println("인녕하세요. 저는 ${name}이고 ${age}살 입니다.")
+    }
+}
+
+// 2. 커스텀 getter - 값을 저장히자 않고 읽을 때마다 계산하는 프로퍼티
+class Member {
+    var name: String = "이름 없음"
+    var age: Int = 0
+
+    // 자바에서 isAdult() 메서드로 만들던 것이 코틀린에서는 프로퍼티가 된다
+    val isAdult: Boolean
+        get() = age >= 19 // 저장 공간이 없고 getter만 있다
+}
+
+// 1. 객체 생성과 프로퍼티 접근
+fun a_exam1() {
+    val person = Person()
+
+    person.name = "홍길순"
+    person.age = 20
+
+    person.introduce()
+}
+
+fun a_exam2() {
+
+    val member = Member()
+    member.name = "홍길동"
+    member.age = 20
+
+    val member2 = Member()
+    member2.name = "홍길순"
+    member2.age = 23
+
+    println("${member.name} 성인 ? ${member.isAdult}")
+    println("${member2.name} 성인 ? ${member2.isAdult}")
+
+    // isAdult는 getter만 있으므로 값을 직접 넣을 수 없다
+    // member2.isAdult = false -> 컴파일에러
+}
+
+fun main() {
+    a_exam2()
+}
