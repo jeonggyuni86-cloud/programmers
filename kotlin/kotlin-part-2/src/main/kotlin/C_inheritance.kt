@@ -30,3 +30,59 @@
 // 4. Any - 모든 클래스의 최상위 부모
 // 아무것도 상속하지 않으면 모든 클래스는 자동으로 Any를 상속한다.(자바의 Object)
 // toString(), equals(), hashCode() ...
+
+open class Animal(val name: String) {
+
+    open fun sound() {
+        println("$name ... ")
+    }
+
+    fun sleep() {
+        println("$name sleep")
+    }
+
+    open val legs: Int = 4
+
+    override fun toString(): String {
+        return "Animal(name=$name)"
+    }
+}
+
+class Dog(name: String): Animal(name) {
+
+    override fun sound() {
+        println("$name : 멍멍~")
+    }
+
+}
+
+class Cat(name: String): Animal(name) {
+
+    override fun sound() {
+        super.sound()
+        println("$name : 야옹~")
+    }
+
+}
+
+class Bird(name: String): Animal(name) {
+    override val legs: Int = 2
+
+    override fun sound() {
+        println("$name : 짹짹~")
+    }
+}
+
+fun main() {
+
+    val animals: List<Animal> = listOf(
+        Dog("멍멍이"),
+        Cat("야옹이"),
+        Bird("짹짹이")
+    )
+
+    for (animal in animals) {
+        animal.sound()
+    }
+
+}
