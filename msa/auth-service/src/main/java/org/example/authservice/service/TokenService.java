@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.example.authservice.config.jwt.JwtProperties;
 import org.example.authservice.config.jwt.TokenProvider;
+import org.example.authservice.config.jwt.TokenStatus;
 import org.example.authservice.domain.entity.User;
 import org.example.authservice.dto.RefreshTokenResponseDto;
 import org.example.authservice.dto.SignupPayloadDto;

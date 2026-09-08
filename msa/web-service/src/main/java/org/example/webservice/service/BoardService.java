@@ -20,4 +20,5 @@ public class BoardService {
     ) {
         return boardClient.searchBoards(authorization, condition, page, size);
     }
+
 }
