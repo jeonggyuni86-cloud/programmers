@@ -1,3 +1,5 @@
+package 과제1
+
 class VendingMachine {
     private var totalMoney = 0
     data class Drink(

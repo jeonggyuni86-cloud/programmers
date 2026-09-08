@@ -1,0 +1,4 @@
+package member
+
+class MemberApp {
+}

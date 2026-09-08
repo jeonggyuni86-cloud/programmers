@@ -1,3 +1,5 @@
+package 과제2
+
 typealias NAME = String
 typealias EMAIL = String
 
