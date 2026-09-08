@@ -10,7 +10,8 @@ data class Member (
     val phone: PHONE,
     val grade: Grade
 ) {
-    override fun toString(): String = "[이름] $name, [이메일] $email, [연락처] $phone, [등급] $grade"
+    val display: String
+        get() = "[이름] $name, [이메일] $email, [연락처] $phone, [등급] $grade"
 
     companion object {
         fun create(
