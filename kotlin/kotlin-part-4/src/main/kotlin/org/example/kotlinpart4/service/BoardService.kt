@@ -42,7 +42,13 @@ class BoardService(
     // 값을 바꾸면 트랜젝션이 끝날 때 JPA가 변경을 감지해, UPDATE SQL을 자동으로 날린다. (dirty checking)
     @Transactional
     fun updateBoard(id: Long, request: BoardUpdateRequest) {
+        // ?: -> 엘비스 연산자 ?: [null이면 수행]
         val board = repository.findByIdOrNull(id) ?: return
         board.update(request.title, request.content)
+    }
+
+    @Transactional
+    fun deleteBoard(id: Long) {
+        repository.deleteById(id)
     }
 }

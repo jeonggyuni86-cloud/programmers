@@ -37,4 +37,8 @@ class BoardApiController(private val boardService: BoardService) {
     ) {
         boardService.updateBoard(id, request)
     }
+
+    @DeleteMapping("/{id}")
+    fun deleteBoard(@PathVariable("id") id: Long) =
+        boardService.deleteBoard(id)
 }
