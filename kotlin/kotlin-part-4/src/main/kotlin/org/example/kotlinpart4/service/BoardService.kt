@@ -48,7 +48,6 @@ class BoardService(
     }
 
     @Transactional
-    fun deleteBoard(id: Long) {
+    fun deleteBoard(id: Long) =
         repository.deleteById(id)
-    }
 }
