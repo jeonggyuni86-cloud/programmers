@@ -2,7 +2,10 @@ package org.example.kotlinpart4.controller
 
 import org.example.kotlinpart4.dto.BoardCreateRequest
 import org.example.kotlinpart4.dto.BoardPageResponse
+import org.example.kotlinpart4.dto.BoardResponse
+import org.example.kotlinpart4.dto.BoardUpdateRequest
 import org.example.kotlinpart4.service.BoardService
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -17,7 +20,21 @@ class BoardApiController(private val boardService: BoardService) {
     ) = BoardPageResponse.from(boardService.getBoards(page, size, keyword))
 
     @PostMapping
-     fun createBoard(
-         @RequestBody request: BoardCreateRequest
+    fun createBoard(
+        @RequestBody request: BoardCreateRequest
     ) = boardService.createBoard(request)
+
+    @GetMapping("/{id}")
+    fun getBoard(@PathVariable("id") id: Long): ResponseEntity<BoardResponse> {
+        val board = boardService.getBoard(id) ?: return ResponseEntity.notFound().build()
+        return ResponseEntity.ok(BoardResponse.from(board))
+    }
+
+    @PutMapping("/{id}")
+    fun updateBoard(
+        @PathVariable("id") id: Long,
+        @RequestBody request: BoardUpdateRequest
+    ) {
+        boardService.updateBoard(id, request)
+    }
 }
